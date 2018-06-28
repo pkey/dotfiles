@@ -1,0 +1,22 @@
+#!/bin/bash
+# Default config
+#start private
+osascript << 'END'
+tell application "iTerm"
+   tell current window
+--	tell current session
+	create tab with profile "swedbank"
+--	end tell
+   end tell
+    tell current window
+		tell current session
+       			 split vertically with profile "swedbank"
+			write text "cd fdp-portal-private"
+			write text "npm run build && npm run serve -- --host=auth44.s08.tde.swedbank.net --port=12081"
+		end tell
+    end tell
+    tell second session of current tab of current window
+	 write text "cd fdp-portal-hybrid"
+	write text "npm run serve -- --host=auth44.s08.tde.swedbank.net"
+    end tell
+end tell

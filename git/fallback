@@ -1,0 +1,10 @@
+#!/bin/bash
+# Default config
+path=~/workspace/swedbank/
+cd $path
+for i in $( ls -c -d fdp* ); do
+	  cd $i
+	  git in
+	  git pull origin
+	  cd -
+done

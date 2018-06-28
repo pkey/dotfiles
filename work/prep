@@ -1,0 +1,10 @@
+#!/bin/bash
+# Default config
+path=~/workspace/swedbank/fdp
+cd $path
+for i in $( ls -c -d fdp* ); do
+          cd $i
+          echo We are in $i
+	  cp ~/scripts/work/configs/pre-commit .git/hooks/pre-commit
+          cd -
+done
