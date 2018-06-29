@@ -78,7 +78,7 @@ path_zshrc=~/.zshrc
 rm -rf $path_zshrc
 touch $path_zshrc
 npm install --global pure-prompt
-cho "#Pure prompt config \n" >> $path_zshrc
+echo "#Pure prompt config \n" >> $path_zshrc
 echo "autoload -U promptinit; promptinit \n" >> $path_zshrc
 echo "prompt pure \n" >> $path_zshrc
 chsh -s /bin/zsh
@@ -87,9 +87,14 @@ echo "Customizing prompt..."
 hyper install hyper-snazzy
 
 echo "Set up aliases..."
+echo "Removing all aliases first!"
+unalias -a
 echo "#Aliases: " >> $path_zshrc
 echo "source ~/.scripts/aliases/main-alias.sh" >> $path_zshrc
-echo "source ~/.scripts/aliases/swed-alias.sh" >> $path_zshrc
 
-source ~/.zshrc
+echo "Set up swedbank stuff..."
+
+. $PWD/swedbank/swedbank.sh
+
+. ~/.zshrc
 echo "Bootstrapping complete"
