@@ -1,2 +1,2 @@
-mydir="${0%/*}"
-source "$mydir"/config.sh
+path_zshrc=~/.zshrc
+ echo "$(cat ~/.scripts/functions.sh)" >> $path_zshrc

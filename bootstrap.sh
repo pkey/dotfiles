@@ -97,6 +97,8 @@ npm install --global pure-prompt
 echo "#Pure prompt config \n" >> $path_zshrc
 echo "autoload -U promptinit; promptinit \n" >> $path_zshrc
 echo "prompt pure \n" >> $path_zshrc
+
+echo "$(cat ~/.scripts/functions.sh)" >> $path_zshrc
 chsh -s /bin/zsh
 
 echo "Customizing prompt..."
