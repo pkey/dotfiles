@@ -37,6 +37,9 @@ brew update
 PACKAGES=(
     npm
     vim
+    yarn
+    node
+    nvm
 )
 
 echo "Installing packages..."
@@ -59,6 +62,19 @@ CASKS=(
 
 echo "Installing cask apps..."
 brew cask install ${CASKS[@]}
+
+MODULES=(
+    typescript 
+)
+
+npm install -g ${MODULES[@]}
+#VScode
+. ~/.scripts/code.sh
+
+echo "Setting up nvm..."
+mkdir ~/.nvm
+export NVM_DIR="$HOME/.nvm"
+  . "/usr/local/opt/nvm/nvm.sh"
 
 echo "Creating an SSH key for you..."
 ssh-keygen -t rsa
@@ -97,4 +113,5 @@ echo "Set up swedbank stuff..."
 . $PWD/swedbank/swedbank.sh
 
 . ~/.zshrc
+
 echo "Bootstrapping complete"
