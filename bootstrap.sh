@@ -59,6 +59,7 @@ CASKS=(
     visual-studio-code
     lastpass
     hipchat
+    messenger
 )
 
 echo "Installing cask apps..."
