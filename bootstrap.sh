@@ -40,6 +40,7 @@ PACKAGES=(
     yarn
     node
     nvm
+    hub
 )
 
 echo "Installing packages..."
