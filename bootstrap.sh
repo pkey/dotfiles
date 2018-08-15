@@ -2,15 +2,6 @@
 # 
 # Bootstrap script for setting up a new OSX machine
 # 
-# This should be idempotent so it can be run multiple times.
-#
-# Some apps don't have a cask and so still need to be installed by hand. These
-# include:
-#
-# - Twitter (app store)
-# - Postgres.app (http://postgresapp.com/)
-#
-# Notes:
 #
 # - If installing full Xcode, it's better to install that first from the app
 #   store before running the bootstrap script. Otherwise, Homebrew can't access
@@ -24,6 +15,12 @@
 # - http://notes.jerzygangi.com/the-best-pgp-tutorial-for-mac-os-x-ever/
 
 echo "Starting bootstrapping"
+
+
+#TODO: This won't work as you don;t have git in the beginning. I should make all this installation as single script.
+#TODO: Setup relative paths..
+echo "Setting up bash scripts..."
+git clone git@github.com:pkey/scripts.git ~/.scripts
 
 # Check for Homebrew, install if we don't have it
 if test ! $(which brew); then
@@ -39,44 +36,34 @@ PACKAGES=(
     vim
     yarn
     node
-    nvm
     hub
 )
 
 echo "Installing packages..."
 brew install ${PACKAGES[@]}
 
+
 echo "Cleaning up..."
 brew cleanup
 
-CASKS=(
-    firefox
-    google-chrome
-    hyper
-    skype
-    slack
-    virtualbox
-    visual-studio-code
-    lastpass
-    hipchat
-    messenger
-)
+echo "Installing additional packages..."
+echo "Installing nvm"
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 
-echo "Installing cask apps..."
-brew cask install ${CASKS[@]}
+echo "Done installing packages"
+
+#Installing apps via cask
+. ~/.scripts/steps/apps
 
 MODULES=(
     typescript 
 )
 
+echo "Installing global npm modules..."
 npm install -g ${MODULES[@]}
-#VScode
-. ~/.scripts/code.sh
 
-echo "Setting up nvm..."
-mkdir ~/.nvm
-export NVM_DIR="$HOME/.nvm"
-  . "/usr/local/opt/nvm/nvm.sh"
+#Setting up code editor
+. ~/.scripts/editor/editor.sh
 
 echo "Creating an SSH key for you..."
 ssh-keygen -t rsa
@@ -85,37 +72,15 @@ echo "Please add this public key to Github \n"
 echo "https://github.com/account/ssh \n"
 read -p "Press [Enter] key after this..."
 
-echo "Setting up bash scripts..."
-git clone git@github.com:pkey/scripts.git ~/.scripts
-
 echo "Creating folder structure..."
 [[ ! -d Workspace ]] && mkdir ~/Workspace
 
-echo "Setting up zsh..."
-path_zshrc=~/.zshrc
-rm -rf $path_zshrc
-touch $path_zshrc
-npm install --global pure-prompt
-echo "#Pure prompt config \n" >> $path_zshrc
-echo "autoload -U promptinit; promptinit \n" >> $path_zshrc
-echo "prompt pure \n" >> $path_zshrc
+#Terminal setup
+. ~/.scripts/steps/terminal
 
-echo "$(cat ~/.scripts/functions.sh)" >> $path_zshrc
-chsh -s /bin/zsh
+#Macos setup
 
-echo "Customizing prompt..."
-hyper install hyper-snazzy
-
-echo "Set up aliases..."
-echo "Removing all aliases first!"
-unalias -a
-echo "#Aliases: " >> $path_zshrc
-echo "source ~/.scripts/aliases/main-alias.sh" >> $path_zshrc
-
-echo "Set up swedbank stuff..."
-
-. $PWD/swedbank/swedbank.sh
-
+. ~/.scripts/steps/.macos
 . ~/.zshrc
 
 echo "Bootstrapping complete"

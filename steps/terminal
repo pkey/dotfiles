@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+echo "Setting up zsh..."
+
+#Creating new .zshrc file
+path_zshrc=~/.zshrc
+rm -rf $path_zshrc
+touch $path_zshrc
+
+#Pure prompt
+npm install --global pure-prompt
+echo "#Pure prompt config \n" >> $path_zshrc
+echo "autoload -U promptinit; promptinit \n" >> $path_zshrc
+echo "prompt pure \n" >> $path_zshrc
+
+#Adding function
+echo "$(cat ~/.scripts/functions.sh)" >> $path_zshrc
+chsh -s /bin/zsh
+
+#Aliases
+echo "Removing all aliases first!"
+unalias -a
+echo "#Aliases: " >> $path_zshrc
+echo "source ~/.scripts/aliases/main-alias.sh" >> $path_zshrc

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+CASKS=(
+    firefox
+    google-chrome
+    skype
+    slack
+    virtualbox
+    visual-studio-code
+    lastpass
+    hipchat
+    messenger
+    iterm2
+)
+
+echo "Installing cask apps..."
+#brew cask install ${CASKS[@]}
+
+for cask in ${CASKS[@]}; do
+    brew cask install $cask
+done
