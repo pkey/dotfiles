@@ -1,5 +1,5 @@
 #!/bin/bash
-domains=(www.facebook.com www.youtube.com)
+domains=(www.facebook.com)
 host_file=/etc/hosts
 #sed -i '' '$d' ~/hosts
 if grep -Fxq "#Blocked websites:" $host_file

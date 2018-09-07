@@ -78,6 +78,10 @@ echo "Creating folder structure..."
 #Terminal setup
 . ~/.scripts/steps/terminal
 
+#Git setup
+git config --global user.name "Paulius Kutka"
+git config --global user.email kutka100@gmail.com
+
 #Macos setup
 
 . ~/.scripts/steps/.macos
