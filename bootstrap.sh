@@ -82,6 +82,9 @@ echo "Creating folder structure..."
 git config --global user.name "Paulius Kutka"
 git config --global user.email kutka100@gmail.com
 
+cp ~/.scripts/.gitignore ~
+git config --global core.excludesfile ~/.gitignore
+
 #Macos setup
 
 . ~/.scripts/steps/.macos
