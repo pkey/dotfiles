@@ -1,0 +1,6 @@
+
+export http_proxy=p998pfl:p998pfl@proxyvip.foreningssparbanken.se:8080
+export https_proxy=p998pfl:p998pfl@proxyvip.foreningssparbanken.se:8080
+
+export some=some
+echo "Done"

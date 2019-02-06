@@ -36,6 +36,7 @@ alias grbc='git rebase --continue'
 alias grbi='git rebase -i'
 alias grbs='git rebase --skip'
 alias gst='git status'
+alias glr='git pull --rebase'
 alias l='ls -lah'
 alias la='ls -lAh'
 alias ll='ls -lh'
@@ -47,3 +48,6 @@ alias which-command=whence
 alias ybw='yarn build --watch'
 alias yl='yarn lint --fix'
 alias yt='yarn test'
+
+### Kubecernetes ###
+alias k='kubectl'
