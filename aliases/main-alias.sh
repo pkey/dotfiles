@@ -45,9 +45,11 @@ alias lsa='ls -lah'
 alias md='mkdir -p'
 alias run-help=man
 alias which-command=whence
+
+#Yarn
 alias ybw='yarn build --watch'
 alias yl='yarn lint --fix'
 alias yt='yarn test'
 
-### Kubecernetes ###
+#Kubectl
 alias k='kubectl'
