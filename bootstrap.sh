@@ -37,6 +37,7 @@ PACKAGES=(
     yarn
     node
     hub
+    iterm2
 )
 
 echo "Installing packages..."
