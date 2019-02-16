@@ -53,3 +53,6 @@ alias yt='yarn test'
 
 #Kubectl
 alias k='kubectl'
+
+#Productivity
+alias toggle-fb='sudo ~/.scripts/productivity/toggle-fb'
