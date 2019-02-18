@@ -59,3 +59,7 @@ alias k='kubectl'
 
 #Productivity
 alias toggle-fb='sudo ~/.scripts/productivity/toggle-fb'
+
+### Work/Personal ###
+alias myconfig='sh ~/.scripts/swedbank/myconfig'
+alias swedconfig='sh ~/.scripts/swedbank/swedconfig'
