@@ -82,16 +82,25 @@ echo "Creating folder structure..."
 #Terminal setup
 . ~/.scripts/steps/terminal
 
+#Vim setup
+#Install vim plugin manager
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+#Copy vim rc
+cp ~/.scripts/.vimrc ~/.vimrc
+
 #Git setup
 git config --global user.name "Paulius Kutka"
 git config --global user.email kutka100@gmail.com
 
+# Add global gitignore
 cp ~/.scripts/.gitignore ~
 git config --global core.excludesfile ~/.gitignore
 
 #Macos setup
-
 . ~/.scripts/steps/.macos
+
+#Final step
 . ~/.zshrc
 
 echo "Bootstrapping complete"
