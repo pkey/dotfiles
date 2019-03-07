@@ -16,7 +16,6 @@
 
 echo "Starting bootstrapping"
 
-
 #TODO: This won't work as you don;t have git in the beginning. I should make all this installation as single script.
 #TODO: Setup relative paths..
 echo "Setting up bash scripts..."

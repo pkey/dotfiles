@@ -1,3 +1,18 @@
+#Set workspace
+if [ ! -f ~/.scripts/.env ]
+  then
+    echo "Environment file does not exist. Using default variables"
+  else
+    source ~/.scripts/.env
+fi
+
+if [[ -z "${WORKSPACE}" ]];
+  then
+    export WORKSPACE="Personal"
+fi
+
+echo "Workspace: ${WORKSPACE}"
+
 #Pure prompt config 
 
 autoload -U promptinit; promptinit 
@@ -27,7 +42,9 @@ source ~/.scripts/aliases/main-alias.sh
 
 #Work
 #TODO: add completely separate config for work
-source ~/.scripts/swedbank/swedbank.sh
+if [[ "$WORKSPACE" = "Swedbank" ]]; then
+  source ~/.scripts/swedbank/swedbank.sh
+fi
 
 #Add history appending
 export HISTSIZE=10000
