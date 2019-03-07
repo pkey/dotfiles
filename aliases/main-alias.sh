@@ -61,10 +61,6 @@ alias k='kubectl'
 #Productivity
 alias toggle-fb='sudo ~/.scripts/productivity/toggle-fb'
 
-### Work/Personal ###
-alias myconfig='sh ~/.scripts/swedbank/myconfig'
-alias swedconfig='sh ~/.scripts/swedbank/swedconfig'
-
 ### Java ###
 #alias j12="export JAVA_HOME=`/usr/libexec/java_home -v 12`; java -version"
 alias j11="export JAVA_HOME=`/usr/libexec/java_home -v 11`; java -version"

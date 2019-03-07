@@ -25,12 +25,17 @@ git_current_branch () {
 #Aliases: 
 source ~/.scripts/aliases/main-alias.sh
 
+#Work
+#TODO: add completely separate config for work
+source ~/.scripts/swedbank/swedbank.sh
+
 #Add history appending
 export HISTSIZE=10000
 export SAVEHIST=10000
 export HISTFILE=~/.zsh_history
 
 #Ban facebook by default
+#TODO: Ban facebook, but only on home pc
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
