@@ -2,6 +2,6 @@
 # Default config
 rm -f ~/.gitconfig
 git config --global user.name "Paulius Kutka"
-git config --global user.email "kutka100@gmail.com"
+git config --global user.email "kutka.paulius@gmail.com"
 echo "Local git configuration made"
 
