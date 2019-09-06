@@ -59,7 +59,7 @@ alias yt='yarn test'
 alias k='kubectl'
 
 #Productivity
-alias toggle-fb='sudo ~/.scripts/productivity/toggle-fb'
+alias toggle-fb='sudo ~/.dotfiles/productivity/toggle-fb'
 
 ### Java ###
 #alias j12="export JAVA_HOME=`/usr/libexec/java_home -v 12`; java -version"

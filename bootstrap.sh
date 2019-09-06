@@ -18,8 +18,8 @@ echo "Starting bootstrapping"
 
 #TODO: This won't work as you don;t have git in the beginning. I should make all this installation as single script.
 #TODO: Setup relative paths..
-echo "Setting up bash scripts..."
-git clone git@github.com:pkey/scripts.git ~/.scripts
+#echo "Setting up bash scripts..."
+#git clone git@github.com:pkey/scripts.git ~/.dotfiles
 
 # Check for Homebrew, install if we don't have it
 if test ! $(which brew); then
@@ -56,7 +56,7 @@ export NVM_DIR="$HOME/.nvm"
 echo "Done installing packages"
 
 #Installing apps via cask
-. ~/.scripts/steps/apps
+. ~/.dotfiles/steps/apps
 
 MODULES=(
     typescript 
@@ -66,7 +66,7 @@ echo "Installing global npm modules..."
 npm install -g ${MODULES[@]}
 
 #Setting up code editor
-. ~/.scripts/editor/editor.sh
+. ~/.dotfiles/editor/editor.sh
 
 echo "Creating an SSH key for you..."
 ssh-keygen -t rsa
@@ -79,25 +79,25 @@ echo "Creating folder structure..."
 [[ ! -d Workspace ]] && mkdir ~/Workspace
 
 #Terminal setup
-. ~/.scripts/steps/terminal
+. ~/.dotfiles/steps/terminal
 
 #Vim setup
 #Install vim plugin manager
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 #Copy vim rc
-cp ~/.scripts/.vimrc ~/.vimrc
+cp ~/.dotfiles/.vimrc ~/.vimrc
 
 #Git setup
 git config --global user.name "Paulius Kutka"
 git config --global user.email kutka100@gmail.com
 
 # Add global gitignore
-cp ~/.scripts/.gitignore ~
+cp ~/.dotfiles/.gitignore ~
 git config --global core.excludesfile ~/.gitignore
 
 #Macos setup
-. ~/.scripts/steps/.macos
+. ~/.dotfiles/steps/.macos
 
 #Final step
 . ~/.zshrc

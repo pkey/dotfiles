@@ -1,4 +1,4 @@
 #!/bin/bash
 #Set gitconfig
-git config --global includeIf.gitdir:**/swedbank/.path ~/.scripts/swedbank/.gitconfig
+git config --global includeIf.gitdir:**/swedbank/.path ~/.dotfiles/swedbank/.gitconfig
 echo "Config done"

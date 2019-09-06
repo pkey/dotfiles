@@ -3,4 +3,4 @@
 echo "Setting up your favourite edtiro..."
 
 #Editor setup
-. ~/.scripts/editor/vscode.sh
+. ~/.dotfiles/editor/vscode.sh

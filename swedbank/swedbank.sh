@@ -5,10 +5,10 @@ alias gcfeat='git commit -m "feat($(git_current_branch | cut -d / -f2)):'
 alias gcfix='git commit -m "fix($(git_current_branch | cut -d / -f2)):'
 
 #Setup git config aliases
-alias swed='~/.scripts/swedbank/swedconfig'
-alias my='~/.scripts/swedbank/myconfig'
-chmod +x ~/.scripts/swedbank/swedconfig
-chmod +x ~/.scripts/swedbank/myconfig
+alias swed='~/.dotfiles/swedbank/swedconfig'
+alias my='~/.dotfiles/swedbank/myconfig'
+chmod +x ~/.dotfiles/swedbank/swedconfig
+chmod +x ~/.dotfiles/swedbank/myconfig
 
 #Set default git config
 swed

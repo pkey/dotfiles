@@ -1,9 +1,9 @@
 #Set workspace
-if [ ! -f ~/.scripts/.env ]
+if [ ! -f ~/.dotfiles/.env ]
   then
     echo "Environment file does not exist. Using default variables"
   else
-    source ~/.scripts/.env
+    source ~/.dotfiles/.env
 fi
 
 if [[ -z "${WORKSPACE}" ]];
@@ -38,12 +38,12 @@ git_current_branch () {
     fi
 }
 #Aliases: 
-source ~/.scripts/aliases/main-alias.sh
+source ~/.dotfiles/aliases/main-alias.sh
 
 #Work
 #TODO: add completely separate config for work
 if [[ "$WORKSPACE" = "Swedbank" ]]; then
-  source ~/.scripts/swedbank/swedbank.sh
+  source ~/.dotfiles/swedbank/swedbank.sh
 fi
 
 #Add history appending
@@ -68,4 +68,4 @@ if [ -f '/Users/pauliuskutka/Apps/google-cloud-sdk/path.zsh.inc' ]; then . '/Use
 if [ -f '/Users/pauliuskutka/Apps/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/pauliuskutka/Apps/google-cloud-sdk/completion.zsh.inc'; fi
 
 # Z - cd history
-source ~/.scripts/z/z.sh 
+source ~/.dotfiles/z/z.sh 

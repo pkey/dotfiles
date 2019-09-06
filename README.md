@@ -1,4 +1,10 @@
-# My personal macos bootstraping config
+# Paulius' .dotfiles :wrench:
+
+## Getting started :rocket:
+
+1. `git clone git@github.com:pkey/.dotfiles.git` to your home folder. Everything should end up in `~/.dotfiles`.
+2. `sh ~/.dotfiles/bootstrap.sh`
+3. Let it fly
 
 ## Environment
 
