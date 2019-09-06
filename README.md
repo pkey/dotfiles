@@ -11,3 +11,8 @@
 `.env` file might be used to define the environment variables:
 
 - **Workspace**: defines workspace in which terminal operates. Possible values: Personal, Swedbank
+
+## Inspirations
+
+:star: https://github.com/mathiasbynens/dotfiles  
+:star: https://medium.com/@webprolific/getting-started-with-dotfiles-43c3602fd789
