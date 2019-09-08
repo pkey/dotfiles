@@ -12,6 +12,13 @@
 
 - **Workspace**: defines workspace in which terminal operates. Possible values: Personal, Swedbank
 
+## Testing
+
+Testing of `.dotfiles` (especially `bootstrap.sh`) can be done on a fresh virtual machine. How to set up virtual machine:
+
+* For MacOS: https://github.com/myspaghetti/macos-guest-virtualbox
+
+
 ## Inspirations
 
 :star: https://github.com/mathiasbynens/dotfiles  
