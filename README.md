@@ -12,7 +12,7 @@
 
 - **Workspace**: defines workspace in which terminal operates. Possible values: Personal, Swedbank
 
-## Testing
+## Testing :fire:
 
 Testing of `.dotfiles` (especially `bootstrap.sh`) can be done on a fresh virtual machine. How to set up virtual machine:
 
