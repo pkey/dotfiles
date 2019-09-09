@@ -34,6 +34,7 @@ PACKAGES=(
     node
     hub
     hyper
+    travis
 )
 
 echo "Installing packages..."
