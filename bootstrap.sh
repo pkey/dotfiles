@@ -14,7 +14,7 @@
 # - https://news.ycombinator.com/item?id=8402079
 # - http://notes.jerzygangi.com/the-best-pgp-tutorial-for-mac-os-x-ever/
 
-echo "Starting bootstrapping"
+printf "Bootstrap started... \U1F680\n"
 
 #TODO: Setup relative paths..
 #echo "Setting up bash scripts..."
@@ -22,7 +22,7 @@ echo "Starting bootstrapping"
 
 # Check for Homebrew, install if we don't have it
 if test ! $(which brew); then
-    echo "Installing homebrew..."
+    printf "Installing homebrew... \U1F37A\n"
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
@@ -40,8 +40,6 @@ PACKAGES=(
 
 echo "Installing packages..."
 brew install ${PACKAGES[@]}
-
-
 echo "Cleaning up..."
 brew cleanup
 
@@ -94,4 +92,4 @@ git config --global core.excludesfile ~/.gitignore
 #Final step
 . ~/.zshrc
 
-echo "Bootstrapping complete"
+printf "Bootstrap completed \U1F389\n"

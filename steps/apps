@@ -3,14 +3,12 @@
 CASKS=(
     firefox
     google-chrome
-    skype
     slack
     virtualbox
     visual-studio-code
     lastpass
     hipchat
-    messenger
-    iterm2
+    hyper
 )
 
 echo "Installing cask apps..."

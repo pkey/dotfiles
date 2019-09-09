@@ -1,4 +1,4 @@
-echo "Setting up swedbank environment..."
+printf "Setting up Swedbank workspace... \U1F3E6\n"
 
 #Setup swedbank aliases
 alias gcfeat='git commit -m "feat($(git_current_branch | cut -d / -f2)):'
