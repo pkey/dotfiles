@@ -62,17 +62,19 @@ npm install -g ${MODULES[@]}
 . ~/.dotfiles/editor/editor.sh
 
 echo "Creating an SSH key for you..."
-ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
-pbcopy < ~/.ssh/id_rsa.pub 
-
-echo "Public key copied to your clipboard. Please add it to Github... \n"
-echo "https://github.com/account/ssh \n"
-
-#If CI, wait for only one second
-if [ ! -z $CI ] ; then
-    read -p "Press [Enter] key after this..." -t 1
-    else 
-    read -p "Press [Enter] key after this..."
+if [ ! -f ~/.ssh/id_rsa ]; then
+    ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
+    pbcopy < ~/.ssh/id_rsa.pub 
+    echo "Public key copied to your clipboard. Please add it to Github... \n"
+    echo "https://github.com/account/ssh \n"
+    #If CI, wait for only one second
+        if [ ! -z $CI ] ; then
+        read -p "Press [Enter] key after this..." -t 1
+        else 
+        read -p "Press [Enter] key after this..."
+        fi
+    else
+    echo "Key already exists!"
 fi
 
 echo "Creating folder structure..."
