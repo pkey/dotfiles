@@ -16,7 +16,6 @@
 
 echo "Starting bootstrapping"
 
-#TODO: This won't work as you don;t have git in the beginning. I should make all this installation as single script.
 #TODO: Setup relative paths..
 #echo "Setting up bash scripts..."
 #git clone git@github.com:pkey/scripts.git ~/.dotfiles
@@ -36,7 +35,7 @@ PACKAGES=(
     yarn
     node
     hub
-    iterm2
+    hyper
 )
 
 echo "Installing packages..."
@@ -49,9 +48,6 @@ brew cleanup
 echo "Installing additional packages..."
 echo "Installing nvm"
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 echo "Done installing packages"
 
@@ -90,14 +86,14 @@ cp ~/.dotfiles/.vimrc ~/.vimrc
 
 #Git setup
 git config --global user.name "Paulius Kutka"
-git config --global user.email kutka100@gmail.com
+git config --global user.email kutka.paulius@gmail.com
 
 # Add global gitignore
 cp ~/.dotfiles/.gitignore ~
 git config --global core.excludesfile ~/.gitignore
 
 #Macos setup
-. ~/.dotfiles/steps/.macos
+. ~/.dotfiles/steps/macos
 
 #Final step
 . ~/.zshrc
