@@ -27,7 +27,7 @@ git_current_branch () {
 
 #Set up Aliases: 
 unalias -a
-source ~/.dotfiles/aliases/main-alias.sh
+source ~/.dotfiles/aliases.sh
 
 #Set up History
 export HISTSIZE=10000
