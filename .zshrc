@@ -54,7 +54,6 @@ if [ -f '/Users/pauliuskutka/Apps/google-cloud-sdk/completion.zsh.inc' ]; then .
 if [ ! -f ~/.dotfiles/.env ]
   then
     echo "No environment file. Please create one"
-    return
   else
     source ~/.dotfiles/.env
 fi
@@ -63,7 +62,7 @@ if [[ -z "${WORKSPACE}" ]];
   then
     if [[ -z "${DEFAULT_WORKSPACE}" ]] 
     then
-      export WORKSPACE="hacker"
+      export WORKSPACE="default"
     else 
       export WORKSPACE=${DEFAULT_WORKSPACE}
     fi
