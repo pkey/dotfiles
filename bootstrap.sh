@@ -65,7 +65,13 @@ ssh-keygen -t rsa
 
 echo "Please add this public key to Github \n"
 echo "https://github.com/account/ssh \n"
-read -p "Press [Enter] key after this..."
+
+#If CI, wait for only one second
+if [ ! -z $CI ] ; then
+    read -p "Press [Enter] key after this..." -t 1
+    else 
+    read -p "Press [Enter] key after this..."
+fi
 
 echo "Creating folder structure..."
 [[ ! -d Workspace ]] && mkdir ~/Workspace
