@@ -17,8 +17,6 @@
 printf "Bootstrap started... \U1F680\n"
 
 #TODO: Setup relative paths..
-#echo "Setting up bash scripts..."
-#git clone git@github.com:pkey/scripts.git ~/.dotfiles
 
 # Check for Homebrew, install if we don't have it
 if test ! $(which brew); then

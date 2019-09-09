@@ -12,7 +12,6 @@ then
      done
      echo "You can relax now, m8"
 else
-    # code if not found
     echo "Preparing work environment..."
     echo "#Blocked websites:" >> $host_file
     for domain in ${domains[*]}; do

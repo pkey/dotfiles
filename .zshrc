@@ -53,7 +53,9 @@ if [ -f '/Users/pauliuskutka/Apps/google-cloud-sdk/completion.zsh.inc' ]; then .
 #------------Set Workspace––––––––––––
 if [ ! -f ~/.dotfiles/.env ]
   then
-    echo "No environment file. Please create one"
+    #TODO: Add this step to bootstrap build
+    echo "No default environment file. Please create one in .dotfiles/.env"
+    return
   else
     source ~/.dotfiles/.env
 fi
