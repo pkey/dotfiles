@@ -84,10 +84,6 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 #Copy vim rc
 cp ~/.dotfiles/.vimrc ~/.vimrc
 
-#Git setup
-git config --global user.name "Paulius Kutka"
-git config --global user.email kutka.paulius@gmail.com
-
 # Add global gitignore
 cp ~/.dotfiles/.gitignore ~
 git config --global core.excludesfile ~/.gitignore
