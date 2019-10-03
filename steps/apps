@@ -7,8 +7,8 @@ CASKS=(
     virtualbox
     visual-studio-code
     lastpass
-    hipchat
     hyper
+    airtable
 )
 
 echo "Installing cask apps..."
