@@ -5,7 +5,7 @@ export PATH=$PATH:/usr/local/bin
 
 autoload -U promptinit; promptinit 
 prompt pure 
-
+fpath+=("$HOME/.zsh/pure")
 # Create functions
 #TODO: Move this to separate folder. I think moving it here has something to do with zsh. Check issue in git.
 
