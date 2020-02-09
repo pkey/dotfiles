@@ -17,4 +17,6 @@ git_current_branch () {
     fi
 }
 
-
+byebranch () {
+  git push -d origin "$@" || git branch -d "$@" 
+}

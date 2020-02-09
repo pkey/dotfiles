@@ -62,7 +62,8 @@ alias k='kubectl'
 alias toggle-fb='sudo ~/.dotfiles/productivity/toggle-fb'
 
 #Workflow
-alias trypush='(! git diff HEAD develop --exit-code --quiet) && (! git diff HEAD master --exit-code --quiet) && git status && (npm run format || true) && git commit --amend -a --no-edit && git push --force-with-lease'
+alias test-update='jest --only-changed -u'
+alias trypush='(! git diff HEAD develop --exit-code --quiet) && (! git diff HEAD master --exit-code --quiet) && git status && (jest --changedSince develop || true) && (npm run format || true) && git commit --amend -a --no-edit && git push -u --force-with-lease'
 alias jest='npx jest'
 ### Java ###
 

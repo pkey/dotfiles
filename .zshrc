@@ -7,23 +7,8 @@ autoload -U promptinit; promptinit
 prompt pure 
 fpath+=("$HOME/.zsh/pure")
 # Create functions
-#TODO: Move this to separate folder. I think moving it here has something to do with zsh. Check issue in git.
 
-git_current_branch () {
-    if ! git rev-parse 2> /dev/null
-    then
-        print "$0: not a repository: $PWD" >&2
-        return 1
-    fi
-    local ref="$(git symbolic-ref HEAD 2> /dev/null)"
-    if [[ -n "$ref" ]]
-    then
-        print "${ref#refs/heads/}"
-        return 0
-    else
-        return 1
-    fi
-}
+source ~/.dotfiles/functions.sh
 
 #Set up Aliases: 
 unalias -a
