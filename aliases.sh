@@ -61,6 +61,9 @@ alias k='kubectl'
 #Productivity
 alias toggle-fb='sudo ~/.dotfiles/productivity/toggle-fb'
 
+#Workflow
+alias trypush='(! git diff HEAD develop --exit-code --quiet) && (! git diff HEAD master --exit-code --quiet) && git status && (npm run format || true) && git commit --amend -a --no-edit && git push --force-with-lease'
+alias jest='npx jest'
 ### Java ###
 
 #TODO: `` vs '' - `` actually invokes a command, and '' invokes it when called
