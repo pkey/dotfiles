@@ -14,6 +14,18 @@ alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
 alias _=sudo
+
+alias l='ls -lah'
+alias la='ls -lAh'
+alias ll='ls -lh'
+alias ls='ls -G'
+alias lsa='ls -lah'
+alias md='mkdir -p'
+alias run-help=man
+alias which-command=whence
+
+# Git
+
 alias g=git
 alias ga='git add'
 alias gaa='git add --all'
@@ -28,7 +40,7 @@ alias gcb='git checkout -b'
 alias gci='git checkout project/integration'
 alias gco='git checkout'
 alias ggpush='git push origin $(git_current_branch)'
-alias 'gp!'='ggpush --force'
+alias 'gp!'='ggpush --force-with-lease'
 alias ggsup='git branch --set-upstream-to=origin/$(git_current_branch)'
 alias gl='git pull'
 alias gp='git push'
@@ -41,14 +53,9 @@ alias grbs='git rebase --skip'
 alias gst='git status'
 alias glr='git pull --rebase'
 alias glrm='git pull --rebase origin master'
-alias l='ls -lah'
-alias la='ls -lAh'
-alias ll='ls -lh'
-alias ls='ls -G'
-alias lsa='ls -lah'
-alias md='mkdir -p'
-alias run-help=man
-alias which-command=whence
+
+#Vim
+alias v='vim'
 
 #Yarn
 alias ybw='yarn build --watch'
