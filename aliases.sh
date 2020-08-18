@@ -53,6 +53,7 @@ alias grbs='git rebase --skip'
 alias gst='git status'
 alias glr='git pull --rebase'
 alias glrm='git pull --rebase origin master'
+alias grs='git reset --staged'
 
 #Vim
 alias v='vim'
@@ -72,6 +73,7 @@ alias toggle-fb='sudo ~/.dotfiles/productivity/toggle-fb'
 alias test-update='jest --only-changed -u'
 alias trypush='(! git diff HEAD develop --exit-code --quiet) && (! git diff HEAD master --exit-code --quiet) && git status && (jest --changedSince develop || true) && (npm run format || true) && git commit --amend -a --no-edit && git push -u --force-with-lease'
 alias jest='npx jest'
+
 ### Java ###
 
 #TODO: `` vs '' - `` actually invokes a command, and '' invokes it when called
@@ -81,3 +83,7 @@ alias j11="export JAVA_HOME='/usr/libexec/java_home -v 11'; java -version"
 #alias j9="export JAVA_HOME=`/usr/libexec/java_home -v 9`; java -version"
 alias j8="export JAVA_HOME='/usr/libexec/java_home -v 1.8'; java -version"
 #alias j7="export JAVA_HOME=`/usr/libexec/java_home -v 1.7`; java -version"
+
+### Workflows ###
+
+alias morning="sh ~/.dotfiles/bear/daily-note.sh"

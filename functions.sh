@@ -20,3 +20,12 @@ git_current_branch () {
 byebranch () {
   git push -d origin "$@" || git branch -d "$@" 
 }
+
+merge () {
+  local repo="pwd | perl -pe 's#.+github.com/##'"
+
+  curl \
+      -XPUT \
+      -H "Authorization: token $GITHUB_TOKEN" \
+      https://api.github.com/repos/$repo/pulls/$argv[1]/merge
+}
