@@ -54,6 +54,7 @@ alias gst='git status'
 alias glr='git pull --rebase'
 alias glrm='git pull --rebase origin master'
 alias grs='git reset --staged'
+alias gro='git reset --hard origin/$(git_current_branch)'
 
 #Vim
 alias v='vim'
@@ -63,11 +64,9 @@ alias ybw='yarn build --watch'
 alias yl='yarn lint --fix'
 alias yt='yarn test'
 
+
 #Kubectl
 alias k='kubectl'
-
-#Productivity
-alias toggle-fb='sudo ~/.dotfiles/productivity/toggle-fb'
 
 #Workflow
 alias test-update='jest --only-changed -u'

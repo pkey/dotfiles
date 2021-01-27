@@ -1,5 +1,16 @@
 # Set up env variables
+
+### From: https://medium.com/@dannysmith/little-thing-2-speeding-up-zsh-f1860390f92
+nvm() {
+  echo ":rotating_light: NVM not loaded! Loading now..."
+  export NVM_DIR=~/.nvm
+  unset -f nvm
+  source $(brew --prefix nvm)/nvm.sh
+  nvm "$@"
+}
+
 export PATH=$PATH:/usr/local/bin
+export PATH="~/miniconda3/bin:$PATH"
 export EDITOR=vim
 
 #Terminal prompt config
@@ -78,14 +89,14 @@ done
 
 # --------These depend on Environment Variables--------------
 # Set up GIT
-git config --global user.name $GIT_USER_NAME
-git config --global user.email $GIT_USER_EMAIL
+git config --global user.name $GIT_USER_NAME >> /dev/null 
+git config --global user.email $GIT_USER_EMAIL >> /dev/null
 
-# Set up NVM
+echo "Loading nvm..."
 export NVM_DIR="$HOME/.nvm"
+# Set up NVM
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 # nvm-use everytime there is nvm rc in the folder
 autoload -U add-zsh-hook
 load-nvmrc() {
@@ -105,5 +116,17 @@ load-nvmrc() {
     nvm use default
   fi
 }
+
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
+
+# Android studio
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+
+
