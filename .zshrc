@@ -92,35 +92,26 @@ done
 git config --global user.name $GIT_USER_NAME >> /dev/null 
 git config --global user.email $GIT_USER_EMAIL >> /dev/null
 
-echo "Loading nvm..."
+# Adding default node to path
 export NVM_DIR="$HOME/.nvm"
-
-# Set up NVM
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-# TODO: Figure out why is this so slow
-# nvm-use everytime there is nvm rc in the folder
-# autoload -U add-zsh-hook
-# load-nvmrc() {
-#   local node_version="$(nvm version)"
-#   local nvmrc_path="$(nvm_find_nvmrc)"
-
-#   if [ -n "$nvmrc_path" ]; then
-#     local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-#     if [ "$nvmrc_node_version" = "N/A" ]; then
-#       nvm install
-#     elif [ "$nvmrc_node_version" != "$node_version" ]; then
-#       nvm use
-#     fi
-#   elif [ "$node_version" != "$(nvm version default)" ]; then
-#     echo "Reverting to nvm default version"
-#     nvm use default
-#   fi
-# }
-
-# add-zsh-hook chpwd load-nvmrc
-# load-nvmrc
+node_versions=("$NVM_DIR"/versions/node/*)
+if [ "${#node_versions[@]}" > 0 ]; then
+  export PATH=${node_versions[$((${#node_versions[@]} - 1))]}/bin:$PATH
+fi
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+    # Shim out `nvm` with a function that loads the real `nvm` on first use.
+    # Since we already updated our PATH earlier, we don't need to actually load nvm
+    # to get "node" and related binaries to work.
+    nvm() {
+        # shellcheck disable=SC1090
+        \. "$NVM_DIR/nvm.sh" --no-use
+        nvm "$@"
+    }
+fi
+if [[ -s "$NVM_DIR/bash_completion" ]]; then
+    # shellcheck disable=SC1090
+    source "$NVM_DIR/bash_completion"
+fi
  
 # Android studio
 export ANDROID_HOME=$HOME/Library/Android/sdk
@@ -130,5 +121,3 @@ export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
-
-
