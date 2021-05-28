@@ -73,6 +73,9 @@ alias test-update='jest --only-changed -u'
 alias trypush='(! git diff HEAD develop --exit-code --quiet) && (! git diff HEAD master --exit-code --quiet) && git status && (jest --changedSince develop || true) && (npm run format || true) && git commit --amend -a --no-edit && git push -u --force-with-lease'
 alias jest='npx jest'
 
+### Snyk ###
+alias snyk-dev="node ~/Workspace/snyk/snyk/dist/cli"
+
 ### Java ###
 
 #TODO: `` vs '' - `` actually invokes a command, and '' invokes it when called

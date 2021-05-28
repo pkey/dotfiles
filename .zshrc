@@ -84,7 +84,7 @@ echo "${WORKSPACE} workspace is ready!"
 for d in $(dirname $0)/workspaces/* ; do
     workspace=$(basename $d)
     #TODO: This could be a function which would also have onDestroy function (to remove added configs)
-    alias $workspace="export WORKSPACE=${workspace}; source ~/.zshrc"
+    alias $workspace-workspace="export WORKSPACE=${workspace}; source ~/.zshrc"
 done
 
 # --------These depend on Environment Variables--------------
