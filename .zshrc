@@ -92,27 +92,7 @@ done
 git config --global user.name $GIT_USER_NAME >> /dev/null 
 git config --global user.email $GIT_USER_EMAIL >> /dev/null
 
-# Adding default node to path
-export NVM_DIR="$HOME/.nvm"
-node_versions=("$NVM_DIR"/versions/node/*)
-if [ "${#node_versions[@]}" > 0 ]; then
-  export PATH=${node_versions[$((${#node_versions[@]} - 1))]}/bin:$PATH
-fi
-if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-    # Shim out `nvm` with a function that loads the real `nvm` on first use.
-    # Since we already updated our PATH earlier, we don't need to actually load nvm
-    # to get "node" and related binaries to work.
-    nvm() {
-        # shellcheck disable=SC1090
-        \. "$NVM_DIR/nvm.sh" --no-use
-        nvm "$@"
-    }
-fi
-if [[ -s "$NVM_DIR/bash_completion" ]]; then
-    # shellcheck disable=SC1090
-    source "$NVM_DIR/bash_completion"
-fi
- 
+
 # Android studio
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
@@ -121,3 +101,7 @@ export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+
+#kubetcl
+source <(kubectl completion zsh)
+complete -F __start_kubectl k
