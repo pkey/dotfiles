@@ -1,1 +1,0 @@
-printf "Setting up hacker workspace... \U1F464\n"
