@@ -31,3 +31,8 @@ source ~/.dotfiles/workspaces/snyk/.snykrc
 #fnm 
 export PATH=/Users/pauliuskutka/.fnm:$PATH 
 eval "`fnm env`" 
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/pauliuskutka/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/pauliuskutka/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/pauliuskutka/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/pauliuskutka/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
