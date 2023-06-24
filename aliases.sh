@@ -76,3 +76,4 @@ alias jest='npx jest'
 ### Workflows ###
 
 alias morning="sh ~/.dotfiles/bear/daily-note.sh"
+alias toggle-fb="sudo ~/.dotfiles/productivity/toggle-fb"
