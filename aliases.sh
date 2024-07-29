@@ -77,3 +77,8 @@ alias jest='npx jest'
 
 alias morning="sh ~/.dotfiles/bear/daily-note.sh"
 alias toggle-fb="sudo ~/.dotfiles/productivity/toggle-fb"
+
+### Find unpushed commits ###
+
+alias lookIWorked='$(findUnpushedCommits)'
+alias dateUpdate='GIT_COMMITTER_DATE="$(date)" git commit --amend --no-edit --date "$(date)"'

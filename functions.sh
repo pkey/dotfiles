@@ -29,3 +29,9 @@ merge () {
       -H "Authorization: token $GITHUB_TOKEN" \
       https://api.github.com/repos/$repo/pulls/$argv[1]/merge
 }
+
+findUnpushedCommits () {
+  for file in `find ./ -type d -maxdepth 3` ; do
+    (cd $file && git cherry -v)
+  done
+}
