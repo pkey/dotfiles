@@ -36,3 +36,9 @@ if [ -f '/Users/pauliuskutka/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . 
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/pauliuskutka/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/pauliuskutka/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
+export MAKEFILES=global_makefile.mk
