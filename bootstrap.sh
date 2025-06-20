@@ -4,7 +4,7 @@
 # 
 #
 # - If installing full Xcode, it's better to install that first from the app
-#   store before running the bootstrap script. Otherwise, Homebrew can't access
+#   store before running the bootstrap script. Otherwise, Homebrew can't acces
 #   the Xcode libraries as the agreement hasn't been accepted yet.
 #
 # Reading:
@@ -52,6 +52,9 @@ fi
 
 echo "Done installing packages"
 
+# Sync Config
+ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
+ln -sf ~/.dotfiles/.zshenv ~/.zshenv
 
 ### REVISIT ###
 #Installing apps via cask

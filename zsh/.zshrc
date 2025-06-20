@@ -7,7 +7,7 @@ source "${DOTFILES}/zsh/antigen/antigen.zsh"
 antigen apply
 
 #configure prompt
-fpath+="$DOTFILES/.dotfiles/zsh/plugins/pure"
+fpath+="$DOTFILES/zsh/plugins/pure"
 autoload -U promptinit; promptinit
 prompt pure
 
