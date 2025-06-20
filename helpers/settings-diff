@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-defaults read > before
-
-read "?Press [Enter] key after doing setting changes..."
-
-defaults read > after
-code --diff before after

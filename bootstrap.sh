@@ -19,9 +19,9 @@ printf "Bootstrap started... \U1F680\n"
 #TODO: Setup relative paths..
 
 # Check for Homebrew, install if we don't have it
-if test ! $(which brew); then
-    printf "Installing homebrew... \U1F37A\n"
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+if ! command -v brew >/dev/null 2>&1; then
+  printf "Installing Homebrew... 🍺\n"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # Update homebrew recipes
@@ -43,61 +43,71 @@ echo "Cleaning up..."
 brew cleanup
 
 echo "Installing additional packages..."
-echo "Installing nvm"
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+
+if ! command -v fnm &>/dev/null; then
+  curl -fsSL https://fnm.vercel.app/install | bash
+else
+  echo "fnm already installed ✅"
+fi
 
 echo "Done installing packages"
 
+
+### REVISIT ###
 #Installing apps via cask
-. ~/.dotfiles/steps/apps
-
-MODULES=(
-    typescript 
-)
-
-echo "Installing global npm modules..."
-npm install -g ${MODULES[@]}
-
+#TODO: figure this out later 
+#. ~/.dotfiles/steps/apps
+#
+#
+#
+#MODULES=(
+#    typescript 
+#)
+#
+#echo "Installing global npm modules..."
+#npm install -g ${MODULES[@]}
+#
 #Setting up code editor
-. ~/.dotfiles/editor/editor.sh
-
-echo "Creating an SSH key for you..."
-if [ ! -f ~/.ssh/id_rsa ]; then
-    ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
-    pbcopy < ~/.ssh/id_rsa.pub 
-    echo "Public key copied to your clipboard. Please add it to Github... \n"
-    echo "https://github.com/account/ssh \n"
-    #If CI, wait for only one second
-        if [ ! -z $CI ] ; then
-        read -p "Press [Enter] key after this..." -t 1
-        else 
-        read -p "Press [Enter] key after this..."
-        fi
-    else
-    echo "Key already exists!"
-fi
-
-echo "Creating folder structure..."
-[[ ! -d Workspace ]] && mkdir ~/Workspace
-
-#Terminal setup
-. ~/.dotfiles/steps/terminal
-
+#. ~/.dotfiles/editor/editor.sh
+#
+#
+#echo "Creating an SSH key for you..."
+#if [ ! -f ~/.ssh/id_rsa ]; then
+#    ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
+#    pbcopy < ~/.ssh/id_rsa.pub 
+#    echo "Public key copied to your clipboard. Please add it to Github... \n"
+#    echo "https://github.com/account/ssh \n"
+#    #If CI, wait for only one second
+#        if [ ! -z $CI ] ; then
+#        read -p "Press [Enter] key after this..." -t 1
+#        else 
+#        read -p "Press [Enter] key after this..."
+#        fi
+#    else
+#    echo "Key already exists!"
+#fi
+#
+#echo "Creating folder structure..."
+#[[ ! -d Workspace ]] && mkdir ~/Workspace
+#
+##Terminal setup
+#. ~/.dotfiles/steps/terminal
+#
 #Vim setup
 #Install vim plugin manager
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+#curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+#    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 #Copy vim rc
-cp ~/.dotfiles/.vimrc ~/.vimrc
+#cp ~/.dotfiles/.vimrc ~/.vimrc
 
 # Add global gitignore
-cp ~/.dotfiles/.gitignore ~
-git config --global core.excludesfile ~/.gitignore
+#cp ~/.dotfiles/.gitignore ~
+#git config --global core.excludesfile ~/.gitignore
 
 #Macos setup
-. ~/.dotfiles/steps/macos
+#. ~/.dotfiles/steps/macos
 
 #Final step
-. ~/.zshrc
+#. ~/.zshrc
 
 printf "Bootstrap completed \U1F389\n"
