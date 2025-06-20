@@ -2,13 +2,14 @@
 
 export PATH=$PATH:/usr/local/bin
 export EDITOR=vim
-source "${HOME}/.dotfiles/zsh/antigen/antigen.zsh"
+source "${DOTFILES}/zsh/antigen/antigen.zsh"
 
-#Terminal prompt config
-
-antigen bundle sindresorhus/pure
-PURE_PROMPT_SYMBOL="➜"
 antigen apply
+
+#configure prompt
+fpath+="$DOTFILES/.dotfiles/zsh/plugins/pure"
+autoload -U promptinit; promptinit
+prompt pure
 
 # Functions
 source ~/.dotfiles/functions.sh
