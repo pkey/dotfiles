@@ -1,9 +1,3 @@
-[submodule "z"]
-	path = z
-	url = git@github.com:rupa/z.git
-[submodule "/Users/pauliuskutka/.dotfiles/zsh/antigen"]
-	path = /Users/pauliuskutka/.dotfiles/zsh/antigen
-	url = https://github.com/zsh-users/antigen.git
 [submodule "zsh/antigen"]
 	path = zsh/antigen
 	url = https://github.com/zsh-users/antigen.git
