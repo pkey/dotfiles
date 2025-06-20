@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-#TODO: clear before open sourcing
- curl -u :  -k -X POST -H "Content-Type: application/json" https://git.swedbank.net/rest/api/latest/projects/FDPAPP/repos/fdp-app-kyc/pull-requests -d '{ "title": "'"testing sh"'", "description": "", "state": "OPEN", "open": true, "closed": false, "fromRef": { "id": "refs/heads/'integration/CDW-585'", "repository": { "slug": "'fdp-app-kyc'", "name": null, "project": { "key": "'"$project"'" } } }, "toRef": { "id": "refs/heads/'project/integration'", "repository": { "slug": "'fdp-app-kyc'", "name": null, "project": { "key": "'"$project"'" } } }, "locked": false, "reviewers": 'p998fmm', "links": { "self": [ null ] } }'
-
