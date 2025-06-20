@@ -14,7 +14,7 @@ alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
 alias _=sudo
-
+alias checkout='git checkout $(git branch | fzf)'
 alias l='ls -lah'
 alias la='ls -lAh'
 alias ll='ls -lh'
