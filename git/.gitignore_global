@@ -17,3 +17,6 @@ npm-debug.log
 # zsh
 zsh/.zsh_*
 *.zwc
+
+# Python
+__pycache__/

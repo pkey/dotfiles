@@ -59,6 +59,9 @@ echo "Done installing packages"
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zshenv
 
+# Setup Git
+git config --global core.excludesfile "$DOTFILES/git/.gitignore_global"
+
 ### REVISIT ###
 #Installing apps via cask
 #TODO: figure this out later 
