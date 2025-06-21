@@ -1,0 +1,1 @@
+- add one password set up for ssh to bootstrap.sh https://developer.1password.com/docs/ssh/get-started/
