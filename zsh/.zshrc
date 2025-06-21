@@ -2,6 +2,8 @@
 
 export PATH=$PATH:/usr/local/bin
 export EDITOR=vim
+export DOTFILES=$HOME/.dotfiles
+
 source "${DOTFILES}/zsh/antigen/antigen.zsh"
 
 antigen apply

@@ -31,6 +31,9 @@ fi
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Install brews
+brew bundle
+
 # Update homebrew recipes
 brew update
 
