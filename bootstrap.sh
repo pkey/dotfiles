@@ -55,7 +55,6 @@ echo "Done installing packages"
 # Sync Config
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zshenv
-ln -sf ~/.dotfiles/zsh/.zshrc ~/.zshrc
 
 ### REVISIT ###
 #Installing apps via cask
