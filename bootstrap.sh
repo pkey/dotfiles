@@ -16,6 +16,11 @@
 
 printf "Bootstrap started... \U1F680\n"
 
+export DOTFILES="$HOME/.dotfiles"
+
+# Setup submodules
+git -C "$DOTFILES" submodule update --init --recursive
+
 #TODO: Setup relative paths..
 
 # Check for Homebrew, install if we don't have it
@@ -24,23 +29,18 @@ if ! command -v brew >/dev/null 2>&1; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Update homebrew recipes
 brew update
 
-PACKAGES=(
-    npm
-    vim
-    yarn
-    node
-    hub
-    hyper
-    travis
-)
+#TODO: move to brewfile
+#PACKAGES=()
 
-echo "Installing packages..."
-brew install ${PACKAGES[@]}
-echo "Cleaning up..."
-brew cleanup
+#echo "Installing packages..."
+#brew install ${PACKAGES[@]}
+#echo "Cleaning up..."
+#brew cleanup
 
 echo "Installing additional packages..."
 
@@ -55,6 +55,7 @@ echo "Done installing packages"
 # Sync Config
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zshenv
+ln -sf ~/.dotfiles/zsh/.zshrc ~/.zshrc
 
 ### REVISIT ###
 #Installing apps via cask
@@ -110,7 +111,8 @@ ln -sf ~/.dotfiles/.zshenv ~/.zshenv
 #Macos setup
 #. ~/.dotfiles/steps/macos
 
-#Final step
+# Source ZSH config
 #. ~/.zshrc
 
 printf "Bootstrap completed \U1F389\n"
+printf "Reload terminal!"

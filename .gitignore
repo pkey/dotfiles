@@ -13,3 +13,7 @@ npm-debug.log
 # Environment file
 .env
 .aider*
+
+# zsh
+zsh/.zsh_*
+*.zwc
