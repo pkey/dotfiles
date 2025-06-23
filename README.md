@@ -15,7 +15,6 @@ Testing of `.dotfiles` (especially `bootstrap.sh`) can be done on a fresh virtua
 ## Roadmap
 
 - [ ] Make repo public
-- [ ] Cronjon for purging docker
 - [ ] Find a way to properly test it
 
 ## Inspirations
