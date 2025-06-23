@@ -61,6 +61,8 @@ ln -sf ~/.dotfiles/.zshenv ~/.zshenv
 
 # Setup Git
 git config --global core.excludesfile "$DOTFILES/git/.gitignore_global"
+ln -sf "$DOTFILES/hooks/post-merge-bootstrap" "$DOTFILES/.git/hooks/post-merge"
+chmod +x "$DOTFILES/.git/hooks/post-merge"
 
 ### REVISIT ###
 #Installing apps via cask
