@@ -9,6 +9,11 @@ export DOTFILES="$HOME/.dotfiles"
 # Setup submodules
 git -C "$DOTFILES" submodule update --init --recursive
 
+# Setup Git
+git config --global core.excludesfile "$DOTFILES/git/.gitignore_global"
+ln -sf "$DOTFILES/git/hooks/post-merge-bootstrap" "$DOTFILES/.git/hooks/post-merge"
+chmod +x "$DOTFILES/.git/hooks/post-merge"
+
 # Detect OS
 OS="$(uname -s)"
 
@@ -42,11 +47,6 @@ echo "Done installing packages"
 # Sync Config
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zshenv
-
-# Setup Git
-git config --global core.excludesfile "$DOTFILES/git/.gitignore_global"
-ln -sf "$DOTFILES/git/hooks/post-merge-bootstrap" "$DOTFILES/.git/hooks/post-merge"
-chmod +x "$DOTFILES/.git/hooks/post-merge"
 
 printf "Bootstrap completed \U1F389\n"
 printf "Reload terminal!"
