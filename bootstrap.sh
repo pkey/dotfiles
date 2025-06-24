@@ -72,5 +72,7 @@ echo "Done installing packages"
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zsh --version
 
+source "$DOTFILES/zsh/.zshrc"
+
 printf "Bootstrap completed \U1F389\n"
 printf "Reload terminal!"
