@@ -32,6 +32,7 @@ if [[ "$OS" == "Darwin" ]]; then
 
   # Update homebrew recipes
   brew update
+fi
 
 # Install additional packages
 echo "Installing additional packages..."
