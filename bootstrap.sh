@@ -66,6 +66,9 @@ else
   echo "fnm already installed ✅"
 fi
 
+pipx install uv
+pipx install llm
+
 echo "Done installing packages"
 
 # Sync Config
