@@ -70,7 +70,7 @@ echo "Done installing packages"
 
 # Sync Config
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
-ln -sf ~/.dotfiles/.zshenv ~/.zsh --version
+ln -sf ~/.dotfiles/.zshenv ~/.zsh
 
 # TODO: for some reason doesn't pick up antigen
 # source "$DOTFILES/zsh/.zshrc"
