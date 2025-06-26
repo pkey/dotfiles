@@ -72,6 +72,10 @@ echo "Done installing packages"
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zsh
 
+# TODO: move to a separate file
+# Run upgrade
+pipx upgrade-all
+
 # TODO: for some reason doesn't pick up antigen
 # source "$DOTFILES/zsh/.zshrc"
 
