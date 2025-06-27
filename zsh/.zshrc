@@ -4,6 +4,7 @@ export PATH=$PATH:/usr/local/bin
 export EDITOR=vim
 export DOTFILES=$HOME/.dotfiles
 
+
 source "${DOTFILES}/zsh/antigen/antigen.zsh"
 
 antigen apply
@@ -39,3 +40,8 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 
 export MAKEFILES=global_makefile.mk
+
+# Set up zoxide
+if command -v zoxide 1>/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi

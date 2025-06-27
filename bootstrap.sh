@@ -66,15 +66,25 @@ else
   echo "fnm already installed ✅"
 fi
 
-pipx install uv
-pipx install llm
+# Install pipx
+install_pipx_package() {
+  local package="$1"
+  if pipx list | grep -q "package $package"; then
+    echo "✔ $package already installed. Skipping."
+  else
+    echo "➕ Installing $package via pipx..."
+    pipx install "$package"
+  fi
+}
+
+install_pipx_package uv
+install_pipx_package llm
 
 echo "Done installing packages"
 
 # Sync Config
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
-ln -sf ~/.dotfiles/.zshenv ~/.zsh
-
+ln -sf ~/.dotfiles/.zshenv ~/.zshenv
 # TODO: move to a separate file
 # Run upgrade
 pipx upgrade-all
