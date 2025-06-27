@@ -81,7 +81,7 @@ install_pipx_package uv
 install_pipx_package llm
 install_pipx_package aider-install
 # specificall install aider based on docs: https://aider.chat/docs/install.html#get-started-quickly-with-aider-install
-aider-install 
+aider-install --yes
 
 echo "Done installing packages"
 
