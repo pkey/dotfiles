@@ -12,6 +12,10 @@ Testing of `.dotfiles` (especially `bootstrap.sh`) can be done on a fresh virtua
 
 - For MacOS: https://github.com/myspaghetti/macos-guest-virtualbox
 
+## Localisation
+
+If you want to add some localised settings, add it to `zsh/local.zsh`
+
 ## Roadmap
 
 - [ ] Make repo public
