@@ -71,7 +71,9 @@ else
 fi
 
 if ! command -v fnm &>/dev/null; then
-  curl -fsSL https://fnm.vercel.app/install | bash
+	curl -fsSL https://fnm.vercel.app/install -o install_fnm.sh
+	bash install_fnm.sh
+	rm -rf install_fnm.sh
 else
   echo "fnm already installed ✅"
 fi
@@ -79,7 +81,7 @@ fi
 # Install pipx
 install_pipx_package() {
   local package="$1"
-  if pipx list | grep -q "package $package"; then
+  if pipx list | cat | grep -q "package $package"; then
     echo "✔ $package already installed. Skipping."
   else
     echo "➕ Installing $package via pipx..."
@@ -92,6 +94,18 @@ install_pipx_package llm
 install_pipx_package aider-install
 # specificall install aider based on docs: https://aider.chat/docs/install.html#get-started-quickly-with-aider-install
 aider-install --yes
+
+# tmux
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
+ln -sf ~/.dotfiles/tmux/tmux.conf ~/.tmux.conf
+
+if tmux info &> /dev/null; then
+  tmux source-file ~/.tmux.conf
+fi
+# end tmux
 
 echo "Done installing packages"
 
