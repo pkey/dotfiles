@@ -60,6 +60,16 @@ fi
 # Install additional packages
 echo "Installing additional packages..."
 
+
+# Ensure pipx is installed
+if ! command -v pipx >/dev/null 2>&1; then
+  echo "pipx not found. Installing..."
+  python3 -m pip install --user pipx
+  python3 -m pipx ensurepath
+else
+  echo "pipx already installed ✅"
+fi
+
 if ! command -v fnm &>/dev/null; then
   curl -fsSL https://fnm.vercel.app/install | bash
 else
