@@ -27,7 +27,8 @@ else
   exit 1
 fi
 
-if ! command -v brew >/dev/null 2>&1; then
+# Check if Homebrew is installed at the expected path
+if [[ ! -f "$BREW_PATH" ]]; then
   printf "Installing Homebrew... 🍺\n"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
@@ -42,15 +43,18 @@ if command -v brew >/dev/null 2>&1; then
 fi
 
 ZSH_PATH="$(command -v zsh)"
-if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+# Check if zsh is already the default shell by looking at /etc/passwd
+CURRENT_SHELL=$(getent passwd "$USER" | cut -d: -f7)
+# Check if current shell is already zsh (regardless of path)
+if [[ "$(basename "$CURRENT_SHELL")" == "zsh" ]]; then
+  echo "Default shell is already zsh ✅"
+else
   echo "Changing default shell to zsh..."
-  if sudo chsh -s "$ZSH_PATH"; then
+  if sudo chsh -s "$ZSH_PATH" "$USER"; then
     echo "Shell changed to zsh ✅ (log out and back in to apply)"
   else
     echo "❌ Failed to change shell. Try: sudo chsh -s $ZSH_PATH $USER"
   fi
-else
-  echo "Default shell is already zsh ✅"
 fi
 
 # Install additional packages
@@ -63,14 +67,6 @@ if ! command -v pipx >/dev/null 2>&1; then
   python3 -m pipx ensurepath
 else
   echo "pipx already installed ✅"
-fi
-
-if ! command -v fnm &>/dev/null; then
-	curl -fsSL https://fnm.vercel.app/install -o install_fnm.sh
-	bash install_fnm.sh
-	rm -rf install_fnm.sh
-else
-  echo "fnm already installed ✅"
 fi
 
 # Install pipx
@@ -108,6 +104,7 @@ echo "Done installing packages"
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zshenv
 ln -sf ~/.dotfiles/zsh/.zshrc ~/.zshrc
+ln -sf ~/.dotfiles/zsh/.zprofile ~/.zprofile
 
 # TODO: move to a separate file
 # Run upgrade
@@ -117,4 +114,4 @@ pipx upgrade-all
 # source "$DOTFILES/zsh/.zshrc"
 
 printf "Bootstrap completed \U1F389\n"
-printf "Reload terminal!"
+exec zsh

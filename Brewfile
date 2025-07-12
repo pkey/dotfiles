@@ -7,6 +7,11 @@ brew "zoxide"
 brew "ripgrep"
 brew "fd"
 brew "fzf"
+brew "fnm"
 brew "bat"
 brew "tmux"
-cask "1password/tap/1password-cli"
+
+# macOS-only casks
+if OS.mac?
+  cask "1password/tap/1password-cli"
+end
