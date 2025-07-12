@@ -1,6 +1,9 @@
 # Sources .zshrc
 alias reload='source ~/.zshrc'
 
+# Cursor
+alias cur='cursor .'
+
 alias -- -='cd -'
 alias ..='cd ../'
 alias ...=../..
