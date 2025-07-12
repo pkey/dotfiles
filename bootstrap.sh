@@ -17,49 +17,44 @@ chmod +x "$DOTFILES/.git/hooks/post-merge"
 # Detect OS
 OS="$(uname -s)"
 
-# Ensure zsh is installed and set as default shell (Linux with apt only)
-if [[ "$OS" == "Linux" ]]; then
-
-  # 1. Setup ZSH
-  if ! command -v zsh >/dev/null 2>&1; then
-    echo "zsh not found. Installing with apt..."
-    sudo apt update && sudo apt install -y zsh
-  else
-    echo "zsh already installed ✅"
-  fi
-
-  ZSH_PATH="$(command -v zsh)"
-  if [[ "$SHELL" != "$ZSH_PATH" ]]; then
-    echo "Changing default shell to zsh..."
-    if chsh -s "$ZSH_PATH"; then
-      echo "Shell changed to zsh ✅ (log out and back in to apply)"
-    else
-      echo "❌ Failed to change shell. Try: sudo chsh -s $ZSH_PATH $USER"
-    fi
-  else
-    echo "Default shell is already zsh ✅"
-  fi
+# Homebrew install and setup for both Linux and macOS
+if [[ "$OS" == "Darwin" ]]; then
+  BREW_PATH="/opt/homebrew/bin/brew"
+elif [[ "$OS" == "Linux" ]]; then
+  BREW_PATH="/home/linuxbrew/.linuxbrew/bin/brew"
+else
+  echo "Unsupported OS: $OS"
+  exit 1
 fi
 
-if [[ "$OS" == "Darwin" ]]; then
-  # Check for Homebrew, install if we don't have it
-  if ! command -v brew >/dev/null 2>&1; then
-    printf "Installing Homebrew... 🍺\n"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  fi
+if ! command -v brew >/dev/null 2>&1; then
+  printf "Installing Homebrew... 🍺\n"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+# Always eval shellenv to ensure brew is in PATH
+eval "$($BREW_PATH shellenv)"
 
-  # Install brews
+# Install brews (Brewfile should be present in $DOTFILES or current dir)
+if command -v brew >/dev/null 2>&1; then
   brew bundle
-
-  # Update homebrew recipes
   brew update
+fi
+
+ZSH_PATH="$(command -v zsh)"
+if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+  echo "Changing default shell to zsh..."
+  if sudo chsh -s "$ZSH_PATH"; then
+    echo "Shell changed to zsh ✅ (log out and back in to apply)"
+  else
+    echo "❌ Failed to change shell. Try: sudo chsh -s $ZSH_PATH $USER"
+  fi
+else
+  echo "Default shell is already zsh ✅"
 fi
 
 # Install additional packages
 echo "Installing additional packages..."
-
 
 # Ensure pipx is installed
 if ! command -v pipx >/dev/null 2>&1; then
