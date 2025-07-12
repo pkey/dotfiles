@@ -43,8 +43,16 @@ if command -v brew >/dev/null 2>&1; then
 fi
 
 ZSH_PATH="$(command -v zsh)"
-# Check if zsh is already the default shell by looking at /etc/passwd
-CURRENT_SHELL=$(getent passwd "$USER" | cut -d: -f7)
+
+# Check if zsh is already the default shell
+if [[ "$OS" == "Darwin" ]]; then
+  # macOS: use dscl to get user shell
+  CURRENT_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
+else
+  # Linux: use getent to get user shell
+  CURRENT_SHELL=$(getent passwd "$USER" | cut -d: -f7)
+fi
+
 # Check if current shell is already zsh (regardless of path)
 if [[ "$(basename "$CURRENT_SHELL")" == "zsh" ]]; then
   echo "Default shell is already zsh ✅"
