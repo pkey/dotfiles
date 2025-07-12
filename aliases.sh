@@ -133,3 +133,11 @@ alias toggle-fb="sudo ~/.dotfiles/productivity/toggle-fb"
 
 alias lookIWorked='$(findUnpushedCommits)'
 alias dateUpdate='GIT_COMMITTER_DATE="$(date)" git commit --amend --no-edit --date "$(date)"'
+
+# Bazel
+_bazel_fuzzy_run() {
+  local target
+  target=$(bazel query 'kind(".*_binary|.*_test", //...)' | fzf)
+  [[ -n "$target" ]] && bazel run "$target"
+}
+alias bzlrun="_bazel_fuzzy_run"

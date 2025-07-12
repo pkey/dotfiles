@@ -4,6 +4,17 @@ export PATH=$PATH:/usr/local/bin
 export EDITOR=vim
 export DOTFILES=$HOME/.dotfiles
 
+# Homebrew setup for both macOS and Linux
+if [[ "$(uname)" == "Darwin" ]]; then
+  # macOS Homebrew
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ "$(uname)" == "Linux" ]]; then
+  # Linuxbrew
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+export PATH="$HOME/.local/bin:$PATH"
+
 
 source "${DOTFILES}/zsh/antigen/antigen.zsh"
 
@@ -47,3 +58,5 @@ if command -v zoxide 1>/dev/null 2>&1; then
 fi
 
 [[ -f "$DOTFILES/zsh/local.zsh" ]] && source "$DOTFILES/zsh/local.zsh"
+
+
