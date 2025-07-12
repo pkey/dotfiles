@@ -68,11 +68,17 @@ alias yt='yarn test'
 #Kubectl
 alias k='kubectl'
 
+
+new_tmux_and_switch() {
+  local name="$1"
+  tmux switch-client -t "$(tmux new-session -d -P -s "$name")"
+}
+
 #Tmux
 alias mux='tmux'
 alias muxa='tmux attach'
 alias muxad='tmux attach -d'
-alias muxs='tmux new-session -s'
+alias muxnew='new_tmux_and_switch'
 alias muxkillall='tmux kill-server'
 alias muxkillo='tmux kill-session -a'
 alias muxsw='tmux switch-client -t'
