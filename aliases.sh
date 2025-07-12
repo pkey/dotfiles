@@ -68,6 +68,20 @@ alias yt='yarn test'
 #Kubectl
 alias k='kubectl'
 
+#Tmux
+alias mux='tmux'
+alias muxa='tmux attach'
+alias muxad='tmux attach -d'
+alias muxs='tmux new-session -s'
+alias muxkillall='tmux kill-server'
+alias muxkillo='tmux kill-session -a'
+alias muxsw='tmux switch-client -t'
+# Renames current session
+alias muxrn='tmux rename-session '
+alias muxls='tmux list-sessions'
+alias muxns='tmux new-session'
+alias muxks='tmux kill-session'
+
 #Workflow
 alias test-update='jest --only-changed -u'
 alias trypush='(! git diff HEAD develop --exit-code --quiet) && (! git diff HEAD master --exit-code --quiet) && git status && (jest --changedSince develop || true) && (npm run format || true) && git commit --amend -a --no-edit && git push -u --force-with-lease'

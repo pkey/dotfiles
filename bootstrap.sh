@@ -112,6 +112,8 @@ echo "Done installing packages"
 # Sync Config
 ln -sf ~/.dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/.dotfiles/.zshenv ~/.zshenv
+ln -sf ~/.dotfiles/zsh/.zshrc ~/.zshrc
+
 # TODO: move to a separate file
 # Run upgrade
 pipx upgrade-all
