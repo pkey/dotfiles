@@ -142,3 +142,10 @@ _bazel_fuzzy_run() {
   [[ -n "$target" ]] && bazel run "$target"
 }
 alias bzlrun="_bazel_fuzzy_run"
+
+_bazel_fuzzy_test() {
+  local target
+  target=$(bazel query 'kind(".*_test", //...)' | fzf)
+  [[ -n "$target" ]] && bazel test "$target"
+}
+alias bzltest="_bazel_fuzzy_test"
