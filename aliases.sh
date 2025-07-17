@@ -61,6 +61,7 @@ alias glr='git pull --rebase'
 alias glrm='git pull --rebase origin master'
 alias grs='git reset --staged'
 alias gro='git reset --hard origin/$(git_current_branch)'
+alias grfo='git fetch origin && git rebase origin/$(git symbolic-ref refs/remotes/origin/HEAD | sed "s@refs/remotes/origin/@@")'
 
 #Vim
 alias v='vim'
