@@ -93,6 +93,7 @@ install_pipx_package llm
 install_pipx_package aider-install
 # specificall install aider based on docs: https://aider.chat/docs/install.html#get-started-quickly-with-aider-install
 aider-install --yes
+install_pipx_package vastai
 
 # tmux
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
