@@ -142,4 +142,3 @@ _bazel_fuzzy_run() {
   [[ -n "$target" ]] && bazel run "$target"
 }
 alias bzlrun="_bazel_fuzzy_run"
-alias bzlball="bazel build //..."
