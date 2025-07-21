@@ -10,6 +10,7 @@ brew "fzf"
 brew "fnm"
 brew "bat"
 brew "tmux"
+brew "codex"
 
 # macOS-only casks
 if OS.mac?
