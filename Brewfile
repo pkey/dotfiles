@@ -11,6 +11,7 @@ brew "fnm"
 brew "bat"
 brew "tmux"
 brew "codex"
+brew "gcc"
 
 # macOS-only casks
 if OS.mac?
