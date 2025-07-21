@@ -72,10 +72,12 @@ echo "Installing additional packages..."
 if ! command -v pipx >/dev/null 2>&1; then
   echo "pipx not found. Installing..."
   python3 -m pip install --user pipx
-  python3 -m pipx ensurepath
 else
   echo "pipx already installed ✅"
 fi
+
+# Ensure pipx is in the path
+pipx ensurepath -q
 
 # Install pipx
 install_pipx_package() {
