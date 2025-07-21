@@ -149,3 +149,6 @@ _bazel_fuzzy_test() {
   [[ -n "$target" ]] && bazel test "$target"
 }
 alias bzltest="_bazel_fuzzy_test"
+
+# Vast.ai
+alias vast="vastai"
