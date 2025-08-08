@@ -17,4 +17,5 @@ brew "sqlite"
 # macOS-only casks
 if OS.mac?
   cask "1password/tap/1password-cli"
+  cask "cursor"
 end

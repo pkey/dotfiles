@@ -110,6 +110,10 @@ if tmux info &> /dev/null; then
 fi
 # end tmux
 
+# Install Cursor
+echo "Installing Cursor..."
+curl https://cursor.com/install -fsS | bash
+
 echo "Done installing packages"
 
 # Sync Config
