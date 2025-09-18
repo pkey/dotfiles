@@ -23,7 +23,7 @@ for arg in "$@"; do
 done
 
 printf "Bootstrap started... \U1F680\n"
-if [[ "$FULL_INSTALL" == true ]]; then
+if [[ "$FULL_INSTALL" == true || "$OS" == "Darwin" ]]; then
   printf "Running full installation...\n"
 else
   printf "Running minimal installation...\n"
