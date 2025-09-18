@@ -1,0 +1,22 @@
+# Node
+npm-debug.log
+
+# Mac
+.DS_Store
+
+# WebStorm
+.idea/
+
+# Code
+.vscode
+
+# Environment file
+.env
+.aider*
+
+# zsh
+zsh/.zsh_*
+*.zwc
+
+# Python
+__pycache__/

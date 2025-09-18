@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#Menu bar
+
+#Show bluetooth menu in the menu bar
+defaults write com.apple.systemuiserver "NSStatusItem Visible com.apple.menuextra.bluetooth" -int 1
+defaults write com.apple.systemuiserver menuExtras -array-add  "/System/Library/CoreServices/Menu Extras/Bluetooth.menu"
+
+#Remove everything from dock
+defaults write com.apple.dock persistent-apps -array
+
+#TODO: add apps I want here.

@@ -1,0 +1,12 @@
+
+[commit]
+    gpgsign = true
+
+[gpg]
+	program = gpg
+
+[core]
+	excludesfile = ~/dotfiles/git/.gitignore_global
+
+[include]
+	path = ~/.gitconfig-user
