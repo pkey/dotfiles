@@ -147,3 +147,6 @@ alias bzltest="_bazel_fuzzy_test"
 
 # Vast.ai
 alias vast="vastai"
+
+# Productivity
+alias toggle-fb='sudo $HOME/dotfiles/productivity/toggle-fb'
