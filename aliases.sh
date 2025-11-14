@@ -148,5 +148,8 @@ alias bzltest="_bazel_fuzzy_test"
 # Vast.ai
 alias vast="vastai"
 
-# Productivity
+# script to let me focus
 alias toggle-fb='sudo $HOME/dotfiles/productivity/toggle-fb'
+
+# docker compose in many places is referred as docker-compose
+alias docker-compose="docker compose"
