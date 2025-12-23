@@ -4,6 +4,9 @@ alias reload='source ~/.zshrc'
 # Cursor
 alias cur='cursor .'
 
+#nvim
+
+alias vim=nvim
 alias -- -='cd -'
 alias ..='cd ../'
 alias ...=../..

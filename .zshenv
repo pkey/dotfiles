@@ -13,3 +13,4 @@ if [[ -t 0 ]]; then
 else
     export GPG_TTY=""
 fi
+. "$HOME/.cargo/env"
