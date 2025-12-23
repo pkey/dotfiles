@@ -58,3 +58,6 @@ if command -v zoxide 1>/dev/null 2>&1; then
 fi
 
 [[ -f "$DOTFILES/zsh/local.zsh" ]] && source "$DOTFILES/zsh/local.zsh"
+
+# LaTex
+export PATH="/Library/TeX/texbin:$PATH"
