@@ -11,4 +11,5 @@ if OS.mac?
   brew "pinentry-mac"
   cask "1password/tap/1password-cli"
   cask "cursor"
+  cask "docker-desktop"
 end
