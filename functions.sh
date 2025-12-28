@@ -39,7 +39,7 @@ findUnpushedCommits () {
 #TODO: allow dynamic prompt (based on environment)
 #TODO: allow using models beyond local ollama
 aicommit () {
-  model="llama3.2"
+  model="qwen2.5-coder"
 
   # Check if there are staged changes
   if ! git diff --cached --quiet; then
@@ -58,9 +58,10 @@ aicommit () {
 
 Guidelines:
 - Types: feat, fix, docs, style, refactor, test, chore, perf
+- ALWAYS follow the format exactly, do not deviate from it
 - Subject: max 50 chars, imperative mood (\"add\" not \"added\"), no period
 - For small/simple changes: one-line commit only
-- For complex changes: add body explaining what/why (wrap lines at 72 chars)
+- For complex changes: add body explaining what/why (wrap lines at 72 chars and keep the total amount to two paragraphs at most)
 - Body should provide context, rationale, or additional details not obvious from the diff
 - Separate subject from body with a blank line
 - Only output the commit message, nothing else

@@ -10,3 +10,4 @@ List is constantly prioritised when adding a new item.
 - [ ] figure out history issue in VSCode
 - [ ] `fnm` not picked up on linux machine
 - [ ] create a minidot for quick setups
+- [ ] AI summary of commits is not great for larger changes
