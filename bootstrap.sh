@@ -166,6 +166,10 @@ ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/zsh/.zprofile ~/.zprofile
 ln -sf ~/dotfiles/git/.gitconfig ~/.gitconfig
 
+# Setup Claude Code project instructions globally
+mkdir -p ~/.claude
+ln -sf ~/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
+
 # Setup pre-commit hooks if pre-commit is available
 if command -v pre-commit >/dev/null 2>&1; then
   echo "Installing pre-commit hooks..."
