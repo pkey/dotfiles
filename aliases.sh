@@ -4,9 +4,13 @@ alias reload='source ~/.zshrc'
 # Cursor
 alias cur='cursor .'
 
-#nvim
+# Alias
+alias edalias='nvim ~/dotfiles/aliases.sh'
 
+#nvim
 alias vim=nvim
+
+#cd
 alias -- -='cd -'
 alias ..='cd ../'
 alias ...=../..
@@ -156,3 +160,7 @@ alias toggle-fb='sudo $HOME/dotfiles/productivity/toggle-fb'
 
 # docker compose in many places is referred as docker-compose
 alias docker-compose="docker compose"
+
+# Claude
+alias cc="claude"
+alias eclaude='vim $DOTFILES/claude/CLAUDE.md'
