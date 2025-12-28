@@ -1,11 +1,16 @@
+# OGG
 # Sources .zshrc
 alias reload='source ~/.zshrc'
 
 # Cursor
 alias cur='cursor .'
 
-# Alias
-alias edalias='nvim ~/dotfiles/aliases.sh'
+# Quick Edits
+alias ealias='nvim $DOTFILES/aliases.sh'
+alias edot='nvim $DOTFILES'
+
+# Quick CDs
+alias cdot='cd $DOTFILES'
 
 #nvim
 alias vim=nvim
@@ -156,7 +161,7 @@ alias bzltest="_bazel_fuzzy_test"
 alias vast="vastai"
 
 # script to let me focus
-alias toggle-fb='sudo $HOME/dotfiles/productivity/toggle-fb'
+alias focus='sudo $HOME/dotfiles/productivity/toggle-fb'
 
 # docker compose in many places is referred as docker-compose
 alias docker-compose="docker compose"
