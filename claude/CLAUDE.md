@@ -7,6 +7,9 @@
 - fd not find
 **Style**: Prefer self-documenting code over comments
 
+# Claude
+- when initialising CLAUDE.md, write to AGENTS.md and reference CLAUDE.md to it.
+
 # Python
 - Preferred package and project manager: uv
 - use uv init to initialise new project
