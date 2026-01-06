@@ -20,3 +20,6 @@ zsh/.zsh_*
 
 # Python
 __pycache__/
+
+# Gemini
+.gemini
