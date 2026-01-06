@@ -1,6 +1,6 @@
 # OGG
-# Sources .zshrc
-alias reload='source ~/.zshrc'
+# Sources .zshrc and ensures symlinks are up to date
+alias reload='$DOTFILES/setup_symlinks.sh && source ~/.zshrc'
 
 # Cursor
 alias cur='cursor .'

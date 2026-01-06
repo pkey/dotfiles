@@ -34,11 +34,6 @@ export DOTFILES="$HOME/dotfiles"
 # Setup submodules
 git -C "$DOTFILES" submodule update --init --recursive
 
-# Setup Git
-git config --global core.excludesfile "$DOTFILES/git/.gitignore_global"
-ln -sf "$DOTFILES/git/hooks/post-merge-bootstrap" "$DOTFILES/.git/hooks/post-merge"
-chmod +x "$DOTFILES/.git/hooks/post-merge"
-
 # Detect OS
 OS="$(uname -s)"
 
@@ -145,31 +140,18 @@ install_pipx_package() {
 
 install_pipx_package uv
 
-# vim
-ln -sf ~/dotfiles/vim/.vimrc ~/.vimrc
-
 # tmux
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
-ln -sf ~/dotfiles/tmux/tmux.conf ~/.tmux.conf
+# Setup symlinks
+"$DOTFILES/setup_symlinks.sh"
 
 if tmux info &> /dev/null; then
   tmux source-file ~/.tmux.conf
 fi
 # end tmux
-
-# Essential symlinks for minimal installation
-ln -sf ~/dotfiles/.zshenv ~/.zshenv
-ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
-ln -sf ~/dotfiles/zsh/.zprofile ~/.zprofile
-ln -sf ~/dotfiles/git/.gitconfig ~/.gitconfig
-
-# Setup Claude Code project instructions and settings globally
-mkdir -p ~/.claude
-ln -sf ~/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
-ln -sf ~/dotfiles/claude/settings.json ~/.claude/settings.json
 
 # Setup pre-commit hooks if pre-commit is available
 if command -v pre-commit >/dev/null 2>&1; then
