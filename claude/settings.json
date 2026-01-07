@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
       "Bash(git status)",
       "Bash(git diff:*)",
@@ -52,6 +51,18 @@
       "Glob(**)",
       "Grep(**)"
     ],
+    "deny": [
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/secrets/**)",
+      "Read(**/*secret*)",
+      "Read(**/*password*)",
+      "Read(**/*token*)",
+      "Edit(.env*)",
+      "Edit(**/.env*)",
+      "Write(.env*)",
+      "Write(**/.env*)"
+    ],
     "ask": [
       "Bash(git push:*)",
       "Bash(git push --force:*)",
@@ -67,17 +78,7 @@
       "Bash(pipx install:*)",
       "Bash(pipx uninstall:*)"
     ],
-    "deny": [
-      "Read(.env*)",
-      "Read(**/.env*)",
-      "Read(**/secrets/**)",
-      "Read(**/*secret*)",
-      "Read(**/*password*)",
-      "Read(**/*token*)",
-      "Edit(.env*)",
-      "Edit(**/.env*)",
-      "Write(.env*)",
-      "Write(**/.env*)"
-    ]
-  }
+    "defaultMode": "acceptEdits"
+  },
+  "model": "opus"
 }
