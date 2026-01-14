@@ -80,13 +80,17 @@ chmod 600 ~/.gnupg/gpg-agent.conf
 gpgconf --kill gpg-agent || true
 
 SIGNING_KEY="EAB2D9EB6CD93324"
-uid=$(gpg --list-keys --with-colons $SIGNING_KEY | awk -F: '/^uid:/ {print $10; exit}')
-git_name=$(echo "$uid" | sed -E 's/^(.*) <.*>$/\1/')
-git_email=$(echo "$uid" | sed -E 's/^.* <(.*)>$/\1/')
+if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
+  uid=$(gpg --list-keys --with-colons $SIGNING_KEY | awk -F: '/^uid:/ {print $10; exit}')
+  git_name=$(echo "$uid" | sed -E 's/^(.*) <.*>$/\1/')
+  git_email=$(echo "$uid" | sed -E 's/^.* <(.*)>$/\1/')
 
-git config --file ~/.gitconfig-user user.name "$git_name"
-git config --file ~/.gitconfig-user user.email "$git_email"
-git config --file ~/.gitconfig-user user.signingkey $SIGNING_KEY
+  git config --file ~/.gitconfig-user user.name "$git_name"
+  git config --file ~/.gitconfig-user user.email "$git_email"
+  git config --file ~/.gitconfig-user user.signingkey $SIGNING_KEY
+else
+  echo "GPG key $SIGNING_KEY not found. Skipping git signing configuration."
+fi
 
 
 
@@ -183,6 +187,13 @@ else
   echo "Cursor already installed, skipping."
 fi
 
+if ! command -v opencode >/dev/null 2>&1; then
+	echo "Installing opencode..."
+	curl -fsSL https://opencode.ai/install | bash
+else
+	echo "Opencode already installed, skipping."
+fi
+
 # Install AWS CLI if not already installed
 if ! command -v aws >/dev/null 2>&1; then
   echo "Installing AWS CLI..."
@@ -204,6 +215,5 @@ printf "Bootstrap completed \U1F389\n"
 
 # Source .zshrc if it exists
 if [[ -f "$HOME/.zshrc" ]]; then
-    # shellcheck source=/dev/null
-    source "$HOME/.zshrc"
+    exec zsh
 fi
