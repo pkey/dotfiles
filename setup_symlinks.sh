@@ -5,7 +5,6 @@ set -e
 DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 
 # Git config & hooks
-git config --global core.excludesfile "$DOTFILES/git/.gitignore_global"
 # Hooks
 # Ensure .git/hooks directory exists (it should in a repo, but good to be safe if running oddly)
 mkdir -p "$DOTFILES/.git/hooks"
