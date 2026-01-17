@@ -6,6 +6,7 @@ brew "pre-commit"
 brew "gnupg"
 brew "gemini-cli"
 brew "opencode"
+brew "neovim"
 
 # macOS-only casks
 if OS.mac?
