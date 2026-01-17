@@ -9,6 +9,7 @@ brew "gnupg"
 brew "gemini-cli"
 brew "opencode"
 brew "neovim"
+brew "nmap"
 
 # macOS-only casks
 if OS.mac?
