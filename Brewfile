@@ -1,3 +1,5 @@
+tap "1password/tap"
+
 brew "fnm"
 brew "gcc"
 brew "gh"

@@ -77,7 +77,7 @@ mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
 echo "pinentry-program $PINENTRY_PATH" >> ~/.gnupg/gpg-agent.conf
 chmod 600 ~/.gnupg/gpg-agent.conf
-gpgconf --kill gpg-agent || true
+gpgconf --kill all || true
 
 SIGNING_KEY="EAB2D9EB6CD93324"
 if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
@@ -131,6 +131,12 @@ fi
 # Ensure pipx is in the path
 pipx ensurepath -q
 
+# Fix broken pipx packages if Python interpreter changed
+if pipx list 2>&1 | grep -q "invalid interpreter"; then
+  echo "Fixing pipx packages with invalid Python interpreter..."
+  pipx reinstall-all
+fi
+
 # Install pipx
 install_pipx_package() {
   local package="$1"
@@ -170,12 +176,19 @@ install_crontab() {
 
   echo "Installing crontab entries..."
   local MARKER="# dotfiles-managed"
-  {
-    crontab -l 2>/dev/null | grep -v "$MARKER"
-    sed "s|__DOTFILES__|$DOTFILES|g" "$SRC" | while read -r line; do
-      [[ -n "$line" && ! "$line" =~ ^# ]] && echo "$line $MARKER"
-    done
-  } | crontab -
+  local TEMP
+  TEMP=$(mktemp)
+
+  # Get existing non-managed entries
+  crontab -l 2>/dev/null | grep -v "$MARKER" > "$TEMP" || true
+
+  # Add managed entries from source file
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -n "$line" && ! "$line" =~ ^# ]] && echo "$line $MARKER" >> "$TEMP"
+  done < <(sed "s|__DOTFILES__|$DOTFILES|g" "$SRC")
+
+  crontab "$TEMP"
+  rm -f "$TEMP"
   echo "Crontab installed"
 }
 
