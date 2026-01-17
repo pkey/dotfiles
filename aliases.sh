@@ -161,8 +161,9 @@ alias bzltest="_bazel_fuzzy_test"
 # Vast.ai
 alias vast="vastai"
 
-# script to let me focus
-alias focus='sudo $HOME/dotfiles/productivity/toggle-fb'
+# Focus workflow
+alias focus='sudo $HOME/dotfiles/productivity/focus block'
+alias unfocus='sudo $HOME/dotfiles/productivity/focus unblock'
 
 # docker compose in many places is referred as docker-compose
 alias docker-compose="docker compose"

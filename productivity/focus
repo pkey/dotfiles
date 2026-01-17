@@ -1,0 +1,43 @@
+#!/bin/bash
+# Focus workflow: block/unblock distracting websites via /etc/hosts
+
+domains=(www.facebook.com www.instagram.com www.linkedin.com www.reddit.com)
+host_file=/etc/hosts
+marker="#Blocked websites:"
+
+is_blocked() {
+    grep -Fxq "$marker" "$host_file"
+}
+
+block_sites() {
+    if is_blocked; then
+        echo "Already blocked"
+        return 0
+    fi
+    echo "Preparing work environment..."
+    echo "$marker" >> "$host_file"
+    for domain in "${domains[@]}"; do
+        echo "127.0.0.1 $domain" >> "$host_file"
+        echo "Added $domain"
+    done
+}
+
+unblock_sites() {
+    if ! is_blocked; then
+        echo "Already unblocked"
+        return 0
+    fi
+    line=$(grep -n "$marker" "$host_file" | cut -d: -f1)
+    sed -i '' "${line}d" "$host_file"
+    for domain in "${domains[@]}"; do
+        line=$(grep -n "$domain" "$host_file" | cut -d: -f1)
+        sed -i '' "${line}d" "$host_file"
+    done
+    echo "You can relax now, m8"
+}
+
+case "${1:-block}" in
+    block) block_sites ;;
+    unblock) unblock_sites ;;
+    *) echo "Usage: focus [block|unblock]"; exit 1 ;;
+esac

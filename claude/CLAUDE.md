@@ -6,6 +6,7 @@
     - Use rg not grep
     - fd not find
 - style: Prefer self-documenting code over comments
+- philosophy: YAGNI - don't build features until actually needed
 
 # Dev Projects
 - prefer using makefile for most common command. Update it when new workflow is added.

@@ -1,0 +1,3 @@
+# Dotfiles sudoers - passwordless commands
+%admin ALL=(ALL) NOPASSWD: __DOTFILES__/productivity/focus
+%admin ALL=(ALL) NOPASSWD: __DOTFILES__/productivity/focus *

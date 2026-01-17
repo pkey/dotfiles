@@ -1,0 +1,2 @@
+# Focus: block distracting websites every 15 minutes
+*/15 * * * * /usr/bin/sudo __DOTFILES__/productivity/focus block >/dev/null 2>&1

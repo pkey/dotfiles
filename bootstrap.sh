@@ -142,6 +142,43 @@ install_pipx_package() {
   fi
 }
 
+install_sudoers() {
+  local SRC="$DOTFILES/sudoers"
+  local DEST="/etc/sudoers.d/dotfiles"
+
+  [[ ! -f "$SRC" ]] && return 0
+
+  echo "Installing sudoers configuration..."
+  local TEMP
+  TEMP=$(mktemp)
+  sed "s|__DOTFILES__|$DOTFILES|g" "$SRC" > "$TEMP"
+
+  if sudo visudo -c -f "$TEMP" >/dev/null 2>&1; then
+    sudo install -m 0440 -o root -g wheel "$TEMP" "$DEST"
+    [[ "$OS" == "Linux" ]] && sudo chgrp root "$DEST"
+    echo "Sudoers installed"
+  else
+    echo "Warning: Invalid sudoers syntax, skipping"
+  fi
+  rm -f "$TEMP"
+}
+
+install_crontab() {
+  local SRC="$DOTFILES/crontab"
+
+  [[ ! -f "$SRC" ]] && return 0
+
+  echo "Installing crontab entries..."
+  local MARKER="# dotfiles-managed"
+  {
+    crontab -l 2>/dev/null | grep -v "$MARKER"
+    sed "s|__DOTFILES__|$DOTFILES|g" "$SRC" | while read -r line; do
+      [[ -n "$line" && ! "$line" =~ ^# ]] && echo "$line $MARKER"
+    done
+  } | crontab -
+  echo "Crontab installed"
+}
+
 install_pipx_package uv
 
 # tmux
@@ -151,6 +188,10 @@ fi
 
 # Setup symlinks
 "$DOTFILES/setup_symlinks.sh"
+
+# Setup sudoers and crontab
+install_sudoers
+install_crontab
 
 if tmux info &> /dev/null; then
   tmux source-file ~/.tmux.conf
