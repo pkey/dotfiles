@@ -16,4 +16,5 @@ if OS.mac?
   cask "1password/tap/1password-cli"
   cask "cursor"
   cask "ghostty"
+  cask "docker"
 end
