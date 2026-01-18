@@ -80,7 +80,8 @@ alias grfo='git fetch origin && git rebase origin/$(git symbolic-ref refs/remote
 gwta() {
   local branch="$1"
   local base="${2:-HEAD}"
-  local worktree_path="../$(basename $(git rev-parse --show-toplevel))-$branch"
+  local dir_name="${branch//\//-}"
+  local worktree_path="../$(basename $(git rev-parse --show-toplevel))-$dir_name"
   git worktree add -b "$branch" "$worktree_path" "$base" && cd "$worktree_path"
 }
 
