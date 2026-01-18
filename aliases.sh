@@ -76,6 +76,38 @@ alias grs='git reset --staged'
 alias gro='git reset --hard origin/$(git_current_branch)'
 alias grfo='git fetch origin && git rebase origin/$(git symbolic-ref refs/remotes/origin/HEAD | sed "s@refs/remotes/origin/@@")'
 
+# Git Worktrees
+gwta() {
+  local branch="$1"
+  local base="${2:-HEAD}"
+  local worktree_path="../$(basename $(git rev-parse --show-toplevel))-$branch"
+  git worktree add -b "$branch" "$worktree_path" "$base" && cd "$worktree_path"
+}
+
+gwtl() {
+  local selected
+  selected=$(git worktree list | fzf --header="Select worktree" | awk '{print $1}')
+  [[ -n "$selected" ]] && cd "$selected"
+}
+
+gwtd() {
+  local selected
+  selected=$(git worktree list | fzf --header="Select worktree to remove" --multi | awk '{print $1}')
+  [[ -n "$selected" ]] && echo "$selected" | xargs -I{} git worktree remove "{}" && cd ..
+}
+
+alias gwtls='git worktree list'
+
+gwtla() {
+  local search_dir="${1:-$HOME/repos}"
+  local selected
+  selected=$(fd -H -t d '^\.git$' "$search_dir" -x git -C {//} worktree list 2>/dev/null | \
+    grep -v "^$" | \
+    fzf --header="All worktrees in $search_dir" | \
+    awk '{print $1}')
+  [[ -n "$selected" ]] && cd "$selected"
+}
+
 #Vim
 alias v='vim'
 
