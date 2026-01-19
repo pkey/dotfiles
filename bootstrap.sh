@@ -22,7 +22,7 @@ for arg in "$@"; do
   esac
 done
 
-printf "Bootstrap started... \U1F680\n"
+printf "Bootstrap started... 🚀\n"
 if [[ "$FULL_INSTALL" == true || "$OS" == "Darwin" ]]; then
   printf "Running full installation...\n"
 else
@@ -88,6 +88,8 @@ if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
   git config --file ~/.gitconfig-user user.name "$git_name"
   git config --file ~/.gitconfig-user user.email "$git_email"
   git config --file ~/.gitconfig-user user.signingkey $SIGNING_KEY
+
+  echo "Git configured: $git_name <$git_email>"
 else
   echo "GPG key $SIGNING_KEY not found. Skipping git signing configuration."
 fi
@@ -219,7 +221,7 @@ fi
 
 # Exit here if not doing full installation
 if [[ "$FULL_INSTALL" != true ]]; then
-  printf "Minimal bootstrap completed \U1F389\n"
+  printf "Minimal bootstrap completed 🎉\n"
   printf "Run with --full flag for complete installation\n"
   exec zsh
 fi
@@ -265,7 +267,7 @@ echo "Done installing packages"
 # Run upgrade
 pipx upgrade-all
 
-printf "Bootstrap completed \U1F389\n"
+printf "Bootstrap completed 🎉\n"
 
 # Source .zshrc if it exists
 if [[ -f "$HOME/.zshrc" ]]; then

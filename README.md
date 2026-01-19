@@ -8,7 +8,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/pkey/dotfiles/main/bootstrap
 
 ## Localisation
 
-If you want to add some localised settings, add it to `zsh/local.zsh`
+If you want to add some localised settings, add it to `~/.localrc`
 
 ## Inspirations
 

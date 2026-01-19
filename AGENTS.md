@@ -56,7 +56,7 @@ git submodule update --init --recursive
 ### Configuration Organization
 
 - **zsh/** - Shell configuration with antigen plugin manager and pure prompt
-  - `local.zsh` - Local/private overrides (gitignored, for machine-specific settings)
+- **~/.localrc** - Local/private overrides (machine-specific settings, secrets via `secret` command)
 - **git/** - Git configuration with GPG signing enabled and global gitignore
   - `hooks/post-merge-bootstrap` - Auto-runs bootstrap on git pull/merge
 - **vim/** - Minimal vim configuration

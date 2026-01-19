@@ -202,7 +202,7 @@ _secret_export() {
     echo "Secret not found" && return 1
   fi
   local export_line="export ${name}=\$(security find-generic-password -a \"\$USER\" -s \"${_SECRET_SERVICE}:${name}\" -w)"
-  local localzsh="${DOTFILES:-$HOME/dotfiles}/zsh/local.zsh"
+  local localzsh="$HOME/.localrc"
 
   # Check if already exported
   if grep -q "export ${name}=" "$localzsh" 2>/dev/null; then
