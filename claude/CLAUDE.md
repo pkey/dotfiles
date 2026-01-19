@@ -5,6 +5,7 @@
 - tools:
     - Use rg not grep
     - fd not find
+    - refer to aliases and reuse them when appropriate
 - style: Prefer self-documenting code over comments
 - philosophy: YAGNI - don't build features until actually needed
 
