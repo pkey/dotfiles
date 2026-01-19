@@ -85,3 +85,145 @@ $diff_output"
     return 1
   fi
 }
+
+#--Secrets (macOS Keychain)
+# Manage environment variable secrets stored in macOS keychain
+# Usage: secret <command> [args]
+#   set     - Add secret to keychain and local.zsh
+#   add     - Add a new secret (interactive)
+#   list    - List all secret names
+#   get     - Get a secret value
+#   delete  - Delete a secret
+#   export  - Add secret to local.zsh for auto-export
+#   (no args) - Interactive mode with fzf
+
+_SECRET_SERVICE="env-secret"
+
+secret() {
+  local cmd="${1:-}"
+
+  case "$cmd" in
+    add)
+      _secret_add
+      ;;
+    list)
+      _secret_list
+      ;;
+    get)
+      shift
+      _secret_get "$@"
+      ;;
+    delete)
+      shift
+      _secret_delete "$@"
+      ;;
+    export)
+      shift
+      _secret_export "$@"
+      ;;
+    set)
+      _secret_set
+      ;;
+    *)
+      _secret_interactive
+      ;;
+  esac
+}
+
+_secret_add() {
+  printf "Environment variable name: "
+  read -r name
+  [[ -z "$name" ]] && echo "Cancelled" && return 1
+
+  printf "Value (hidden): "
+  read -rs value
+  echo
+  [[ -z "$value" ]] && echo "Cancelled" && return 1
+
+  if security add-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w "$value" -U 2>/dev/null; then
+    echo "Secret '$name' saved"
+  else
+    echo "Failed to save secret" && return 1
+  fi
+}
+
+_secret_set() {
+  printf "Environment variable name: "
+  read -r name
+  [[ -z "$name" ]] && echo "Cancelled" && return 1
+
+  printf "Value (hidden): "
+  read -rs value
+  echo
+  [[ -z "$value" ]] && echo "Cancelled" && return 1
+
+  if security add-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w "$value" -U 2>/dev/null; then
+    _secret_export "$name"
+    export "$name"=$(security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w)
+  else
+    echo "Failed to save secret" && return 1
+  fi
+}
+
+_secret_list() {
+  security dump-keychain 2>/dev/null | grep "${_SECRET_SERVICE}:" | sed 's/.*"\(env-secret:[^"]*\)".*/\1/' | cut -d: -f2 | sort -u
+}
+
+_secret_get() {
+  local name="${1:-}"
+  if [[ -z "$name" ]]; then
+    name=$(_secret_list | fzf --prompt="Select secret: ")
+    [[ -z "$name" ]] && return 1
+  fi
+  security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w 2>/dev/null
+}
+
+_secret_delete() {
+  local name="${1:-}"
+  if [[ -z "$name" ]]; then
+    name=$(_secret_list | fzf --prompt="Delete secret: ")
+    [[ -z "$name" ]] && return 1
+  fi
+  if security delete-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" 2>/dev/null; then
+    echo "Secret '$name' deleted"
+  else
+    echo "Secret not found" && return 1
+  fi
+}
+
+_secret_export() {
+  local name="${1:-}"
+  if [[ -z "$name" ]]; then
+    name=$(_secret_list | fzf --prompt="Export secret: ")
+    [[ -z "$name" ]] && return 1
+  fi
+  # Verify secret exists
+  if ! security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w &>/dev/null; then
+    echo "Secret not found" && return 1
+  fi
+  local export_line="export ${name}=\$(security find-generic-password -a \"\$USER\" -s \"${_SECRET_SERVICE}:${name}\" -w)"
+  local localzsh="${DOTFILES:-$HOME/dotfiles}/zsh/local.zsh"
+
+  # Check if already exported
+  if grep -q "export ${name}=" "$localzsh" 2>/dev/null; then
+    echo "'$name' already in local.zsh"
+    return 0
+  fi
+
+  echo "$export_line" >> "$localzsh"
+  echo "Added '$name' to local.zsh"
+}
+
+_secret_interactive() {
+  local action
+  action=$(printf "set\nadd\nlist\nget\ndelete\nexport" | fzf --prompt="Secret action: ")
+  [[ -z "$action" ]] && return 1
+  secret "$action"
+}
+
+printenv() {
+  local secrets=$(_secret_list)
+  [[ -z "$secrets" ]] && command printenv "$@" && return
+  local pattern="^(${secrets//$'\n'/|})="
+  command printenv "$@" | sed -E "s/${pattern}.*/\1=***REDACTED***/"
+}
