@@ -204,6 +204,23 @@ fi
 # Setup symlinks
 "$DOTFILES/setup_symlinks.sh"
 
+# Save profile choice to localrc
+LOCALRC="$HOME/.localrc"
+PROFILE_VAR="DOTFILES_PROFILE"
+if [[ "$FULL_INSTALL" == true ]]; then
+  PROFILE_VALUE="full"
+else
+  PROFILE_VALUE="minimal"
+fi
+
+# Update or add DOTFILES_PROFILE in localrc
+if [[ -f "$LOCALRC" ]] && grep -q "^export $PROFILE_VAR=" "$LOCALRC"; then
+  sed -i '' "s/^export $PROFILE_VAR=.*/export $PROFILE_VAR=\"$PROFILE_VALUE\"/" "$LOCALRC"
+else
+  echo "export $PROFILE_VAR=\"$PROFILE_VALUE\"" >> "$LOCALRC"
+fi
+echo "Profile saved: $PROFILE_VALUE"
+
 # Setup sudoers and crontab
 install_sudoers
 install_crontab
