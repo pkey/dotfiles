@@ -9,12 +9,30 @@ if [ ! -d "$HOME/dotfiles" ]; then
   git clone https://github.com/pkey/dotfiles.git "$HOME/dotfiles"
 fi
 
-# Parse arguments
-FULL_INSTALL=false
+# Load profile from localrc if exists, default to minimal
+LOCALRC="$HOME/.localrc"
+if [[ -f "$LOCALRC" ]]; then
+  # shellcheck source=/dev/null
+  source "$LOCALRC"
+fi
+DOTFILES_PROFILE="${DOTFILES_PROFILE:-minimal}"
+
+# Set FULL_INSTALL based on profile
+if [[ "$DOTFILES_PROFILE" == "full" ]]; then
+  FULL_INSTALL=true
+else
+  FULL_INSTALL=false
+fi
+
+# Parse arguments (can override profile)
 for arg in "$@"; do
   case $arg in
     --full)
       FULL_INSTALL=true
+      shift
+      ;;
+    --minimal)
+      FULL_INSTALL=false
       shift
       ;;
     *)
@@ -205,7 +223,6 @@ fi
 "$DOTFILES/setup_symlinks.sh"
 
 # Save profile choice to localrc
-LOCALRC="$HOME/.localrc"
 PROFILE_VAR="DOTFILES_PROFILE"
 if [[ "$FULL_INSTALL" == true ]]; then
   PROFILE_VALUE="full"
