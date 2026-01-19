@@ -166,7 +166,7 @@ _secret_set() {
 }
 
 _secret_list() {
-  security dump-keychain 2>/dev/null | grep "${_SECRET_SERVICE}:" | sed 's/.*"\(env-secret:[^"]*\)".*/\1/' | cut -d: -f2 | sort -u
+  security dump-keychain 2>/dev/null | grep "\"svce\".*${_SECRET_SERVICE}:" | sed 's/.*"\(env-secret:[^"]*\)".*/\1/' | cut -d: -f2 | sort -u
 }
 
 _secret_get() {
