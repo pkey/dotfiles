@@ -118,15 +118,14 @@ alias yt='yarn test'                                                         # R
 alias k='kubectl'                                                            # Kubectl shortcut
 
 # Tmux
-new_tmux_and_switch() {                                                      # Create and switch session
-  local name="$1"
-  tmux switch-client -t "$(tmux new-session -d -P -s "$name")"
-}
-
 alias mux='tmux'                                                             # Tmux shortcut
 alias muxa='tmux attach'                                                     # Attach to session
 alias muxad='tmux attach -d'                                                 # Attach detach others
-alias muxnew='new_tmux_and_switch'                                           # New session and switch
+
+muxnew() {                                                                   # New session and switch
+  local name="$1"
+  tmux switch-client -t "$(tmux new-session -d -P -s "$name")"
+}
 alias muxkillall='tmux kill-server'                                          # Kill tmux server
 alias muxkillo='tmux kill-session -a'                                        # Kill other sessions
 
@@ -157,12 +156,11 @@ alias muxw5='tmux select-window -t :5'                                       # G
 
 # Workflow
 alias test-update='jest --only-changed -u'                                   # Update test snapshots
-alias trypush='trypush_fn'                                                   # Test format amend push
 alias jest='npx jest'                                                        # Run jest via npx
 alias lookIWorked='$(findUnpushedCommits)'                                   # Find unpushed commits
 alias dateUpdate='GIT_COMMITTER_DATE="$(date)" git commit --amend --no-edit --date "$(date)"'  # Update commit date
 
-trypush_fn() {                                                               # Test format amend push
+trypush() {                                                                  # Test format amend push
   (! git diff HEAD develop --exit-code --quiet) && \
   (! git diff HEAD master --exit-code --quiet) && \
   git status && \
@@ -173,19 +171,17 @@ trypush_fn() {                                                               # T
 }
 
 # Bazel
-_bazel_fuzzy_run() {                                                         # Fuzzy run bazel target
+bzlrun() {                                                                   # Fuzzy run bazel target
   local target
   target=$(bazel query 'kind(".*_binary|.*_test", //...)' | fzf)
   [[ -n "$target" ]] && bazel run "$target"
 }
-alias bzlrun="_bazel_fuzzy_run"                                              # Fuzzy run bazel target
 
-_bazel_fuzzy_test() {                                                        # Fuzzy test bazel target
+bzltest() {                                                                  # Fuzzy test bazel target
   local target
   target=$(bazel query 'kind(".*_test", //...)' | fzf)
   [[ -n "$target" ]] && bazel test "$target"
 }
-alias bzltest="_bazel_fuzzy_test"                                            # Fuzzy test bazel target
 
 # Vast
 alias vast="vastai"                                                          # Vast.ai CLI shortcut
@@ -204,13 +200,15 @@ alias eclaude='vim $DOTFILES/claude/CLAUDE.md'                               # E
 # Help
 alias-help() {                                                               # Show aliases with desc
   local filter="${1:-}"
-  local current_section=""
-  local printed_section=""
+  local max_name=0
+  local max_desc=0
+  local -a entries=()
 
   while IFS= read -r line; do
     if [[ "$line" == \#* ]] && [[ "$line" != \#\!* ]]; then
-      current_section="${line#\#}"
-      current_section="${current_section# }"
+      local section="${line#\#}"
+      section="${section# }"
+      entries+=("section:$section")
     elif [[ "$line" == alias\ * ]]; then
       local rest="${line#alias }"
       local name="${rest%%=*}"
@@ -224,6 +222,31 @@ alias-help() {                                                               # S
       cmd="${cmd#\"}"
       cmd="${cmd%\'}"
       cmd="${cmd%\"}"
+      entries+=("alias:$name:$comment:$cmd")
+      (( ${#name} > max_name )) && max_name=${#name}
+      (( ${#comment} > max_desc )) && max_desc=${#comment}
+    elif [[ "$line" != " "* ]] && [[ "$line" == *"() {"* ]] && [[ "$line" == *"  # "* ]]; then
+      local name="${line%%\(\)*}"
+      local comment="${line##*  # }"
+      entries+=("func:$name:$comment:(function)")
+      (( ${#name} > max_name )) && max_name=${#name}
+      (( ${#comment} > max_desc )) && max_desc=${#comment}
+    fi
+  done < "$DOTFILES/aliases.sh"
+
+  local current_section=""
+  local printed_section=""
+  for entry in "${entries[@]}"; do
+    local type="${entry%%:*}"
+    local rest="${entry#*:}"
+
+    if [[ "$type" == "section" ]]; then
+      current_section="$rest"
+    else
+      local name="${rest%%:*}"
+      rest="${rest#*:}"
+      local comment="${rest%%:*}"
+      local cmd="${rest#*:}"
 
       if [[ -z "$filter" ]] || [[ "$name" == *"$filter"* ]] || [[ "${current_section:l}" == *"${filter:l}"* ]]; then
         if [[ "$current_section" != "$printed_section" ]]; then
@@ -231,13 +254,13 @@ alias-help() {                                                               # S
           printed_section="$current_section"
         fi
         if [[ -n "$comment" ]]; then
-          printf "  \033[1;32m%-15s\033[0m \033[0;33m%-26s\033[0m %s\n" "$name" "$comment" "$cmd"
+          printf "  \033[1;32m%-${max_name}s\033[0m  \033[0;33m%-${max_desc}s\033[0m  %s\n" "$name" "$comment" "$cmd"
         else
-          printf "  \033[1;32m%-15s\033[0m %s\n" "$name" "$cmd"
+          printf "  \033[1;32m%-${max_name}s\033[0m  %s\n" "$name" "$cmd"
         fi
       fi
     fi
-  done < "$DOTFILES/aliases.sh"
+  done
 }
 
 alias halias='alias-help'                                                    # Alias help shortcut
