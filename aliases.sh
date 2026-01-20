@@ -3,6 +3,7 @@ alias reload='$DOTFILES/setup_symlinks.sh && source ~/.zshrc'                # R
 
 # Editor
 alias cur='cursor .'                                                         # Open current dir in Cursor
+alias ca='cursor agent'						   	     # Opens cursor agent
 alias ealias='nvim $DOTFILES/aliases.sh'                                     # Edit aliases file
 alias edot='nvim $DOTFILES'                                                  # Edit dotfiles dir
 alias vim=nvim                                                               # Use neovim as vim
