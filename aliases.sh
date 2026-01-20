@@ -9,7 +9,7 @@ alias vim=nvim                                                               # U
 
 viz() {                                                                      # Fuzzy find file and edit
   local file
-  file=$(fd --type f --hidden --exclude .git | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}')
+  file=$(fd --type f --hidden --exclude .git --max-depth 5 | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}')
   [[ -n "$file" ]] && vim "$file"
 }
 
