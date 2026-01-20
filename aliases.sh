@@ -7,6 +7,12 @@ alias ealias='nvim $DOTFILES/aliases.sh'                                     # E
 alias edot='nvim $DOTFILES'                                                  # Edit dotfiles dir
 alias vim=nvim                                                               # Use neovim as vim
 
+viz() {                                                                      # Fuzzy find file and edit
+  local file
+  file=$(fd --type f --hidden --exclude .git | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}')
+  [[ -n "$file" ]] && vim "$file"
+}
+
 # Navigation
 alias -- -='cd -'                                                            # Go to previous dir
 alias ..='cd ../'                                                            # Up one level
