@@ -66,3 +66,6 @@ fi
 
 # LaTex
 export PATH="/Library/TeX/texbin:$PATH"
+
+# Go. Needed in case multiple go versions are installed.
+export PATH="$HOME/go/bin:$PATH"
