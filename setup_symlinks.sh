@@ -16,6 +16,10 @@ ln -sf "$DOTFILES/git/.gitconfig" "$HOME/.gitconfig"
 # Vim
 ln -sf "$DOTFILES/vim/.vimrc" "$HOME/.vimrc"
 
+# Neovim
+mkdir -p "$HOME/.config"
+ln -sf "$DOTFILES/nvim" "$HOME/.config/nvim"
+
 # Tmux
 ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
 
