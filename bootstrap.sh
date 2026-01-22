@@ -157,7 +157,11 @@ if pipx list 2>&1 | grep -q "invalid interpreter"; then
   pipx reinstall-all
 fi
 
-# Install pipx
+# Pipx packages to install (add packages here)
+PIPX_PACKAGES=(
+  uv
+)
+
 install_pipx_package() {
   local package="$1"
   if pipx list | cat | grep -q "package $package"; then
@@ -166,6 +170,33 @@ install_pipx_package() {
     echo "➕ Installing $package via pipx..."
     pipx install "$package"
   fi
+}
+
+sync_pipx_packages() {
+  echo "Syncing pipx packages..."
+
+  # Install all defined packages
+  for package in "${PIPX_PACKAGES[@]}"; do
+    install_pipx_package "$package"
+  done
+
+  # Remove packages not in the list
+  local installed
+  installed=$(pipx list --short 2>/dev/null | cut -d' ' -f1)
+
+  for pkg in $installed; do
+    local keep=false
+    for wanted in "${PIPX_PACKAGES[@]}"; do
+      if [[ "$pkg" == "$wanted" ]]; then
+        keep=true
+        break
+      fi
+    done
+    if [[ "$keep" == false ]]; then
+      echo "➖ Removing $pkg (not in PIPX_PACKAGES list)..."
+      pipx uninstall "$pkg"
+    fi
+  done
 }
 
 install_sudoers() {
@@ -212,7 +243,7 @@ install_crontab() {
   echo "Crontab installed"
 }
 
-install_pipx_package uv
+sync_pipx_packages
 
 # tmux
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
