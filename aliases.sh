@@ -191,9 +191,6 @@ bzltest() {                                                                  # F
   [[ -n "$target" ]] && bazel test "$target"
 }
 
-# Vast
-alias vast="vastai"                                                          # Vast.ai CLI shortcut
-
 # Focus
 alias focus='sudo $HOME/dotfiles/productivity/focus block'                   # Block distracting sites
 alias unfocus='sudo $HOME/dotfiles/productivity/focus unblock'               # Unblock distracting sites

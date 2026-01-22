@@ -25,7 +25,7 @@ The bootstrap script:
 - Installs Homebrew and packages from `Brewfile` or `Brewfile.minimal`
 - Sets up git configuration with GPG signing (key: EAB2D9EB6CD93324)
 - Creates symlinks for shell configs (.zshenv, .zshrc, .zprofile)
-- Installs pipx packages (uv, llm, aider-install, vastai, poetry for --full)
+- Installs pipx package (uv)
 - Configures zsh as default shell
 - Full install also sets up Cursor, AWS CLI, and additional tools
 

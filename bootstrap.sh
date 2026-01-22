@@ -262,26 +262,12 @@ fi
 
 printf "Continuing with full installation...\n"
 
-install_pipx_package llm
-install_pipx_package aider-install
-# specificall install aider based on docs: https://aider.chat/docs/install.html#get-started-quickly-with-aider-install
-aider-install --yes
-install_pipx_package vastai
-install_pipx_package poetry
-
 # Install Cursor if not already installed
 if ! command -v cursor >/dev/null 2>&1; then
   echo "Installing Cursor..."
   curl https://cursor.com/install -fsS | bash
 else
   echo "Cursor already installed, skipping."
-fi
-
-if ! command -v opencode >/dev/null 2>&1; then
-	echo "Installing opencode..."
-	curl -fsSL https://opencode.ai/install | bash
-else
-	echo "Opencode already installed, skipping."
 fi
 
 # Install AWS CLI if not already installed

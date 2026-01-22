@@ -6,8 +6,6 @@ brew "gh"
 brew "sqlite"
 brew "pre-commit"
 brew "gnupg"
-brew "gemini-cli"
-brew "opencode"
 brew "neovim"
 brew "nmap"
 

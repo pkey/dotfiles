@@ -31,7 +31,6 @@
       "Bash(yarn:*)",
       "Bash(pnpm:*)",
       "Bash(uv:*)",
-      "Bash(poetry:*)",
       "Bash(pytest:*)",
       "Bash(python:*)",
       "Bash(python3:*)",
