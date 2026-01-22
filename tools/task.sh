@@ -1,0 +1,172 @@
+#!/usr/bin/env zsh
+
+TASKS_DIR="$HOME/tasks"
+REPOS_DIR="$HOME/repos"
+
+task() {
+  local cmd="${1:-}"
+  case "$cmd" in
+    add) shift; _task_add "$@" ;;
+    go)  _task_go ;;
+    *)   _task_new "$@" ;;
+  esac
+}
+
+_task_new() {
+  local name="$1"
+  if [[ -z "$name" ]]; then
+    echo "Usage: task <name>" >&2
+    return 1
+  fi
+
+  local task_dir="$TASKS_DIR/$name"
+  if [[ -d "$task_dir" ]]; then
+    echo "Task '$name' already exists" >&2
+    return 1
+  fi
+
+  if [[ ! -d "$REPOS_DIR" ]]; then
+    echo "Repos directory not found: $REPOS_DIR" >&2
+    return 1
+  fi
+
+  local repos
+  repos=$(ls "$REPOS_DIR" | fzf --multi --prompt="Select repos for task '$name': ")
+  if [[ -z "$repos" ]]; then
+    echo "No repos selected" >&2
+    return 1
+  fi
+
+  mkdir -p "$task_dir"
+
+  echo "$repos" | while read -r repo; do
+    [[ -z "$repo" ]] && continue
+    local repo_path="$REPOS_DIR/$repo"
+    local worktree_path="$task_dir/$repo"
+
+    if [[ ! -d "$repo_path/.git" ]] && [[ ! -f "$repo_path/.git" ]]; then
+      echo "Skipping '$repo': not a git repository" >&2
+      continue
+    fi
+
+    echo "Creating worktree for $repo..."
+    local base_ref=""
+    if git -C "$repo_path" rev-parse --verify origin/main &>/dev/null; then
+      base_ref="origin/main"
+    elif git -C "$repo_path" rev-parse --verify origin/master &>/dev/null; then
+      base_ref="origin/master"
+    fi
+
+    if [[ -n "$base_ref" ]]; then
+      git -C "$repo_path" worktree add "$worktree_path" -b "$name" "$base_ref" || \
+        git -C "$repo_path" worktree add "$worktree_path" "$name" || \
+        echo "Failed to create worktree for $repo" >&2
+    else
+      echo "Failed to create worktree for $repo: no origin/main or origin/master found" >&2
+    fi
+  done
+
+  local agents_file="$task_dir/AGENTS.md"
+  cat > "$agents_file" << EOF
+# Task: $name
+
+## Objective
+
+
+## Context
+
+EOF
+
+  ${EDITOR:-vim} "$agents_file"
+  cd "$task_dir"
+}
+
+_task_add() {
+  local name="$1"
+
+  if [[ -z "$name" ]]; then
+    if [[ "$PWD" == "$TASKS_DIR"/* ]]; then
+      local dir="$PWD" depth=0
+      while [[ "$dir" != "$TASKS_DIR" ]] && [[ "$dir" != "/" ]] && (( depth < 3 )); do
+        if [[ -f "$dir/AGENTS.md" ]]; then
+          name="${dir#$TASKS_DIR/}"
+          break
+        fi
+        dir="${dir:h}"
+        (( depth++ ))
+      done
+      if [[ -z "$name" ]]; then
+        echo "Could not detect task (no AGENTS.md found within 3 levels)" >&2
+        return 1
+      fi
+    else
+      echo "Usage: task add <name> (or run from inside a task folder)" >&2
+      return 1
+    fi
+  fi
+
+  local task_dir="$TASKS_DIR/$name"
+  if [[ ! -d "$task_dir" ]]; then
+    echo "Task '$name' does not exist" >&2
+    return 1
+  fi
+
+  if [[ ! -d "$REPOS_DIR" ]]; then
+    echo "Repos directory not found: $REPOS_DIR" >&2
+    return 1
+  fi
+
+  local repos
+  repos=$(ls "$REPOS_DIR" | fzf --multi --prompt="Add repos to task '$name': ")
+  if [[ -z "$repos" ]]; then
+    echo "No repos selected" >&2
+    return 1
+  fi
+
+  echo "$repos" | while read -r repo; do
+    [[ -z "$repo" ]] && continue
+    local repo_path="$REPOS_DIR/$repo"
+    local worktree_path="$task_dir/$repo"
+
+    if [[ -d "$worktree_path" ]]; then
+      echo "Skipping '$repo': already in task" >&2
+      continue
+    fi
+
+    if [[ ! -d "$repo_path/.git" ]] && [[ ! -f "$repo_path/.git" ]]; then
+      echo "Skipping '$repo': not a git repository" >&2
+      continue
+    fi
+
+    echo "Creating worktree for $repo..."
+    local base_ref=""
+    if git -C "$repo_path" rev-parse --verify origin/main &>/dev/null; then
+      base_ref="origin/main"
+    elif git -C "$repo_path" rev-parse --verify origin/master &>/dev/null; then
+      base_ref="origin/master"
+    fi
+
+    if [[ -n "$base_ref" ]]; then
+      git -C "$repo_path" worktree add "$worktree_path" -b "$name" "$base_ref" || \
+        git -C "$repo_path" worktree add "$worktree_path" "$name" || \
+        echo "Failed to create worktree for $repo" >&2
+    else
+      echo "Failed to create worktree for $repo: no origin/main or origin/master found" >&2
+    fi
+  done
+}
+
+_task_go() {
+  if [[ ! -d "$TASKS_DIR" ]]; then
+    echo "Tasks directory not found: $TASKS_DIR" >&2
+    return 1
+  fi
+
+  local task
+  task=$(ls "$TASKS_DIR" | fzf --prompt="Go to task: ")
+  if [[ -z "$task" ]]; then
+    return 0
+  fi
+
+  cd "$TASKS_DIR/$task"
+}

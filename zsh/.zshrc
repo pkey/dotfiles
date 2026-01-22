@@ -32,6 +32,11 @@ source "$DOTFILES/functions.sh"
 unalias -a
 source "$DOTFILES/aliases.sh"
 
+# Source tools
+for tool in "$DOTFILES"/tools/*.sh; do
+  [[ -f "$tool" ]] && source "$tool"
+done
+
 #Set up History
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=10000

@@ -99,10 +99,16 @@ gwtl() {                                                                     # F
   [[ -n "$selected" ]] && cd "$selected"
 }
 
-gwtd() {                                                                     # Fuzzy remove worktree
+gwtd() {                                                                     # Fuzzy remove worktree + branch
   local selected
-  selected=$(git worktree list | fzf --header="Select worktree to remove" --multi | awk '{print $1}')
-  [[ -n "$selected" ]] && echo "$selected" | xargs -I{} git worktree remove "{}" && cd ..
+  selected=$(git worktree list | fzf --header="Select worktree to remove" --multi)
+  [[ -z "$selected" ]] && return
+  echo "$selected" | while read -r line; do
+    local path=$(echo "$line" | awk '{print $1}')
+    local branch=$(echo "$line" | sed -n 's/.*\[\(.*\)\].*/\1/p')
+    git worktree remove "$path" && [[ -n "$branch" ]] && git branch -D "$branch" 2>/dev/null
+  done
+  cd ..
 }
 
 alias gwtls='git worktree list'                                              # List all worktrees
