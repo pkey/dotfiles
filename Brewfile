@@ -10,6 +10,7 @@ brew "neovim"
 brew "nmap"
 brew "tilt"
 brew "teleport"
+brew "bash"
 
 # macOS-only casks
 if OS.mac?
