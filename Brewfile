@@ -8,6 +8,7 @@ brew "pre-commit"
 brew "gnupg"
 brew "neovim"
 brew "nmap"
+brew "tilt"
 
 # macOS-only casks
 if OS.mac?
