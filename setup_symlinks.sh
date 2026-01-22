@@ -28,3 +28,10 @@ ln -sf "$DOTFILES/zsh/.zprofile" "$HOME/.zprofile"
 mkdir -p "$HOME/.claude"
 ln -sf "$DOTFILES/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -sf "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
+
+# Cursor
+mkdir -p "$HOME/.cursor"
+rm -rf "$HOME/.cursor/commands"
+ln -sf "$DOTFILES/cursor/commands" "$HOME/.cursor/commands"
+mkdir -p "$HOME/Library/Application Support/Cursor/User"
+ln -sf "$DOTFILES/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
