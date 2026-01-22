@@ -18,7 +18,7 @@ ln -sf "$DOTFILES/vim/.vimrc" "$HOME/.vimrc"
 
 # Neovim
 mkdir -p "$HOME/.config"
-ln -sf "$DOTFILES/nvim" "$HOME/.config/nvim"
+ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"
 
 # Tmux
 ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
@@ -35,7 +35,7 @@ ln -sf "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
 
 # Cursor
 mkdir -p "$HOME/.cursor"
-rm -rf "$HOME/.cursor/commands"
-ln -sf "$DOTFILES/cursor/commands" "$HOME/.cursor/commands"
+ln -sfn "$DOTFILES/cursor/commands" "$HOME/.cursor/commands"
+ln -sfn "$DOTFILES/cursor/rules" "$HOME/.cursor/rules"
 mkdir -p "$HOME/Library/Application Support/Cursor/User"
 ln -sf "$DOTFILES/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
