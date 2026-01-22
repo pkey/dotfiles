@@ -126,7 +126,6 @@ $diff_output"
 # Manage environment variable secrets stored in macOS keychain
 # Usage: secret <command> [args]
 #   set     - Add secret to keychain and local.zsh
-#   add     - Add a new secret (interactive)
 #   list    - List all secret names
 #   get     - Get a secret value
 #   delete  - Delete a secret
@@ -139,9 +138,6 @@ secret() {
   local cmd="${1:-}"
 
   case "$cmd" in
-    add)
-      _secret_add
-      ;;
     list)
       _secret_list
       ;;
@@ -164,23 +160,6 @@ secret() {
       _secret_interactive
       ;;
   esac
-}
-
-_secret_add() {
-  printf "Environment variable name: "
-  read -r name
-  [[ -z "$name" ]] && echo "Cancelled" && return 1
-
-  printf "Value (hidden): "
-  read -rs value
-  echo
-  [[ -z "$value" ]] && echo "Cancelled" && return 1
-
-  if security add-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w "$value" -U 2>/dev/null; then
-    echo "Secret '$name' saved"
-  else
-    echo "Failed to save secret" && return 1
-  fi
 }
 
 _secret_set() {
@@ -252,7 +231,7 @@ _secret_export() {
 
 _secret_interactive() {
   local action
-  action=$(printf "set\nadd\nlist\nget\ndelete\nexport" | fzf --prompt="Secret action: ")
+  action=$(printf "set\nlist\nget\ndelete\nexport" | fzf --prompt="Secret action: ")
   [[ -z "$action" ]] && return 1
   secret "$action"
 }
