@@ -9,6 +9,7 @@ brew "gnupg"
 brew "neovim"
 brew "nmap"
 brew "tilt"
+brew "teleport"
 
 # macOS-only casks
 if OS.mac?
@@ -17,4 +18,5 @@ if OS.mac?
   cask "cursor"
   cask "ghostty"
   cask "docker-desktop"
+  cask "gcloud-cli"
 end
