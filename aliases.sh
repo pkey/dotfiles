@@ -51,6 +51,7 @@ alias gap='git apply'                                                        # A
 alias gb='git branch'                                                        # List branches
 alias 'gc!'='git commit -v --amend'                                          # Amend last commit
 alias gc='git commit'                                                        # Commit staged changes
+alias gca='gaa && gc'                                                        # Stage all and commit
 alias gai='aicommit'                                                         # AI-generated commit msg
 alias gc-='git checkout -'                                                   # Checkout previous branch
 alias 'gca!'='git commit -v -a --amend'                                      # Amend with all changes
@@ -219,8 +220,11 @@ alias focus='sudo $HOME/dotfiles/productivity/focus block'                   # B
 alias unfocus='sudo $HOME/dotfiles/productivity/focus unblock'               # Unblock distracting sites
 
 # Claude
-alias cc="claude"                                                            # Claude CLI shortcut
+alias cc='claude'                                                            # Claude CLI shortcut
 alias eclaude='vim $DOTFILES/claude/CLAUDE.md'                               # Edit Claude config
+
+# Node
+alias p='pnpm'                                                               # shortcut to pnpm
 
 # Help
 alias-help() {                                                               # Show aliases with desc
