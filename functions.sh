@@ -1,4 +1,9 @@
 #Functions
+
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
 #--Git
 
 git_current_branch () {
