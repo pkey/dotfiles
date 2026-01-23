@@ -293,6 +293,22 @@ fi
 
 printf "Continuing with full installation...\n"
 
+# Install Node.js LTS via fnm
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env)"
+  if fnm list | grep -qv system; then
+    echo "Node.js already installed via fnm ✅"
+  else
+    echo "Installing Node.js LTS via fnm..."
+    fnm install --lts
+    LTS_NODE=$(fnm list | grep -v system | head -1 | awk '{print $2}')
+    if [[ -n "$LTS_NODE" ]]; then
+      fnm default "$LTS_NODE"
+      echo "Node.js $LTS_NODE set as default ✅"
+    fi
+  fi
+fi
+
 # Install Cursor if not already installed
 if ! command -v cursor >/dev/null 2>&1; then
   echo "Installing Cursor..."
