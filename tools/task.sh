@@ -3,6 +3,25 @@
 TASKS_DIR="$HOME/tasks"
 REPOS_DIR="$HOME/repos"
 
+_get_base_ref() {
+  local repo_path="$1"
+
+  if [[ -f "$repo_path/.taskrc" ]]; then
+    local DEFAULT_BRANCH=""
+    source "$repo_path/.taskrc"
+    if [[ -n "$DEFAULT_BRANCH" ]] && git -C "$repo_path" rev-parse --verify "origin/$DEFAULT_BRANCH" &>/dev/null; then
+      echo "origin/$DEFAULT_BRANCH"
+      return 0
+    fi
+  fi
+
+  if git -C "$repo_path" rev-parse --verify origin/main &>/dev/null; then
+    echo "origin/main"
+  elif git -C "$repo_path" rev-parse --verify origin/master &>/dev/null; then
+    echo "origin/master"
+  fi
+}
+
 task() {
   local cmd="${1:-}"
   case "$cmd" in
@@ -50,19 +69,15 @@ _task_new() {
     fi
 
     echo "Creating worktree for $repo..."
-    local base_ref=""
-    if git -C "$repo_path" rev-parse --verify origin/main &>/dev/null; then
-      base_ref="origin/main"
-    elif git -C "$repo_path" rev-parse --verify origin/master &>/dev/null; then
-      base_ref="origin/master"
-    fi
+    local base_ref
+    base_ref=$(_get_base_ref "$repo_path")
 
     if [[ -n "$base_ref" ]]; then
       git -C "$repo_path" worktree add "$worktree_path" -b "$name" "$base_ref" || \
         git -C "$repo_path" worktree add "$worktree_path" "$name" || \
         echo "Failed to create worktree for $repo" >&2
     else
-      echo "Failed to create worktree for $repo: no origin/main or origin/master found" >&2
+      echo "Failed to create worktree for $repo: no default branch found (add .taskrc with DEFAULT_BRANCH)" >&2
     fi
   done
 
@@ -139,19 +154,15 @@ _task_add() {
     fi
 
     echo "Creating worktree for $repo..."
-    local base_ref=""
-    if git -C "$repo_path" rev-parse --verify origin/main &>/dev/null; then
-      base_ref="origin/main"
-    elif git -C "$repo_path" rev-parse --verify origin/master &>/dev/null; then
-      base_ref="origin/master"
-    fi
+    local base_ref
+    base_ref=$(_get_base_ref "$repo_path")
 
     if [[ -n "$base_ref" ]]; then
       git -C "$repo_path" worktree add "$worktree_path" -b "$name" "$base_ref" || \
         git -C "$repo_path" worktree add "$worktree_path" "$name" || \
         echo "Failed to create worktree for $repo" >&2
     else
-      echo "Failed to create worktree for $repo: no origin/main or origin/master found" >&2
+      echo "Failed to create worktree for $repo: no default branch found (add .taskrc with DEFAULT_BRANCH)" >&2
     fi
   done
 }
