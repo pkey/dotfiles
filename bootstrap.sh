@@ -311,6 +311,17 @@ else
   echo "AWS CLI already installed, skipping."
 fi
 
+# Configure Docker Desktop Rosetta (macOS only)
+if [[ "$OS" == "Darwin" ]]; then
+  DOCKER_SETTINGS="$HOME/Library/Group Containers/group.com.docker/settings.json"
+  if [[ -f "$DOCKER_SETTINGS" ]]; then
+    defaults write "$HOME/Library/Group Containers/group.com.docker/settings.json" useVirtualizationFrameworkRosetta -bool true
+    echo "Docker Rosetta enabled ✅"
+  else
+    echo "Docker settings not found. Start Docker Desktop first, then re-run bootstrap."
+  fi
+fi
+
 echo "Done installing packages"
 
 
