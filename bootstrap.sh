@@ -307,6 +307,32 @@ if command -v fnm >/dev/null 2>&1; then
       echo "Node.js $LTS_NODE set as default ✅"
     fi
   fi
+
+  # Enable corepack if not already enabled
+  if ! command -v pnpm >/dev/null 2>&1; then
+    echo "Enabling corepack..."
+    corepack enable
+  fi
+
+  # Update npm if not latest
+  CURRENT_NPM=$(npm --version 2>/dev/null)
+  LATEST_NPM=$(npm view npm version 2>/dev/null)
+  if [[ "$CURRENT_NPM" != "$LATEST_NPM" ]]; then
+    echo "Updating npm ($CURRENT_NPM -> $LATEST_NPM)..."
+    npm install -g npm@latest
+  else
+    echo "npm $CURRENT_NPM ✅"
+  fi
+
+  # Update pnpm if not latest
+  CURRENT_PNPM=$(pnpm --version 2>/dev/null)
+  LATEST_PNPM=$(npm view pnpm version 2>/dev/null)
+  if [[ "$CURRENT_PNPM" != "$LATEST_PNPM" ]]; then
+    echo "Updating pnpm ($CURRENT_PNPM -> $LATEST_PNPM)..."
+    corepack prepare pnpm@latest --activate
+  else
+    echo "pnpm $CURRENT_PNPM ✅"
+  fi
 fi
 
 # Install Cursor if not already installed
