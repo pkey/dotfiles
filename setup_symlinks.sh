@@ -33,6 +33,12 @@ mkdir -p "$HOME/.claude"
 ln -sf "$DOTFILES/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -sf "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
 
+# Local bin
+mkdir -p "$HOME/.local/bin"
+for script in "$DOTFILES/bin"/*; do
+  [[ -f "$script" ]] && ln -sf "$script" "$HOME/.local/bin/$(basename "$script")"
+done
+
 # Cursor
 mkdir -p "$HOME/.cursor"
 ln -sfn "$DOTFILES/cursor/commands" "$HOME/.cursor/commands"

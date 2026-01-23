@@ -22,6 +22,37 @@ _get_base_ref() {
   fi
 }
 
+_copy_taskrc_files() {
+  local repo_path="$1"
+  local worktree_path="$2"
+
+  if [[ ! -f "$repo_path/.taskrc" ]]; then
+    return 0
+  fi
+
+  local COPY_FILES=()
+  source "$repo_path/.taskrc"
+
+  for item in "${COPY_FILES[@]}"; do
+    local src="$repo_path/$item"
+    local dst="$worktree_path/$item"
+
+    if [[ ! -e "$src" ]]; then
+      echo "Warning: '$item' not found in $repo_path" >&2
+      continue
+    fi
+
+    if [[ -e "$dst" ]]; then
+      echo "Skipping '$item': already exists" >&2
+      continue
+    fi
+
+    mkdir -p "$(dirname "$dst")"
+    cp -R "$src" "$dst"
+    echo "Copied: $item"
+  done
+}
+
 task() {
   local cmd="${1:-}"
   case "$cmd" in
@@ -78,6 +109,10 @@ _task_new() {
         echo "Failed to create worktree for $repo" >&2
     else
       echo "Failed to create worktree for $repo: no default branch found (add .taskrc with DEFAULT_BRANCH)" >&2
+    fi
+
+    if [[ -d "$worktree_path" ]]; then
+      _copy_taskrc_files "$repo_path" "$worktree_path"
     fi
   done
 
@@ -163,6 +198,10 @@ _task_add() {
         echo "Failed to create worktree for $repo" >&2
     else
       echo "Failed to create worktree for $repo: no default branch found (add .taskrc with DEFAULT_BRANCH)" >&2
+    fi
+
+    if [[ -d "$worktree_path" ]]; then
+      _copy_taskrc_files "$repo_path" "$worktree_path"
     fi
   done
 }

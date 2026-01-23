@@ -218,9 +218,6 @@ bzltest() {                                                                  # F
 alias focus='sudo $HOME/dotfiles/productivity/focus block'                   # Block distracting sites
 alias unfocus='sudo $HOME/dotfiles/productivity/focus unblock'               # Unblock distracting sites
 
-# Docker
-alias docker-compose="docker compose"                                        # Use new docker compose
-
 # Claude
 alias cc="claude"                                                            # Claude CLI shortcut
 alias eclaude='vim $DOTFILES/claude/CLAUDE.md'                               # Edit Claude config
