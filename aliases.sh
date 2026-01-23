@@ -103,10 +103,12 @@ gwtd() {                                                                     # F
   local selected
   selected=$(git worktree list | fzf --header="Select worktree to remove" --multi)
   [[ -z "$selected" ]] && return
-  echo "$selected" | while read -r line; do
-    local path=$(echo "$line" | awk '{print $1}')
-    local branch=$(echo "$line" | sed -n 's/.*\[\(.*\)\].*/\1/p')
-    git worktree remove "$path" && [[ -n "$branch" ]] && git branch -D "$branch" 2>/dev/null
+  local lines=("${(@f)selected}")
+  for line in "${lines[@]}"; do
+    local wt_path="${line%% *}"
+    local branch=""
+    [[ "$line" =~ '\[(.+)\]' ]] && branch="${match[1]}"
+    git worktree remove "$wt_path" && [[ -n "$branch" ]] && git branch -D "$branch" 2>/dev/null
   done
   cd ..
 }
