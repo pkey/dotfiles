@@ -1,4 +1,4 @@
-function main(): void {
+export function main(): void {
   console.log("Hello world");
 }
 
