@@ -69,6 +69,11 @@ if command -v zoxide 1>/dev/null 2>&1; then
     eval "$(zoxide init zsh)"
 fi
 
+# Set up direnv
+if command -v direnv 1>/dev/null 2>&1; then
+    eval "$(direnv hook zsh)"
+fi
+
 [[ -f "$HOME/.localrc" ]] && source "$HOME/.localrc"
 
 # LaTex

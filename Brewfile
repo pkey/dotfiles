@@ -11,6 +11,7 @@ brew "nmap"
 brew "tilt"
 brew "teleport"
 brew "bash"
+brew "direnv"
 
 # macOS-only casks
 if OS.mac?
