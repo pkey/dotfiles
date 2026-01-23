@@ -100,15 +100,30 @@ gwtl() {                                                                     # F
 }
 
 gwtd() {                                                                     # Fuzzy remove worktree + branch
-  local selected
+  local main_wt selected
+  main_wt=$(git worktree list | head -1 | awk '{print $1}')
   selected=$(git worktree list | fzf --header="Select worktree to remove" --multi)
   [[ -z "$selected" ]] && return
   local lines=("${(@f)selected}")
   for line in "${lines[@]}"; do
     local wt_path="${line%% *}"
     local branch=""
-    [[ "$line" =~ '\[(.+)\]' ]] && branch="${match[1]}"
-    git worktree remove "$wt_path" && [[ -n "$branch" ]] && git branch -D "$branch" 2>/dev/null
+    if [[ "$line" == *"["*"]"* ]]; then
+      branch="${line##*\[}"
+      branch="${branch%%\]*}"
+    fi
+    if git worktree remove "$wt_path"; then
+      echo "Removed worktree: $wt_path"
+      if [[ -n "$branch" && "$branch" != "detached HEAD" ]]; then
+        if git -C "$main_wt" branch -D "$branch" 2>/dev/null; then
+          echo "Deleted branch: $branch"
+        else
+          echo "Note: branch '$branch' not deleted (may not exist or is checked out elsewhere)"
+        fi
+      fi
+    else
+      echo "Failed to remove worktree: $wt_path" >&2
+    fi
   done
   cd ..
 }
