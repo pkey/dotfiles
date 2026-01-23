@@ -226,6 +226,9 @@ alias eclaude='vim $DOTFILES/claude/CLAUDE.md'                               # E
 # Node
 alias p='pnpm'                                                               # shortcut to pnpm
 
+# Scaffolding
+alias sf='scaffold'                                                          # Create new project
+
 # Help
 alias-help() {                                                               # Show aliases with desc
   local filter="${1:-}"
