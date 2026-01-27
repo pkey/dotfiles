@@ -44,7 +44,7 @@ export SAVEHIST=10000
 
 #fnm
 export PATH="$HOME/.fnm:$PATH"
-eval "$(fnm env)"
+eval "$(fnm env --use-on-cd)"
 # Google Cloud SDK (installed via Homebrew)
 if [ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/path.zsh.inc" ]; then
   source "$HOMEBREW_PREFIX/share/google-cloud-sdk/path.zsh.inc"
