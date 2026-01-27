@@ -13,6 +13,7 @@ brew "teleport"
 brew "bash"
 brew "direnv"
 brew "kubectx"
+brew "glab"
 
 # macOS-only casks
 if OS.mac?
