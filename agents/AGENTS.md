@@ -1,3 +1,8 @@
+---
+description: Global coding preferences for all projects
+alwaysApply: true
+---
+
 # General
 
 - language: English only - all code, comments, docs, examples, commits, configs, errors, tests
@@ -6,14 +11,13 @@
     - Use rg not grep
     - fd not find
     - refer to aliases and reuse them when appropriate
+    - refer to $DOTFILES/Brewfile for installed tools
 - style: Prefer self-documenting code over comments
-- philosophy: YAGNI - don't build features until actually needed
+- philosophy:
+    - YAGNI - don't build features until actually needed
 
 # Dev Projects
-- prefer using makefile for most common command. Update it when new workflow is added.
-
-# Claude
-- when initialising CLAUDE.md, write to AGENTS.md and reference CLAUDE.md to it.
+- prefer using Makefile for most common commands. Update it when new workflow is added.
 
 # Python
 - Preferred package and project manager: uv

@@ -28,10 +28,14 @@ ln -sf "$DOTFILES/.zshenv" "$HOME/.zshenv"
 ln -sf "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
 ln -sf "$DOTFILES/zsh/.zprofile" "$HOME/.zprofile"
 
+# Agents (shared config for Claude, Cursor, etc.)
+ln -sf "$DOTFILES/agents/AGENTS.md" "$HOME/.AGENTS.md"
+
 # Claude
 mkdir -p "$HOME/.claude"
-ln -sf "$DOTFILES/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+ln -sf "$HOME/.AGENTS.md" "$HOME/.claude/CLAUDE.md"
 ln -sf "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
+ln -sfn "$DOTFILES/agents/skills" "$HOME/.claude/skills"
 
 # Local bin
 mkdir -p "$HOME/.local/bin"
@@ -41,7 +45,7 @@ done
 
 # Cursor
 mkdir -p "$HOME/.cursor"
-ln -sfn "$DOTFILES/cursor/commands" "$HOME/.cursor/commands"
+ln -sfn "$DOTFILES/agents/skills" "$HOME/.cursor/skills"
 ln -sfn "$DOTFILES/cursor/rules" "$HOME/.cursor/rules"
 mkdir -p "$HOME/Library/Application Support/Cursor/User"
 ln -sf "$DOTFILES/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"

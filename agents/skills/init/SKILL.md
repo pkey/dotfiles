@@ -1,3 +1,9 @@
+---
+name: init
+description: Create an AGENTS.md file for this project by analyzing the codebase
+disable-model-invocation: true
+---
+
 # Init
 
 Create an AGENTS.md file for this project by analyzing the codebase. This file will
