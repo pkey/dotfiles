@@ -11,3 +11,5 @@ List is constantly prioritised when adding a new item.
 - [ ] `fnm` not picked up on linux machine
 - [ ] create a minidot for quick setups
 - [ ] AI summary of commits is not great for larger changes
+- [ ] I need to create an easy way to have common things (aliases, tools, shell functions, etc) and workstation/environment
+specific stuff.
