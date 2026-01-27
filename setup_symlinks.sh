@@ -46,6 +46,12 @@ done
 # Cursor
 mkdir -p "$HOME/.cursor"
 ln -sfn "$DOTFILES/agents/skills" "$HOME/.cursor/skills"
+# TODO: Remove commands symlinks once Cursor CLI supports skills
+mkdir -p "$HOME/.cursor/commands"
+for skill in "$DOTFILES/agents/skills"/*/SKILL.md; do
+  name=$(basename "$(dirname "$skill")")
+  ln -sf "$skill" "$HOME/.cursor/commands/$name.md"
+done
 ln -sfn "$DOTFILES/cursor/rules" "$HOME/.cursor/rules"
 mkdir -p "$HOME/Library/Application Support/Cursor/User"
 ln -sf "$DOTFILES/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
