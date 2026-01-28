@@ -1,10 +1,10 @@
 ---
-name: remember
+name: learn
 description: Capture learnings from mistakes and update agent context to prevent future issues
 disable-model-invocation: false
 ---
 
-# Remember
+# Learn
 
 Extract learnings from agent mistakes or misunderstandings and propose updates to the appropriate context file. This skill can be invoked by the user or automatically by the agent when it recognizes an error.
 
