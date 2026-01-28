@@ -44,11 +44,6 @@ sync_cursor() {
     [[ "$entry" =~ ^Bash\( ]] && cursor_deny+=("$(convert_to_cursor_format "$entry")")
   done < <(jq -r '.deny[]' "$PERMISSIONS_FILE")
 
-  # Treat 'ask' as 'deny' for Cursor (no native ask support)
-  while IFS= read -r entry; do
-    [[ "$entry" =~ ^Bash\( ]] && cursor_deny+=("$(convert_to_cursor_format "$entry")")
-  done < <(jq -r '.ask[]' "$PERMISSIONS_FILE")
-
   local allow_json
   local deny_json
   allow_json=$(printf '%s\n' "${cursor_allow[@]}" | jq -R . | jq -s 'unique')
