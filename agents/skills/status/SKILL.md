@@ -1,19 +1,48 @@
 ---
 name: status
-description: Summarize the status of the current task. Always use when starting a new session or on demand.
+description: Summarize the status of the current project or task. Works in both multi-repo workspaces and single repositories.
 disable-model-invocation: true
 ---
 
 # Status
 
-Retrieve the status of the project. It should be a summary of progress on a given task.
+Retrieve the status of the project. It should be a summary of progress.
+
+## Workspace Detection
+
+First, determine the workspace type:
+
+1. **Check if current directory is a git repo:**
+   ```bash
+   git rev-parse --git-dir 2>/dev/null
+   ```
+
+2. **If NOT a git repo**, scan for all git repositories in subdirectories:
+   ```bash
+   for dir in */; do
+     if [ -d "$dir/.git" ]; then
+       echo "$dir"
+     fi
+   done
+   ```
+
+3. **IMPORTANT:** Check ALL discovered repositories - do not skip any. Each subdirectory with a `.git` folder must be checked for branch, commits, PRs/MRs, and changes.
+
+**Single repo mode:** If invoked inside a git repository, report status for that repo only.
+
+**Multi-repo mode:** If invoked in a parent directory containing multiple repos, report status for ALL of them.
 
 ## Usage
 
-- read the overall tasks
-- get the results of progress.md if exists
-- look into recent or all the commits in the checked out branches of the child projects
-- use gh or glab CLI to retrieve relevant pull requests
+- Detect workspace type (single repo vs multi-repo)
+- If multi-repo: enumerate ALL git repositories in subdirectories
+- Check progress.md if it exists
+- For EACH repository:
+  - Check current branch
+  - Look at recent commits
+  - Find PRs/MRs using gh or glab CLI
+  - Check CI status and reviews for open PRs/MRs
+  - Note uncommitted changes
 
 ## Repo Type Detection
 
@@ -120,7 +149,7 @@ This provides a quick summary of files changed and lines added/removed.
 Present status using this template:
 
 ```
-## Task Status Summary
+## Status Summary
 
 | Repo | Branch | PR/MR | CI Status | Reviews | Changes |
 |------|--------|-------|-----------|---------|---------|
@@ -154,10 +183,10 @@ Present status using this template:
 
 After gathering status, identify and summarize the next steps:
 
-- If all PRs/MRs are merged, confirm the task is complete or identify any remaining work
-- Check task definition files (e.g., `AGENTS.md`, `TODO.md`, `progress.md`) for remaining work items
+- If all PRs/MRs are merged, confirm work is complete or identify any remaining items
+- Check definition files (e.g., `AGENTS.md`, `TODO.md`, `progress.md`) for remaining work items
 - Review any PR/MR feedback that needs addressing
-- Identify blocked tasks and their dependencies
+- Identify blocked items and their dependencies
 - Note any failing CI checks that need fixing
 - List uncommitted or unpushed changes that need attention
 
