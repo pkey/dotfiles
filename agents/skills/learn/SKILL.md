@@ -19,10 +19,11 @@ The issue can come from:
 1. **Identify the issue** - What did the agent get wrong?
    - Scan the entire conversation for ALL learnings, not just the most recent issue
    - Present multiple learnings in a single response if applicable
-2. **Formulate the learning** - Convert the mistake into a clear, actionable guideline
-3. **Determine target location** - Select the appropriate file based on scope
-4. **Present plan** - Show the proposed change for user verification
-5. **Apply on confirmation** - Make the edit after user approves
+2. **Determine target location** - Select the appropriate file based on scope
+3. **Check existing context** - Read the target file to verify similar guidance doesn't already exist
+4. **Formulate the learning** - Convert the mistake into a clear, actionable guideline
+5. **Present plan** - Show the proposed change for user verification
+6. **Apply on confirmation** - Make the edit after user approves
 
 ## Target Selection
 
