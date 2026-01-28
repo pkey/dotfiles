@@ -183,14 +183,18 @@ fi
 eval "$($BREW_PATH shellenv)"
 
 # Install brews (use minimal or full Brewfile based on installation type)
+# Brewfile.local is for machine-specific packages (gitignored)
 if command -v brew >/dev/null 2>&1; then
   if [[ "$FULL_INSTALL" == true ]]; then
     cat "$DOTFILES/Brewfile.minimal" "$DOTFILES/Brewfile" > /tmp/Brewfile.all
+    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> /tmp/Brewfile.all
     brew bundle --file=/tmp/Brewfile.all
     brew bundle cleanup --force --file=/tmp/Brewfile.all
   else
-    brew bundle --file="$DOTFILES/Brewfile.minimal"
-    brew bundle cleanup --force --file="$DOTFILES/Brewfile.minimal"
+    cat "$DOTFILES/Brewfile.minimal" > /tmp/Brewfile.all
+    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> /tmp/Brewfile.all
+    brew bundle --file=/tmp/Brewfile.all
+    brew bundle cleanup --force --file=/tmp/Brewfile.all
   fi
 
   brew update
