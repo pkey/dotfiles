@@ -50,6 +50,7 @@ When asked about CI/CD, MR (GitLab), or PR (GitHub) test failures:
 3. Check if the same test passes on main/master branch
 4. If failure seems intermittent, retry the job first
 5. After triggering a retry, summarize findings and ask user preference before deep code investigation
+6. Do NOT make code changes based on assumptions - verify the exact failing test from logs first
 
 Do NOT start by blindly exploring the codebase - the failure information is in CI/CD, not the source code.
 
