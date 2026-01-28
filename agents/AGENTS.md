@@ -46,7 +46,7 @@ When asked about CI/CD, MR (GitLab), or PR (GitHub) test failures:
 1. First use the appropriate CLI to get actual failure information:
    - GitLab: `glab mr view`, `glab ci status`, `glab ci view`, `glab ci trace <job-id>`
    - GitHub: `gh pr view`, `gh run list`, `gh run view <run-id>`
-   - CircleCI: `curl https://circleci.com/api/v1.1/project/github/<org>/<repo>/<build_num>` for job details and step output URLs
+   - CircleCI: First `gh api repos/<owner>/<repo>/commits/<sha>/check-runs --jq '.check_runs[] | select(.name=="<workflow>") | .output.summary'` for job summary, then `curl https://circleci.com/api/v1.1/project/github/<org>/<repo>/<build_num>` for step details and output URLs
 2. Identify the specific failing test/job from CI logs
 3. Check if the same test passes on main/master branch
 4. If failure seems intermittent, retry the job first
