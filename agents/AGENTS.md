@@ -39,6 +39,17 @@ alwaysApply: true
   - Edits from any worktree update the source
 - When working in `~/tasks/`, remember you're in a worktree - the source repo is in `~/repos/`
 
+# Investigating CI/CD Failures
+
+When asked about CI/CD, MR (GitLab), or PR (GitHub) test failures:
+1. First use the appropriate CLI to get actual failure information:
+   - GitLab: `glab mr view`, `glab ci status`, `glab ci view`, `glab ci trace <job-id>`
+   - GitHub: `gh pr view`, `gh run list`, `gh run view <run-id>`
+2. Identify the specific failing test/job from CI logs
+3. Only then investigate the relevant code based on the actual error
+
+Do NOT start by blindly exploring the codebase - the failure information is in CI/CD, not the source code.
+
 # Local Context
 
 - Always check for `AGENTS.local.md` in the current project root
