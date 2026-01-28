@@ -4,6 +4,110 @@
 
 set -e
 
+# === Agent Invocation on Failure ===
+_on_bootstrap_error() {
+  local exit_code=$?
+  local failed_line=${BASH_LINENO[0]}
+  local failed_cmd="${BASH_COMMAND}"
+
+  # Disable error handling for cleanup
+  set +e
+  trap - ERR
+
+  printf "\n\033[1;31mBootstrap failed!\033[0m\n"
+  printf "  Command: %s\n" "$failed_cmd"
+  printf "  Line: %s\n" "$failed_line"
+  printf "  Exit code: %s\n" "$exit_code"
+
+  local agent_enabled="${CC_AGENT_ON_FAILURE:-true}"
+  local agent_cmd="${CC_AGENT:-}"
+
+  [[ "$agent_enabled" != "true" ]] && exit $exit_code
+
+  if [[ -z "$agent_cmd" ]]; then
+    echo ""; echo "Tip: Set CC_AGENT in ~/.localrc to enable auto-diagnosis"
+    exit $exit_code
+  fi
+
+  if ! command -v "${agent_cmd%% *}" >/dev/null 2>&1; then
+    echo "Agent '${agent_cmd%% *}' not found."
+
+    # Check if we can offer installation
+    local install_cmd=""
+    case "${agent_cmd%% *}" in
+      claude)
+        if command -v npm >/dev/null 2>&1; then
+          install_cmd="npm install -g @anthropic-ai/claude-code"
+        elif command -v brew >/dev/null 2>&1; then
+          install_cmd="brew install claude-code"
+        fi
+        ;;
+      cursor)
+        install_cmd="curl -fsSL https://cursor.com/install | bash"
+        ;;
+    esac
+
+    if [[ -n "$install_cmd" ]]; then
+      printf "Install it now? [y/N] "
+      read -r answer
+      if [[ "$answer" =~ ^[Yy]$ ]]; then
+        echo "Installing ${agent_cmd%% *}..."
+        if eval "$install_cmd"; then
+          echo "Installed successfully."
+        else
+          echo "Installation failed."
+          exit $exit_code
+        fi
+      else
+        exit $exit_code
+      fi
+    else
+      exit $exit_code
+    fi
+  fi
+
+  local script_snippet=""
+  local script_path="${BASH_SOURCE[0]}"
+  local start=1
+  if [[ -f "$script_path" ]]; then
+    start=$((failed_line - 5)); [[ $start -lt 1 ]] && start=1
+    script_snippet=$(sed -n "${start},$((failed_line + 5))p" "$script_path" 2>/dev/null || echo "")
+  fi
+
+  local prompt
+  prompt="Bootstrap script failed. Diagnose and suggest fixes.
+
+Error: \`$failed_cmd\` at line $failed_line (exit $exit_code)
+OS: $(uname -s)
+
+Script context (lines $start-$((failed_line + 5))):
+\`\`\`bash
+$script_snippet
+\`\`\`
+
+Provide diagnosis and actionable fixes."
+
+  printf "\n\033[1;33mInvoking %s for diagnosis...\033[0m\n\n" "${agent_cmd%% *}"
+
+  # Use exec to replace this process with the agent (clean slate)
+  case "${agent_cmd%% *}" in
+    claude)
+      exec $agent_cmd --permission-mode plan "$prompt"
+      ;;
+    cursor)
+      exec $agent_cmd --plan "$prompt"
+      ;;
+    *)
+      exec $agent_cmd "$prompt"
+      ;;
+  esac
+}
+
+_setup_error_trap() {
+  trap '_on_bootstrap_error' ERR
+}
+# === End Agent Invocation Setup ===
+
 # Clone your dotfiles repo if not present
 if [ ! -d "$HOME/dotfiles" ]; then
   git clone https://github.com/pkey/dotfiles.git "$HOME/dotfiles"
@@ -15,6 +119,10 @@ if [[ -f "$LOCALRC" ]]; then
   # shellcheck source=/dev/null
   source "$LOCALRC"
 fi
+
+# Setup error trap after loading localrc (to access CC_AGENT)
+_setup_error_trap
+
 DOTFILES_PROFILE="${DOTFILES_PROFILE:-minimal}"
 
 # Set FULL_INSTALL based on profile
