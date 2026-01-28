@@ -26,6 +26,13 @@ _copy_taskrc_files() {
   local repo_path="$1"
   local worktree_path="$2"
 
+  # Symlink AGENTS.local.md if it exists in source repo
+  if [[ -f "$repo_path/AGENTS.local.md" ]] && [[ ! -e "$worktree_path/AGENTS.local.md" ]]; then
+    ln -s "$repo_path/AGENTS.local.md" "$worktree_path/AGENTS.local.md"
+    echo "Linked: AGENTS.local.md"
+  fi
+
+  # Continue with COPY_FILES from .taskrc
   if [[ ! -f "$repo_path/.taskrc" ]]; then
     return 0
   fi
