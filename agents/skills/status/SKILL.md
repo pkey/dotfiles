@@ -81,10 +81,29 @@ gh pr view <number> --json reviews,reviewRequests
 ```
 
 **GitLab:**
+
+The standard `glab mr view <number>` does NOT show approval status. Use the API instead:
+
+```bash
+glab api "projects/<project-path-url-encoded>/merge_requests/<number>/approvals"
+```
+
+Example (for `probely/backend` MR 4310):
+```bash
+glab api "projects/probely%2Fbackend/merge_requests/4310/approvals"
+```
+
+Key fields in the response:
+- `approved`: boolean - whether MR is approved
+- `approvals_required`: number of required approvals
+- `approvals_left`: remaining approvals needed (0 = fully approved)
+- `approved_by`: array of users who approved
+- `merge_status`: "can_be_merged" when ready
+
+For unresolved discussions, use:
 ```bash
 glab mr view <number>
 ```
-The output includes approval status and unresolved discussions.
 
 ## Diff Stats
 
