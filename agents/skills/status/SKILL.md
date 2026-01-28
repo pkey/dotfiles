@@ -20,13 +20,14 @@ First, determine the workspace type:
 2. **If NOT a git repo**, scan for all git repositories in subdirectories:
    ```bash
    for dir in */; do
-     if [ -d "$dir/.git" ]; then
+     if git -C "$dir" rev-parse --git-dir &>/dev/null; then
        echo "$dir"
      fi
    done
    ```
+   Note: Use `git rev-parse` instead of checking for `.git` directory to handle both regular repos and git worktrees.
 
-3. **IMPORTANT:** Check ALL discovered repositories - do not skip any. Each subdirectory with a `.git` folder must be checked for branch, commits, PRs/MRs, and changes.
+3. **IMPORTANT:** Check ALL discovered repositories - do not skip any. Each subdirectory that is a git repo (including worktrees) must be checked for branch, commits, PRs/MRs, and changes.
 
 **Single repo mode:** If invoked inside a git repository, report status for that repo only.
 
