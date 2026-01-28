@@ -74,6 +74,11 @@ if command -v direnv 1>/dev/null 2>&1; then
     eval "$(direnv hook zsh)"
 fi
 
+# Set up CircleCI CLI completion
+if command -v circleci 1>/dev/null 2>&1; then
+    source <(circleci completion zsh)
+fi
+
 [[ -f "$HOME/.localrc" ]] && source "$HOME/.localrc"
 
 # LaTex

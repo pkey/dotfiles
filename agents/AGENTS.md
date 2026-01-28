@@ -46,7 +46,9 @@ When asked about CI/CD, MR (GitLab), or PR (GitHub) test failures:
    - GitLab: `glab mr view`, `glab ci status`, `glab ci view`, `glab ci trace <job-id>`
    - GitHub: `gh pr view`, `gh run list`, `gh run view <run-id>`
 2. Identify the specific failing test/job from CI logs
-3. Only then investigate the relevant code based on the actual error
+3. Check if the same test passes on main/master branch
+4. If failure seems intermittent, retry the job first
+5. After triggering a retry, summarize findings and ask user preference before deep code investigation
 
 Do NOT start by blindly exploring the codebase - the failure information is in CI/CD, not the source code.
 
