@@ -57,6 +57,6 @@ Do NOT start by blindly exploring the codebase - the failure information is in C
 
 # Local Context
 
-- Always check for `AGENTS.local.md` in the current project root
+- **Always check for `AGENTS.local.md` in the current project root FIRST** - especially for CI/CD, deployment, or release tasks
 - This file contains project-specific learnings and preferences that are gitignored
 - If present, read and apply its contents alongside other AGENTS.md files
