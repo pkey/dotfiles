@@ -28,16 +28,30 @@ git remote -v
 
 ## PR/MR Discovery
 
-Find PRs/MRs for the current branch, checking all states (open, merged, closed):
+Find PRs/MRs for the current branch, checking all states (open, merged, closed).
+
+**Important:** Do NOT suppress stderr with `2>/dev/null` - if a command fails, the error should be visible so issues (like incorrect flags) are surfaced rather than silently hidden.
 
 **GitHub:**
 ```bash
 gh pr list --head=<branch> --state=all --json number,title,state,mergedAt
 ```
 
-**GitLab:**
+**GitLab** (note: `glab` uses different flags than `gh` - there is no `--state` flag):
 ```bash
-glab mr list --source-branch=<branch> --state=all
+# Open MRs (default)
+glab mr list --source-branch=<branch>
+
+# Merged MRs
+glab mr list --source-branch=<branch> --merged
+
+# Closed MRs
+glab mr list --source-branch=<branch> --closed
+```
+
+Run all three to get the complete picture. Alternatively, use the API directly:
+```bash
+glab api "projects/:id/merge_requests?source_branch=<branch>&state=all"
 ```
 
 If a PR/MR is merged, skip CI and review checks for that repo (no longer applicable).
