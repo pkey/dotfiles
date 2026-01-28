@@ -23,3 +23,9 @@ alwaysApply: true
 # Python
 - Preferred package and project manager: uv
 - use uv init to initialise new project
+
+# Local Context
+
+- Always check for `AGENTS.local.md` in the current project root
+- This file contains project-specific learnings and preferences that are gitignored
+- If present, read and apply its contents alongside other AGENTS.md files

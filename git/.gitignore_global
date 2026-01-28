@@ -27,3 +27,6 @@ __pycache__/
 
 # Task workflow
 .taskrc
+
+# Local agent context (not committed)
+AGENTS.local.md
