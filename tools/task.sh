@@ -58,17 +58,20 @@ task() {
   case "$cmd" in
     add) shift; _task_add "$@" ;;
     go)  _task_go ;;
+    ls)  _task_ls ;;
     *)   _task_new "$@" ;;
   esac
 }
 
 _task_new() {
   local name="$1"
+  local branch_name="$1"
   if [[ -z "$name" ]]; then
     echo "Usage: task <name>" >&2
     return 1
   fi
 
+  name="${name//\//-}"
   local task_dir="$TASKS_DIR/$name"
   if [[ -d "$task_dir" ]]; then
     echo "Task '$name' already exists" >&2
@@ -104,8 +107,8 @@ _task_new() {
     base_ref=$(_get_base_ref "$repo_path")
 
     if [[ -n "$base_ref" ]]; then
-      git -C "$repo_path" worktree add "$worktree_path" -b "$name" "$base_ref" || \
-        git -C "$repo_path" worktree add "$worktree_path" "$name" || \
+      git -C "$repo_path" worktree add "$worktree_path" -b "$branch_name" "$base_ref" || \
+        git -C "$repo_path" worktree add "$worktree_path" "$branch_name" || \
         echo "Failed to create worktree for $repo" >&2
     else
       echo "Failed to create worktree for $repo: no default branch found (add .taskrc with DEFAULT_BRANCH)" >&2
@@ -118,7 +121,7 @@ _task_new() {
 
   local agents_file="$task_dir/AGENTS.md"
   cat > "$agents_file" << EOF
-# Task: $name
+# Task: $branch_name
 
 ## Objective
 
@@ -204,6 +207,23 @@ _task_add() {
       _copy_taskrc_files "$repo_path" "$worktree_path"
     fi
   done
+}
+
+_task_ls() {
+  if [[ ! -d "$TASKS_DIR" ]]; then
+    echo "Tasks directory not found: $TASKS_DIR" >&2
+    return 1
+  fi
+
+  local task
+  task=$(ls "$TASKS_DIR" | fzf \
+    --prompt="Tasks: " \
+    --preview="cat '$TASKS_DIR/{}/AGENTS.md' 2>/dev/null || echo 'No AGENTS.md found'" \
+    --preview-window=right:60%:wrap)
+
+  if [[ -n "$task" ]]; then
+    cd "$TASKS_DIR/$task"
+  fi
 }
 
 _task_go() {
