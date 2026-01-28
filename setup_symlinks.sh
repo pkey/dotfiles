@@ -55,3 +55,6 @@ done
 ln -sfn "$DOTFILES/cursor/rules" "$HOME/.cursor/rules"
 mkdir -p "$HOME/Library/Application Support/Cursor/User"
 ln -sf "$DOTFILES/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
+
+# Sync agent permissions (from agents/permissions.json to Claude and Cursor)
+"$DOTFILES/bin/sync-agent-permissions"

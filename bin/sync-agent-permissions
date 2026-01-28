@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -e
+
+DOTFILES="${DOTFILES:-$HOME/dotfiles}"
+PERMISSIONS_FILE="$DOTFILES/agents/permissions.json"
+CLAUDE_SETTINGS="$DOTFILES/claude/settings.json"
+CURSOR_CONFIG="$HOME/.cursor/cli-config.json"
+
+if [[ ! -f "$PERMISSIONS_FILE" ]]; then
+  echo "Error: $PERMISSIONS_FILE not found"
+  exit 1
+fi
+
+command -v jq >/dev/null 2>&1 || { echo "Error: jq is required"; exit 1; }
+
+sync_claude() {
+  if [[ ! -f "$CLAUDE_SETTINGS" ]]; then
+    echo '{}' > "$CLAUDE_SETTINGS"
+  fi
+
+  local permissions
+  permissions=$(cat "$PERMISSIONS_FILE")
+
+  jq --argjson perms "$permissions" '.permissions = $perms' "$CLAUDE_SETTINGS" > "${CLAUDE_SETTINGS}.tmp"
+  mv "${CLAUDE_SETTINGS}.tmp" "$CLAUDE_SETTINGS"
+}
+
+convert_to_cursor_format() {
+  local input="$1"
+  echo "$input" | sed -E 's/^Bash\(([^)]+)\)$/Shell(\1)/' | sed 's/:.*)/)/g'
+}
+
+sync_cursor() {
+  [[ ! -f "$CURSOR_CONFIG" ]] && return 0
+
+  local cursor_allow=()
+  local cursor_deny=()
+
+  while IFS= read -r entry; do
+    [[ "$entry" =~ ^Bash\( ]] && cursor_allow+=("$(convert_to_cursor_format "$entry")")
+  done < <(jq -r '.allow[]' "$PERMISSIONS_FILE")
+
+  while IFS= read -r entry; do
+    [[ "$entry" =~ ^Bash\( ]] && cursor_deny+=("$(convert_to_cursor_format "$entry")")
+  done < <(jq -r '.deny[]' "$PERMISSIONS_FILE")
+
+  local allow_json
+  local deny_json
+  allow_json=$(printf '%s\n' "${cursor_allow[@]}" | jq -R . | jq -s 'unique')
+  deny_json=$(printf '%s\n' "${cursor_deny[@]}" | jq -R . | jq -s 'unique')
+
+  jq --argjson allow "$allow_json" --argjson deny "$deny_json" \
+    '.permissions.allow = $allow | .permissions.deny = $deny' \
+    "$CURSOR_CONFIG" > "${CURSOR_CONFIG}.tmp"
+  mv "${CURSOR_CONFIG}.tmp" "$CURSOR_CONFIG"
+}
+
+sync_claude
+sync_cursor
