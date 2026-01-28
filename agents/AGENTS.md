@@ -12,6 +12,7 @@ alwaysApply: true
     - fd not find
     - refer to aliases and reuse them when appropriate
     - refer to $DOTFILES/Brewfile for installed tools
+    - Always echo environment variables (like $DOTFILES) to resolve paths before asking the user
 - style: Prefer self-documenting code over comments
 - philosophy:
     - YAGNI - don't build features until actually needed
