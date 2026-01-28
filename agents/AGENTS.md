@@ -24,6 +24,17 @@ alwaysApply: true
 - Preferred package and project manager: uv
 - use uv init to initialise new project
 
+# Task Workflow
+
+- Main repositories live in `~/repos/`
+- Tasks are created via `task <name>` which creates git worktrees in `~/tasks/<task-name>/`
+- `$DOTFILES/tools/task.sh` manages this workflow
+- For files that should persist/share across worktrees (like `AGENTS.local.md`):
+  - Create the file in the source repo (`~/repos/<repo>/`)
+  - It will be symlinked to worktrees automatically
+  - Edits from any worktree update the source
+- When working in `~/tasks/`, remember you're in a worktree - the source repo is in `~/repos/`
+
 # Local Context
 
 - Always check for `AGENTS.local.md` in the current project root
