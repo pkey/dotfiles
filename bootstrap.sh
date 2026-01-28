@@ -465,7 +465,7 @@ fi
 if [[ "$OS" == "Darwin" ]]; then
   DOCKER_SETTINGS="$HOME/Library/Group Containers/group.com.docker/settings.json"
   if [[ -f "$DOCKER_SETTINGS" ]]; then
-    defaults write "$HOME/Library/Group Containers/group.com.docker/settings.json" useVirtualizationFrameworkRosetta -bool true
+    jq '.useVirtualizationFrameworkRosetta = true' "$DOCKER_SETTINGS" > "$DOCKER_SETTINGS.tmp" && mv "$DOCKER_SETTINGS.tmp" "$DOCKER_SETTINGS"
     echo "Docker Rosetta enabled ✅"
   else
     echo "Docker settings not found. Start Docker Desktop first, then re-run bootstrap."

@@ -15,6 +15,7 @@ brew "direnv"
 brew "kubectx"
 brew "glab"
 brew "circleci"
+brew "jq"
 
 # macOS-only casks
 if OS.mac?
