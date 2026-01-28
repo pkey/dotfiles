@@ -17,6 +17,8 @@ The issue can come from:
 ## Process
 
 1. **Identify the issue** - What did the agent get wrong?
+   - Scan the entire conversation for ALL learnings, not just the most recent issue
+   - Present multiple learnings in a single response if applicable
 2. **Formulate the learning** - Convert the mistake into a clear, actionable guideline
 3. **Determine target location** - Select the appropriate file based on scope
 4. **Present plan** - Show the proposed change for user verification

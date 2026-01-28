@@ -13,6 +13,10 @@ alwaysApply: true
     - refer to aliases and reuse them when appropriate
     - refer to $DOTFILES/Brewfile for installed tools
     - Always echo environment variables (like $DOTFILES) to resolve paths before asking the user
+    - glab: For advanced GitLab operations not in standard commands, use `glab api`:
+        - Play manual jobs: `glab api --method POST "projects/<path>/jobs/<id>/play"`
+        - Check MR approvals: `glab api "projects/<path>/merge_requests/<id>/approvals"`
+        - List pipeline jobs: `glab api "projects/<path>/pipelines/<id>/jobs"`
 - style: Prefer self-documenting code over comments
 - philosophy:
     - YAGNI - don't build features until actually needed
