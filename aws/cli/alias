@@ -1,0 +1,9 @@
+[toplevel]
+whoami = sts get-caller-identity
+login = sso login
+
+sm = secretsmanager
+
+[command secretsmanager]
+ls = list-secrets --query "SecretList[].Name" --output table
+get = !f() { local secret; secret=$(aws secretsmanager list-secrets --query "SecretList[].Name" --output text | tr '\t' '\n' | fzf --prompt="Secret: " --query="${1:-}"); [ -n "$secret" ] && aws secretsmanager get-secret-value --secret-id "$secret" --query SecretString --output text; }; f

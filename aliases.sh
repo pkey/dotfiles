@@ -146,6 +146,25 @@ alias ybw='yarn build --watch'                                               # B
 alias yl='yarn lint --fix'                                                   # Lint and fix
 alias yt='yarn test'                                                         # Run tests
 
+# AWS
+aws() {
+  case "$1" in
+    profile)
+      local profile
+      profile=$(command aws configure list-profiles 2>/dev/null | fzf --prompt="AWS Profile: " --header="Current: ${AWS_PROFILE:-default}")
+      [[ -n "$profile" ]] && export AWS_PROFILE="$profile" && echo "AWS_PROFILE=$profile"
+      ;;
+    alias)
+      echo "aws profile  - switch AWS_PROFILE via fzf"
+      echo ""
+      cat "$HOME/.aws/cli/alias"
+      ;;
+    *)
+      command aws "$@"
+      ;;
+  esac
+}
+
 # Kubectl
 alias k='kubectl'                                                            # Kubectl shortcut
 

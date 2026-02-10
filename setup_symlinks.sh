@@ -35,6 +35,10 @@ ln -sf "$DOTFILES/.zshenv" "$HOME/.zshenv"
 ln -sf "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
 ln -sf "$DOTFILES/zsh/.zprofile" "$HOME/.zprofile"
 
+# AWS CLI
+ensure_dir "$HOME/.aws/cli"
+ln -sf "$DOTFILES/aws/cli/alias" "$HOME/.aws/cli/alias"
+
 # Agents (shared config for Claude, Cursor, etc.)
 ln -sf "$DOTFILES/agents/AGENTS.md" "$HOME/.AGENTS.md"
 
