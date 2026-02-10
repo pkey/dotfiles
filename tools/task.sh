@@ -92,39 +92,37 @@ _task_new() {
 
   local repos
   repos=$(ls "$REPOS_DIR" | fzf --multi --prompt="Select repos for task '$name': ")
-  if [[ -z "$repos" ]]; then
-    echo "No repos selected" >&2
-    return 1
-  fi
 
   mkdir -p "$task_dir"
 
-  echo "$repos" | while read -r repo; do
-    [[ -z "$repo" ]] && continue
-    local repo_path="$REPOS_DIR/$repo"
-    local worktree_path="$task_dir/$repo"
+  if [[ -n "$repos" ]]; then
+    echo "$repos" | while read -r repo; do
+      [[ -z "$repo" ]] && continue
+      local repo_path="$REPOS_DIR/$repo"
+      local worktree_path="$task_dir/$repo"
 
-    if [[ ! -d "$repo_path/.git" ]] && [[ ! -f "$repo_path/.git" ]]; then
-      echo "Skipping '$repo': not a git repository" >&2
-      continue
-    fi
+      if [[ ! -d "$repo_path/.git" ]] && [[ ! -f "$repo_path/.git" ]]; then
+        echo "Skipping '$repo': not a git repository" >&2
+        continue
+      fi
 
-    echo "Creating worktree for $repo..."
-    local base_ref
-    base_ref=$(_get_base_ref "$repo_path")
+      echo "Creating worktree for $repo..."
+      local base_ref
+      base_ref=$(_get_base_ref "$repo_path")
 
-    if [[ -n "$base_ref" ]]; then
-      git -C "$repo_path" worktree add "$worktree_path" -b "$branch_name" "$base_ref" || \
-        git -C "$repo_path" worktree add "$worktree_path" "$branch_name" || \
-        echo "Failed to create worktree for $repo" >&2
-    else
-      echo "Failed to create worktree for $repo: no default branch found (add .taskrc with DEFAULT_BRANCH)" >&2
-    fi
+      if [[ -n "$base_ref" ]]; then
+        git -C "$repo_path" worktree add "$worktree_path" -b "$branch_name" "$base_ref" || \
+          git -C "$repo_path" worktree add "$worktree_path" "$branch_name" || \
+          echo "Failed to create worktree for $repo" >&2
+      else
+        echo "Failed to create worktree for $repo: no default branch found (add .taskrc with DEFAULT_BRANCH)" >&2
+      fi
 
-    if [[ -d "$worktree_path" ]]; then
-      _copy_taskrc_files "$repo_path" "$worktree_path"
-    fi
-  done
+      if [[ -d "$worktree_path" ]]; then
+        _copy_taskrc_files "$repo_path" "$worktree_path"
+      fi
+    done
+  fi
 
   local agents_file="$task_dir/AGENTS.md"
   cat > "$agents_file" << EOF
