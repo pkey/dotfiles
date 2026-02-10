@@ -13,3 +13,5 @@ List is constantly prioritised when adding a new item.
 - [ ] AI summary of commits is not great for larger changes
 - [ ] I need to create an easy way to have common things (aliases, tools, shell functions, etc) and workstation/environment
 specific stuff.
+- [ ] Create a shared repo (e.g. snyk-dotfiles) for Snyk-specific machine setup: AWS SSO profiles, corp cert bundle, and other org-specific quirks that can be shared with teammates.
+See the snyk folder and .localrc for ideas what to migrage.
