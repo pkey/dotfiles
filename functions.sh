@@ -134,6 +134,8 @@ $diff_output"
 #   list    - List all secret names
 #   get     - Get a secret value
 #   delete  - Delete a secret
+#   rename  - Rename a secret
+#   update  - Update a secret's value
 #   export  - Add secret to local.zsh for auto-export
 #   (no args) - Interactive mode with fzf
 
@@ -153,6 +155,14 @@ secret() {
     delete)
       shift
       _secret_delete "$@"
+      ;;
+    rename)
+      shift
+      _secret_rename "$@"
+      ;;
+    update)
+      shift
+      _secret_update "$@"
       ;;
     export)
       shift
@@ -211,6 +221,67 @@ _secret_delete() {
   fi
 }
 
+_secret_update() {
+  local name="${1:-}"
+  if [[ -z "$name" ]]; then
+    name=$(_secret_list | fzf --prompt="Update secret: ")
+    [[ -z "$name" ]] && return 1
+  fi
+
+  if ! security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w &>/dev/null; then
+    echo "Secret '$name' not found" && return 1
+  fi
+
+  printf "New value (hidden): "
+  read -rs value
+  echo
+  [[ -z "$value" ]] && echo "Cancelled" && return 1
+
+  if security add-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w "$value" -U 2>/dev/null; then
+    export "$name"="$value"
+    echo "Secret '$name' updated"
+  else
+    echo "Failed to update secret" && return 1
+  fi
+}
+
+_secret_rename() {
+  local old_name="${1:-}" new_name="${2:-}"
+  if [[ -z "$old_name" ]]; then
+    old_name=$(_secret_list | fzf --prompt="Secret to rename: ")
+    [[ -z "$old_name" ]] && return 1
+  fi
+
+  local value
+  value=$(security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${old_name}" -w 2>/dev/null)
+  if [[ -z "$value" ]]; then
+    echo "Secret '$old_name' not found" && return 1
+  fi
+
+  if [[ -z "$new_name" ]]; then
+    printf "New name: "
+    read -r new_name
+    [[ -z "$new_name" ]] && echo "Cancelled" && return 1
+  fi
+
+  if security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${new_name}" -w &>/dev/null; then
+    echo "Secret '$new_name' already exists" && return 1
+  fi
+
+  security add-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${new_name}" -w "$value" -U 2>/dev/null || { echo "Failed to create renamed secret" && return 1; }
+  security delete-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${old_name}" &>/dev/null
+
+  local localzsh="$HOME/.localrc"
+  if grep -q "export ${old_name}=" "$localzsh" 2>/dev/null; then
+    sed -i '' "s|export ${old_name}=.*|export ${new_name}=\$(security find-generic-password -a \"\$USER\" -s \"${_SECRET_SERVICE}:${new_name}\" -w)|" "$localzsh"
+    unset "$old_name"
+    export "$new_name"="$value"
+    echo "Updated '$old_name' -> '$new_name' in .localrc"
+  fi
+
+  echo "Secret renamed: '$old_name' -> '$new_name'"
+}
+
 _secret_export() {
   local name="${1:-}"
   if [[ -z "$name" ]]; then
@@ -236,7 +307,7 @@ _secret_export() {
 
 _secret_interactive() {
   local action
-  action=$(printf "set\nlist\nget\ndelete\nexport" | fzf --prompt="Secret action: ")
+  action=$(printf "set\nlist\nget\ndelete\nrename\nupdate\nexport" | fzf --prompt="Secret action: ")
   [[ -z "$action" ]] && return 1
   secret "$action"
 }
