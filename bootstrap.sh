@@ -445,6 +445,14 @@ if command -v fnm >/dev/null 2>&1; then
   else
     echo "pnpm $CURRENT_PNPM ✅"
   fi
+
+  # Install Claude Code
+  if ! command -v claude >/dev/null 2>&1; then
+    echo "Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+  else
+    echo "Claude Code already installed ✅"
+  fi
 fi
 
 # Install Cursor if not already installed
