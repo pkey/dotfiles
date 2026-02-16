@@ -65,7 +65,8 @@ vim.opt.hlsearch = true
 vim.opt.incsearch = true
 
 -- UI
-vim.opt.wrap = false
+vim.opt.wrap = true
+vim.opt.linebreak = true
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
