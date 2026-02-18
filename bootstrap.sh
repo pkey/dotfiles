@@ -416,14 +416,9 @@ if command -v fnm >/dev/null 2>&1; then
     LTS_NODE=$(fnm list | grep -v system | head -1 | awk '{print $2}')
     if [[ -n "$LTS_NODE" ]]; then
       fnm default "$LTS_NODE"
+      eval "$(fnm env)"
       echo "Node.js $LTS_NODE set as default ✅"
     fi
-  fi
-
-  # Enable corepack if not already enabled
-  if ! command -v pnpm >/dev/null 2>&1; then
-    echo "Enabling corepack..."
-    corepack enable
   fi
 
   # Update npm if not latest
@@ -435,6 +430,13 @@ if command -v fnm >/dev/null 2>&1; then
   else
     echo "npm $CURRENT_NPM ✅"
   fi
+
+  # Install corepack if not available (removed from Node.js >= 22)
+  if ! command -v corepack >/dev/null 2>&1; then
+    echo "Installing corepack..."
+    npm install -g corepack
+  fi
+  corepack enable
 
   # Update pnpm if not latest
   CURRENT_PNPM=$(pnpm --version 2>/dev/null)
