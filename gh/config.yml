@@ -1,0 +1,17 @@
+# What protocol to use when performing git operations. Supported values: ssh, https
+git_protocol: https
+# What editor gh should run when creating issues, pull requests, etc. If blank, will refer to environment.
+editor:
+# When to interactively prompt. This is a global config that cannot be overridden by hostname. Supported values: enabled, disabled
+prompt: enabled
+# A pager program to send command output to, e.g. "less". Set the value to "cat" to disable the pager.
+pager:
+# Aliases allow you to create nicknames for gh commands
+aliases:
+    co: pr checkout
+    prs: '!result=$({ gh search prs --author=@me --state=open --archived=false --json repository,number,title; gh search prs --assignee=@me --state=open --archived=false --json repository,number,title; } | jq -s -r "add | unique_by(.repository.nameWithOwner + \"#\" + (.number | tostring)) | .[] | select(.title | (startswith(\"[Snyk]\") or startswith(\"fix(deps)\")) | not) | \"\(.repository.nameWithOwner)#\(.number) \(.title)\"" | fzf --expect=ctrl-o,ctrl-d,ctrl-x,ctrl-w --header="enter: view | ctrl-o: browser | ctrl-d: diff | ctrl-x: checkout | ctrl-w: close" --preview="repo=\$(echo {1} | cut -d# -f1); num=\$(echo {1} | cut -d# -f2 | cut -d\\  -f1); gh pr view \$num -R \$repo"); key=$(echo "$result" | head -1); line=$(echo "$result" | tail -1); [ -z "$line" ] && exit 0; repo=$(echo "$line" | cut -d" " -f1 | cut -d"#" -f1); num=$(echo "$line" | cut -d" " -f1 | cut -d"#" -f2); case "$key" in ctrl-o) gh pr view "$num" -R "$repo" --web ;; ctrl-d) gh pr diff "$num" -R "$repo" ;; ctrl-x) gh pr checkout "$num" -R "$repo" ;; ctrl-w) gh pr close "$num" -R "$repo" ;; *) gh pr view "$num" -R "$repo" ;; esac'
+# The path to a unix socket through which send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
+http_unix_socket:
+# What web browser gh should use when opening URLs. If blank, will refer to environment.
+browser:
+version: "1"

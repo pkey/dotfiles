@@ -23,6 +23,10 @@ ln -sf "$DOTFILES/git/.gitconfig" "$HOME/.gitconfig"
 # Vim
 ln -sf "$DOTFILES/vim/.vimrc" "$HOME/.vimrc"
 
+# GitHub CLI
+ensure_dir "$HOME/.config/gh"
+ln -sf "$DOTFILES/gh/config.yml" "$HOME/.config/gh/config.yml"
+
 # Neovim
 ensure_dir "$HOME/.config"
 ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"
