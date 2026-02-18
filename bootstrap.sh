@@ -448,6 +448,9 @@ if command -v fnm >/dev/null 2>&1; then
     echo "pnpm $CURRENT_PNPM ✅"
   fi
 
+  # Pre-cache Puppeteer browser for tools like mermaid-cli (npx mmdc)
+  npx --yes puppeteer browsers install chrome-headless-shell
+
   # Install Claude Code
   if ! command -v claude >/dev/null 2>&1; then
     echo "Installing Claude Code..."
