@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+INSTALL_DIR="$HOME/.local/bin"
+BINARY_NAME="snyk-preview"
+ASSET="snyk-macos-arm64"
+BASE_URL="https://downloads.snyk.io/cli/preview"
+
+release_json=$(curl -sfL "$BASE_URL/release.json")
+expected_sha=$(echo "$release_json" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+print(data['assets']['$ASSET']['sha256'].split()[0])
+")
+
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+curl -sfL "$BASE_URL/$ASSET" -o "$tmp"
+
+actual_sha=$(shasum -a 256 "$tmp" | awk '{print $1}')
+if [[ "$actual_sha" != "$expected_sha" ]]; then
+  echo "SHA256 mismatch: expected=$expected_sha actual=$actual_sha" >&2
+  exit 1
+fi
+
+mkdir -p "$INSTALL_DIR"
+chmod +x "$tmp"
+mv "$tmp" "$INSTALL_DIR/$BINARY_NAME"
+trap - EXIT
+
+echo "Installed $BINARY_NAME $("$INSTALL_DIR/$BINARY_NAME" --version 2>/dev/null || echo 'unknown')"
