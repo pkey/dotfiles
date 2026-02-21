@@ -255,11 +255,20 @@ fi
 
 # setup GPG
 
-PINENTRY_PATH="/opt/homebrew/bin/pinentry-mac"
+if [[ "$OS" == "Darwin" ]]; then
+  PINENTRY_PATH="/opt/homebrew/bin/pinentry-mac"
+elif command -v pinentry >/dev/null 2>&1; then
+  PINENTRY_PATH="$(command -v pinentry)"
+else
+  PINENTRY_PATH=""
+fi
+
 mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
-echo "pinentry-program $PINENTRY_PATH" >> ~/.gnupg/gpg-agent.conf
-chmod 600 ~/.gnupg/gpg-agent.conf
+if [[ -n "$PINENTRY_PATH" ]]; then
+  echo "pinentry-program $PINENTRY_PATH" > ~/.gnupg/gpg-agent.conf
+  chmod 600 ~/.gnupg/gpg-agent.conf
+fi
 gpgconf --kill all || true
 
 SIGNING_KEY="EAB2D9EB6CD93324"
@@ -428,7 +437,7 @@ fi
 
 # Update or add DOTFILES_PROFILE in localrc
 if [[ -f "$LOCALRC" ]] && grep -q "^export $PROFILE_VAR=" "$LOCALRC"; then
-  sed -i '' "s/^export $PROFILE_VAR=.*/export $PROFILE_VAR=\"$PROFILE_VALUE\"/" "$LOCALRC"
+  sed -i.bak "s/^export $PROFILE_VAR=.*/export $PROFILE_VAR=\"$PROFILE_VALUE\"/" "$LOCALRC" && rm -f "$LOCALRC.bak"
 else
   echo "export $PROFILE_VAR=\"$PROFILE_VALUE\"" >> "$LOCALRC"
 fi
@@ -513,22 +522,25 @@ if command -v fnm >/dev/null 2>&1; then
   fi
 fi
 
-# Install Cursor if not already installed
-if ! command -v cursor >/dev/null 2>&1; then
-  echo "Installing Cursor..."
-  curl https://cursor.com/install -fsS | bash
-else
-  echo "Cursor already installed, skipping."
-fi
+# macOS-only full install steps
+if [[ "$OS" == "Darwin" ]]; then
+  # Install Cursor if not already installed
+  if ! command -v cursor >/dev/null 2>&1; then
+    echo "Installing Cursor..."
+    curl https://cursor.com/install -fsS | bash
+  else
+    echo "Cursor already installed, skipping."
+  fi
 
-# Install AWS CLI if not already installed
-if ! command -v aws >/dev/null 2>&1; then
-  echo "Installing AWS CLI..."
-  curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
-  sudo installer -pkg AWSCLIV2.pkg -target /
-  rm AWSCLIV2.pkg
-else
-  echo "AWS CLI already installed, skipping."
+  # Install AWS CLI if not already installed
+  if ! command -v aws >/dev/null 2>&1; then
+    echo "Installing AWS CLI..."
+    curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+    sudo installer -pkg AWSCLIV2.pkg -target /
+    rm AWSCLIV2.pkg
+  else
+    echo "AWS CLI already installed, skipping."
+  fi
 fi
 
 # Configure Docker Desktop Rosetta (macOS only)
