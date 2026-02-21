@@ -93,13 +93,13 @@ Keep fixing and re-running until bootstrap completes successfully."
   # Use exec to replace this process with the agent (clean slate)
   case "${agent_cmd%% *}" in
     claude)
-      exec $agent_cmd --dangerously-skip-permissions "$prompt"
+      exec "$agent_cmd" "$prompt"
       ;;
     cursor)
-      exec $agent_cmd --plan "$prompt"
+      exec "$agent_cmd" --plan "$prompt"
       ;;
     *)
-      exec $agent_cmd "$prompt"
+      exec "$agent_cmd" "$prompt"
       ;;
   esac
 }
@@ -140,7 +140,7 @@ if [[ "$(id -u)" -eq 0 ]]; then
   usermod -aG sudo "$TARGET_USER"
 
   # Enable passwordless sudo for the new user
-  echo "$TARGET_USER ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$TARGET_USER"
+  echo "$TARGET_USER ALL=(ALL) NOPASSWD: /opt/homebrew/bin/brew, /home/linuxbrew/.linuxbrew/bin/brew, /usr/bin/systemctl, /usr/bin/tee, /usr/sbin/chsh" > "/etc/sudoers.d/$TARGET_USER"
   chmod 0440 "/etc/sudoers.d/$TARGET_USER"
 
   # Copy SSH keys from root
@@ -156,7 +156,7 @@ if [[ "$(id -u)" -eq 0 ]]; then
   fi
 
   echo "Re-executing bootstrap as '$TARGET_USER'..."
-  exec su - "$TARGET_USER" -c "/home/$TARGET_USER/dotfiles/bootstrap.sh $*"
+  exec su - "$TARGET_USER" -c "/home/$TARGET_USER/dotfiles/bootstrap.sh$(printf ' %q' "$@")"
 fi
 # === End Root User Setup ===
 
@@ -253,16 +253,18 @@ eval "$($BREW_PATH shellenv)"
 # Install brews (use minimal or full Brewfile based on installation type)
 # Brewfile.local is for machine-specific packages (gitignored)
 if command -v brew >/dev/null 2>&1; then
+  BREWFILE_TMP=$(mktemp "${TMPDIR:-/tmp}/Brewfile.XXXXXX")
+  trap 'rm -f "$BREWFILE_TMP"' EXIT
   if [[ "$FULL_INSTALL" == true ]]; then
-    cat "$DOTFILES/Brewfile.minimal" "$DOTFILES/Brewfile" > /tmp/Brewfile.all
-    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> /tmp/Brewfile.all
-    brew bundle --file=/tmp/Brewfile.all
-    brew bundle cleanup --force --file=/tmp/Brewfile.all
+    cat "$DOTFILES/Brewfile.minimal" "$DOTFILES/Brewfile" > "$BREWFILE_TMP"
+    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> "$BREWFILE_TMP"
+    brew bundle --file="$BREWFILE_TMP"
+    brew bundle cleanup --force --file="$BREWFILE_TMP"
   else
-    cat "$DOTFILES/Brewfile.minimal" > /tmp/Brewfile.all
-    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> /tmp/Brewfile.all
-    brew bundle --file=/tmp/Brewfile.all
-    brew bundle cleanup --force --file=/tmp/Brewfile.all
+    cat "$DOTFILES/Brewfile.minimal" > "$BREWFILE_TMP"
+    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> "$BREWFILE_TMP"
+    brew bundle --file="$BREWFILE_TMP"
+    brew bundle cleanup --force --file="$BREWFILE_TMP"
   fi
 
   brew update
@@ -320,7 +322,7 @@ if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
   # Switch dotfiles remote from HTTPS to SSH
   current_url=$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || true)
   if [[ "$current_url" == https://github.com/* ]]; then
-    ssh_url=$(echo "$current_url" | sed 's|https://github.com/|git@github.com:|')
+    ssh_url="${current_url/https:\/\/github.com\//git@github.com:}"
     git -C "$DOTFILES" remote set-url origin "$ssh_url"
     echo "Switched dotfiles remote to SSH: $ssh_url"
   fi

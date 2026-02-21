@@ -189,7 +189,7 @@ _secret_set() {
 
   if security add-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w "$value" -U 2>/dev/null; then
     _secret_export "$name"
-    export "$name"=$(security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w)
+    export "$name"="$(security find-generic-password -a "$USER" -s "${_SECRET_SERVICE}:${name}" -w)"
   else
     echo "Failed to save secret" && return 1
   fi

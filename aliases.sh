@@ -83,14 +83,14 @@ gwta() {                                                                     # C
   local branch="$1"
   local base="${2:-HEAD}"
   local dir_name="${branch//\//-}"
-  local worktree_path="/tmp/$(basename $(git rev-parse --show-toplevel))-$dir_name"
+  local worktree_path="/tmp/$(basename "$(git rev-parse --show-toplevel)")-$dir_name"
   git worktree add -b "$branch" "$worktree_path" "$base" && cd "$worktree_path"
 }
 
 gwtc() {                                                                     # Checkout branch in worktree
   local branch="$1"
   local dir_name="${branch//\//-}"
-  local worktree_path="/tmp/$(basename $(git rev-parse --show-toplevel))-$dir_name"
+  local worktree_path="/tmp/$(basename "$(git rev-parse --show-toplevel)")-$dir_name"
   git worktree add "$worktree_path" "$branch" && cd "$worktree_path"
 }
 
