@@ -113,6 +113,52 @@ if [ ! -d "$HOME/dotfiles" ]; then
   git clone https://github.com/pkey/dotfiles.git "$HOME/dotfiles"
 fi
 
+# === Root User Setup (VPS) ===
+# When running as root on a fresh VPS, create a non-root user with sudo access,
+# copy SSH keys, and re-exec bootstrap as that user.
+if [[ "$(id -u)" -eq 0 ]]; then
+  TARGET_USER="pkey"
+
+  # Allow override via --user <name>
+  for i in $(seq 1 $#); do
+    arg="${!i}"
+    if [[ "$arg" == "--user" ]]; then
+      next=$((i + 1))
+      TARGET_USER="${!next}"
+      break
+    fi
+  done
+
+  echo "Running as root. Setting up user '$TARGET_USER'..."
+
+  if ! id "$TARGET_USER" &>/dev/null; then
+    adduser --disabled-password --gecos "" "$TARGET_USER"
+    echo "Created user '$TARGET_USER'"
+  fi
+
+  usermod -aG sudo "$TARGET_USER"
+
+  # Enable passwordless sudo for the new user
+  echo "$TARGET_USER ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$TARGET_USER"
+  chmod 0440 "/etc/sudoers.d/$TARGET_USER"
+
+  # Copy SSH keys from root
+  if [[ -d "$HOME/.ssh" ]]; then
+    rsync --archive --chown="$TARGET_USER:$TARGET_USER" "$HOME/.ssh" "/home/$TARGET_USER/"
+    echo "SSH keys copied"
+  fi
+
+  DOTFILES_PATH="$HOME/dotfiles"
+  if [[ -d "$DOTFILES_PATH" ]]; then
+    cp -r "$DOTFILES_PATH" "/home/$TARGET_USER/dotfiles"
+    chown -R "$TARGET_USER:$TARGET_USER" "/home/$TARGET_USER/dotfiles"
+  fi
+
+  echo "Re-executing bootstrap as '$TARGET_USER'..."
+  exec su - "$TARGET_USER" -c "/home/$TARGET_USER/dotfiles/bootstrap.sh $*"
+fi
+# === End Root User Setup ===
+
 # Load profile from localrc if exists, default to minimal
 LOCALRC="$HOME/.localrc"
 if [[ -f "$LOCALRC" ]]; then
@@ -133,8 +179,9 @@ else
 fi
 
 # Parse arguments (can override profile)
-for arg in "$@"; do
-  case $arg in
+ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
     --full)
       FULL_INSTALL=true
       shift
@@ -143,10 +190,16 @@ for arg in "$@"; do
       FULL_INSTALL=false
       shift
       ;;
+    --user)
+      shift 2  # consumed by root setup block
+      ;;
     *)
+      ARGS+=("$1")
+      shift
       ;;
   esac
 done
+set -- "${ARGS[@]}"
 
 printf "Bootstrap started... 🚀\n"
 if [[ "$FULL_INSTALL" == true || "$OS" == "Darwin" ]]; then
