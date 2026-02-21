@@ -109,6 +109,29 @@ _setup_error_trap() {
 }
 # === End Agent Invocation Setup ===
 
+# Ensure git is available (needed before Homebrew is installed)
+if ! command -v git >/dev/null 2>&1; then
+  echo "Git not found. Installing..."
+  if [[ "$(uname -s)" == "Linux" ]]; then
+    if command -v apt-get >/dev/null 2>&1; then
+      sudo apt-get update && sudo apt-get install -y git
+    elif command -v yum >/dev/null 2>&1; then
+      sudo yum install -y git
+    elif command -v dnf >/dev/null 2>&1; then
+      sudo dnf install -y git
+    elif command -v pacman >/dev/null 2>&1; then
+      sudo pacman -S --noconfirm git
+    else
+      echo "Unable to install git. Please install it manually."
+      exit 1
+    fi
+  elif [[ "$(uname -s)" == "Darwin" ]]; then
+    xcode-select --install 2>/dev/null || true
+    echo "Waiting for Xcode CLT installation (provides git)..."
+    until command -v git >/dev/null 2>&1; do sleep 5; done
+  fi
+fi
+
 # Clone your dotfiles repo if not present
 if [ ! -d "$HOME/dotfiles" ]; then
   git clone https://github.com/pkey/dotfiles.git "$HOME/dotfiles"
