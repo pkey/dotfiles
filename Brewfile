@@ -26,4 +26,5 @@ if OS.mac?
   cask "docker-desktop"
   cask "gcloud-cli"
   cask "codex"
+  cask "orbstack"
 end
