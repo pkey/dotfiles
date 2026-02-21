@@ -53,6 +53,7 @@ alias 'gc!'='git commit -v --amend'                                          # A
 alias gc='git commit'                                                        # Commit staged changes
 alias gca='gaa && gc'                                                        # Stage all and commit
 alias gai='aicommit'                                                         # AI-generated commit msg
+alias gaip='gaa && claude -p "commit" && gp'                                 # AI commit and push
 alias gc-='git checkout -'                                                   # Checkout previous branch
 alias 'gca!'='git commit -v -a --amend'                                      # Amend with all changes
 alias grw='gaa && gc! --no-edit && gp!'                                      # Rewrite: stage, amend, push
