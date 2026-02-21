@@ -318,10 +318,8 @@ if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
   echo "Git configured: $git_name <$git_email>"
 
   # Switch dotfiles remote from HTTPS to SSH
-  local current_url
   current_url=$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || true)
   if [[ "$current_url" == https://github.com/* ]]; then
-    local ssh_url
     ssh_url=$(echo "$current_url" | sed 's|https://github.com/|git@github.com:|')
     git -C "$DOTFILES" remote set-url origin "$ssh_url"
     echo "Switched dotfiles remote to SSH: $ssh_url"
@@ -501,15 +499,6 @@ if command -v pre-commit >/dev/null 2>&1; then
   pre-commit install
 fi
 
-# Exit here if not doing full installation
-if [[ "$FULL_INSTALL" != true ]]; then
-  printf "Minimal bootstrap completed 🎉\n"
-  printf "Run with --full flag for complete installation\n"
-  exec zsh
-fi
-
-printf "Continuing with full installation...\n"
-
 # Install Node.js LTS via fnm
 if command -v fnm >/dev/null 2>&1; then
   eval "$(fnm env)"
@@ -525,6 +514,20 @@ if command -v fnm >/dev/null 2>&1; then
       echo "Node.js $LTS_NODE set as default ✅"
     fi
   fi
+fi
+
+# Exit here if not doing full installation
+if [[ "$FULL_INSTALL" != true ]]; then
+  printf "Minimal bootstrap completed 🎉\n"
+  printf "Run with --full flag for complete installation\n"
+  exec zsh
+fi
+
+printf "Continuing with full installation...\n"
+
+# Update npm, corepack, and pnpm
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env)"
 
   # Update npm if not latest
   CURRENT_NPM=$(npm --version 2>/dev/null)
