@@ -30,3 +30,6 @@ __pycache__/
 
 # Local agent context (not committed)
 AGENTS.local.md
+
+# Claude Code worktrees
+.claude/worktrees/
