@@ -127,6 +127,16 @@ $diff_output"
   fi
 }
 
+#--Claude
+cfix() {
+  local f="/tmp/cfix_last_error"
+  if [[ ! -f "$f" ]]; then
+    echo "No recent failure captured."
+    return 1
+  fi
+  claude -p "The following command failed. Diagnose and fix the issue:" < "$f"
+}
+
 #--Secrets (macOS Keychain)
 # Manage environment variable secrets stored in macOS keychain
 # Usage: secret <command> [args]
