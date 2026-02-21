@@ -27,6 +27,10 @@ ln -sf "$DOTFILES/vim/.vimrc" "$HOME/.vimrc"
 ensure_dir "$HOME/.config/gh"
 ln -sf "$DOTFILES/gh/config.yml" "$HOME/.config/gh/config.yml"
 
+# Ghostty
+ensure_dir "$HOME/.config/ghostty"
+ln -sf "$DOTFILES/ghostty/config" "$HOME/.config/ghostty/config"
+
 # Neovim
 ensure_dir "$HOME/.config"
 ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"
