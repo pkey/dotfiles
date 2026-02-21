@@ -322,8 +322,8 @@ else
   echo "pipx already installed ✅"
 fi
 
-# Ensure pipx is in the path
-pipx ensurepath -q
+# Ensure pipx is in the path (suppress output — PATH is managed by .zshrc)
+pipx ensurepath -q >/dev/null 2>&1
 
 # Fix broken pipx packages if Python interpreter changed
 if pipx list 2>&1 | grep -q "invalid interpreter"; then
@@ -384,9 +384,11 @@ install_sudoers() {
   TEMP=$(mktemp)
   sed "s|__DOTFILES__|$DOTFILES|g" "$SRC" > "$TEMP"
 
+  local GROUP="wheel"
+  [[ "$OS" == "Linux" ]] && GROUP="root"
+
   if sudo visudo -c -f "$TEMP" >/dev/null 2>&1; then
-    sudo install -m 0440 -o root -g wheel "$TEMP" "$DEST"
-    [[ "$OS" == "Linux" ]] && sudo chgrp root "$DEST"
+    sudo install -m 0440 -o root -g "$GROUP" "$TEMP" "$DEST"
     echo "Sudoers installed"
   else
     echo "Warning: Invalid sudoers syntax, skipping"
