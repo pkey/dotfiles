@@ -234,7 +234,8 @@ install_linux() {
       else
         local name apt_name apt_setup post_apt script
         name=$(yq -r ".${section}[$i].name" "$PACKAGES_FILE")
-        apt_name=$(yq -r ".${section}[$i].apt // \"\"" "$PACKAGES_FILE")
+        apt_name=$(yq -r ".${section}[$i].apt" "$PACKAGES_FILE")
+        [[ "$apt_name" == "null" ]] && apt_name=""
         apt_setup=$(yq -r ".${section}[$i].apt_setup // \"\"" "$PACKAGES_FILE")
         post_apt=$(yq -r ".${section}[$i].post_apt // \"\"" "$PACKAGES_FILE")
         script=$(yq -r ".${section}[$i].script // \"\"" "$PACKAGES_FILE")
@@ -270,7 +271,8 @@ install_linux() {
         else
           local name apt_name
           name=$(yq -r ".${section}[$i].name" "$PACKAGES_LOCAL")
-          apt_name=$(yq -r ".${section}[$i].apt // \"\"" "$PACKAGES_LOCAL")
+          apt_name=$(yq -r ".${section}[$i].apt" "$PACKAGES_LOCAL")
+          [[ "$apt_name" == "null" ]] && apt_name=""
           if [[ "$apt_name" != "false" ]]; then
             apt_packages+=("${apt_name:-$name}")
           fi
