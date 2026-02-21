@@ -187,6 +187,7 @@ fi
 if ! command -v claude >/dev/null 2>&1; then
   printf "Installing Claude CLI... 🤖\n"
   curl -fsSL https://claude.ai/install.sh | bash
+  export PATH="$HOME/.local/bin:$PATH"
 fi
 CC_AGENT="${CC_AGENT:-claude}"
 
