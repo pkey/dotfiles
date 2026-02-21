@@ -75,7 +75,7 @@ _on_bootstrap_error() {
   fi
 
   local prompt
-  prompt="Bootstrap script failed. Diagnose and suggest fixes.
+  prompt="Bootstrap script failed. Fix the issue and re-run ./bootstrap.sh.
 
 Error: \`$failed_cmd\` at line $failed_line (exit $exit_code)
 OS: $(uname -s)
@@ -85,14 +85,15 @@ Script context (lines $start-$((failed_line + 5))):
 $script_snippet
 \`\`\`
 
-Provide diagnosis and actionable fixes."
+Fix the failing command or script, then re-run: ./bootstrap.sh
+Keep fixing and re-running until bootstrap completes successfully."
 
   printf "\n\033[1;33mInvoking %s for diagnosis...\033[0m\n\n" "${agent_cmd%% *}"
 
   # Use exec to replace this process with the agent (clean slate)
   case "${agent_cmd%% *}" in
     claude)
-      exec $agent_cmd --permission-mode plan "$prompt"
+      exec $agent_cmd --dangerously-skip-permissions "$prompt"
       ;;
     cursor)
       exec $agent_cmd --plan "$prompt"
@@ -158,6 +159,20 @@ if [[ "$(id -u)" -eq 0 ]]; then
   exec su - "$TARGET_USER" -c "/home/$TARGET_USER/dotfiles/bootstrap.sh $*"
 fi
 # === End Root User Setup ===
+
+# === Claude CLI — first-class dependency for self-healing ===
+if ! command -v claude >/dev/null 2>&1; then
+  printf "Installing Claude CLI... 🤖\n"
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
+CC_AGENT="${CC_AGENT:-claude}"
+
+# Authenticate if not already
+if ! claude auth status >/dev/null 2>&1; then
+  printf "Please authenticate Claude CLI:\n"
+  claude login
+fi
+# === End Claude CLI Setup ===
 
 # Load profile from localrc if exists, default to minimal
 LOCALRC="$HOME/.localrc"
@@ -512,13 +527,7 @@ if command -v fnm >/dev/null 2>&1; then
   # Pre-cache Puppeteer browser for tools like mermaid-cli (npx mmdc)
   npx --yes puppeteer browsers install chrome-headless-shell
 
-  # Install Claude Code
-  if ! command -v claude >/dev/null 2>&1; then
-    echo "Installing Claude Code..."
-    curl -fsSL https://claude.ai/install.sh | bash
-  else
-    echo "Claude Code already installed ✅"
-  fi
+  echo "Claude Code already installed ✅"
 fi
 
 # macOS-only full install steps
