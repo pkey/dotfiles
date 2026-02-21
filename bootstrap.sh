@@ -322,9 +322,6 @@ else
   echo "pipx already installed ✅"
 fi
 
-# Ensure pipx is in the path (suppress output — PATH is managed by .zshrc)
-pipx ensurepath -q >/dev/null 2>&1
-
 # Fix broken pipx packages if Python interpreter changed
 if pipx list 2>&1 | grep -q "invalid interpreter"; then
   echo "Fixing pipx packages with invalid Python interpreter..."
