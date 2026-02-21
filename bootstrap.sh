@@ -286,6 +286,16 @@ if [[ -n "$PINENTRY_PATH" ]]; then
 fi
 gpgconf --kill all || true
 
+# Enable GPG agent forwarding over SSH (for remote machines running sshd)
+if [[ "$OS" == "Linux" ]] && systemctl is-active --quiet sshd 2>/dev/null; then
+  if ! grep -q 'StreamLocalBindUnlink yes' /etc/ssh/sshd_config 2>/dev/null; then
+    echo "Enabling StreamLocalBindUnlink for GPG forwarding..."
+    echo 'StreamLocalBindUnlink yes' | sudo tee -a /etc/ssh/sshd_config >/dev/null
+    sudo systemctl restart sshd
+    echo "GPG agent forwarding enabled ✅"
+  fi
+fi
+
 SIGNING_KEY="EAB2D9EB6CD93324"
 if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
   uid=$(gpg --list-keys --with-colons $SIGNING_KEY | awk -F: '/^uid:/ {print $10; exit}')
