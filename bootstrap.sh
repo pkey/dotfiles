@@ -316,6 +316,16 @@ if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
   git config --file ~/.gitconfig-user user.signingkey $SIGNING_KEY
 
   echo "Git configured: $git_name <$git_email>"
+
+  # Switch dotfiles remote from HTTPS to SSH
+  local current_url
+  current_url=$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || true)
+  if [[ "$current_url" == https://github.com/* ]]; then
+    local ssh_url
+    ssh_url=$(echo "$current_url" | sed 's|https://github.com/|git@github.com:|')
+    git -C "$DOTFILES" remote set-url origin "$ssh_url"
+    echo "Switched dotfiles remote to SSH: $ssh_url"
+  fi
 else
   echo "GPG key $SIGNING_KEY not found. Skipping git signing configuration."
 fi
