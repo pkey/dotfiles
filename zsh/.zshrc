@@ -1,3 +1,6 @@
+# Fix backspace handling over SSH on some Linux distros
+[[ "$OSTYPE" == linux* ]] && stty erase '^?' 2>/dev/null
+
 # Set up env variables
 
 export PATH=$PATH:/usr/local/bin

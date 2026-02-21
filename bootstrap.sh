@@ -169,8 +169,8 @@ CC_AGENT="${CC_AGENT:-claude}"
 
 # Authenticate if not already
 if ! claude auth status >/dev/null 2>&1; then
-  printf "Please authenticate Claude CLI:\n"
-  claude login
+  printf "Authenticating Claude CLI...\n"
+  claude login --no-open 2>/dev/null || claude login
 fi
 # === End Claude CLI Setup ===
 
