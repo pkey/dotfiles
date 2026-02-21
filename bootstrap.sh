@@ -287,11 +287,20 @@ fi
 gpgconf --kill all || true
 
 # Enable GPG agent forwarding over SSH (for remote machines running sshd)
-if [[ "$OS" == "Linux" ]] && systemctl is-active --quiet sshd 2>/dev/null; then
-  if ! grep -q 'StreamLocalBindUnlink yes' /etc/ssh/sshd_config 2>/dev/null; then
+if [[ "$OS" == "Linux" ]]; then
+  # Detect SSH service name: "ssh" (Debian/Ubuntu) or "sshd" (RHEL/Fedora)
+  SSH_SERVICE=""
+  for svc in ssh sshd; do
+    if systemctl is-active --quiet "$svc" 2>/dev/null; then
+      SSH_SERVICE="$svc"
+      break
+    fi
+  done
+
+  if [[ -n "$SSH_SERVICE" ]] && ! grep -q 'StreamLocalBindUnlink yes' /etc/ssh/sshd_config 2>/dev/null; then
     echo "Enabling StreamLocalBindUnlink for GPG forwarding..."
     echo 'StreamLocalBindUnlink yes' | sudo tee -a /etc/ssh/sshd_config >/dev/null
-    sudo systemctl restart sshd
+    sudo systemctl restart "$SSH_SERVICE"
     echo "GPG agent forwarding enabled ✅"
   fi
 fi
