@@ -2,6 +2,7 @@
 *.zwc
 .claude
 Brewfile.local
+packages.local.yaml
 snyk
 *.pem
 *.key

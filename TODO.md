@@ -15,4 +15,4 @@ List is constantly prioritised when adding a new item.
 specific stuff.
 - [ ] Create a shared repo (e.g. snyk-dotfiles) for Snyk-specific machine setup: AWS SSO profiles, corp cert bundle, and other org-specific quirks that can be shared with teammates.
 See the snyk folder and .localrc for ideas what to migrage.
-- [ ] Split installation per distro. Brewfile for macos, appropriate tools for Ubuntu
+- [x] Split installation per distro. Brewfile for macos, appropriate tools for Ubuntu

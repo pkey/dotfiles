@@ -22,7 +22,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/pkey/dotfiles/main/bootstrap
 ```
 
 The bootstrap script:
-- Installs Homebrew and packages from `Brewfile` or `Brewfile.minimal`
+- Installs packages from `packages.yaml` via `install-packages.sh` (brew on macOS, apt on Linux)
+- On macOS: installs Homebrew if missing, then uses `brew install`
+- On Linux: uses `apt-get` directly (no Linuxbrew)
 - Sets up git configuration with GPG signing (key: EAB2D9EB6CD93324)
 - Creates symlinks for shell configs (.zshenv, .zshrc, .zprofile)
 - Installs pipx package (uv)
@@ -72,15 +74,22 @@ git submodule update --init --recursive
   - `merge()` - Merge GitHub PR via API (requires GITHUB_TOKEN)
   - `findUnpushedCommits()` - Find unpushed commits in subdirectories
 
-### Multi-OS Support
+### Multi-OS Package Management
 
-The bootstrap script detects OS and uses appropriate Homebrew paths:
-- macOS: `/opt/homebrew/bin/brew`
-- Linux: `/home/linuxbrew/.linuxbrew/bin/brew`
+Package definitions live in `packages.yaml` (single source of truth). The `install-packages.sh` script reads it and dispatches to the OS package manager:
+- **macOS**: Homebrew (`brew install`, `brew install --cask`)
+- **Linux/Ubuntu**: `apt-get install`, with `script` fallback for packages not in apt
 
-Two Brewfile variants:
-- `Brewfile.minimal` - Essential packages (zsh, python, pipx, fd, fzf, zoxide, ripgrep, bat, tmux)
-- `Brewfile` - Extended packages (adds fnm, gcc, gh, pre-commit, gnupg, cursor, 1password-cli, etc.)
+Entry format — see `packages.yaml` header comment and `README.md` for full reference.
+
+`install-packages.sh` processing order:
+1. Downloads `yq` to `/tmp` if not available (for YAML parsing)
+2. Reads `common` section (always) + `full` section (if `FULL_INSTALL=true`)
+3. **macOS**: runs `brew install <name>` per package, `brew install --cask` for `macos_casks`
+4. **Linux**: collects apt packages, runs `apt_setup` commands, batch `apt-get install`, then `post_apt` and `script` entries
+5. Reads `packages.local.yaml` (gitignored) for machine-specific additions
+
+Legacy `Brewfile` and `Brewfile.minimal` are kept for reference but no longer used by bootstrap.
 
 ### Development Tools Setup
 

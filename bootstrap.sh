@@ -163,7 +163,7 @@ if [[ "$(id -u)" -eq 0 ]]; then
   usermod -aG sudo "$TARGET_USER"
 
   # Enable passwordless sudo for the new user
-  echo "$TARGET_USER ALL=(ALL) NOPASSWD: /opt/homebrew/bin/brew, /home/linuxbrew/.linuxbrew/bin/brew, /usr/bin/systemctl, /usr/bin/tee, /usr/sbin/chsh" > "/etc/sudoers.d/$TARGET_USER"
+  echo "$TARGET_USER ALL=(ALL) NOPASSWD: /usr/bin/apt-get, /usr/bin/apt, /opt/homebrew/bin/brew, /usr/bin/systemctl, /usr/bin/tee, /usr/sbin/chsh" > "/etc/sudoers.d/$TARGET_USER"
   chmod 0440 "/etc/sudoers.d/$TARGET_USER"
 
   # Copy SSH keys from root
@@ -240,6 +240,9 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${ARGS[@]}"
 
+# Detect OS early (used throughout)
+OS="$(uname -s)"
+
 printf "Bootstrap started... 🚀\n"
 if [[ "$FULL_INSTALL" == true || "$OS" == "Darwin" ]]; then
   printf "Running full installation...\n"
@@ -252,47 +255,18 @@ export DOTFILES="$HOME/dotfiles"
 # Setup submodules
 git -C "$DOTFILES" submodule update --init --recursive
 
-# Detect OS
-OS="$(uname -s)"
-
-# Homebrew install and setup for both Linux and macOS
+# Install packages via packages.yaml
 if [[ "$OS" == "Darwin" ]]; then
+  # macOS: ensure Homebrew is installed
   BREW_PATH="/opt/homebrew/bin/brew"
-elif [[ "$OS" == "Linux" ]]; then
-  BREW_PATH="/home/linuxbrew/.linuxbrew/bin/brew"
-else
-  echo "Unsupported OS: $OS"
-  exit 1
-fi
-
-# Check if Homebrew is installed at the expected path
-if [[ ! -f "$BREW_PATH" ]]; then
-  printf "Installing Homebrew... 🍺\n"
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-
-# Always eval shellenv to ensure brew is in PATH
-eval "$($BREW_PATH shellenv)"
-
-# Install brews (use minimal or full Brewfile based on installation type)
-# Brewfile.local is for machine-specific packages (gitignored)
-if command -v brew >/dev/null 2>&1; then
-  BREWFILE_TMP=$(mktemp "${TMPDIR:-/tmp}/Brewfile.XXXXXX")
-  trap 'rm -f "$BREWFILE_TMP"' EXIT
-  if [[ "$FULL_INSTALL" == true ]]; then
-    cat "$DOTFILES/Brewfile.minimal" "$DOTFILES/Brewfile" > "$BREWFILE_TMP"
-    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> "$BREWFILE_TMP"
-    brew bundle --file="$BREWFILE_TMP"
-    brew bundle cleanup --force --file="$BREWFILE_TMP"
-  else
-    cat "$DOTFILES/Brewfile.minimal" > "$BREWFILE_TMP"
-    [[ -f "$DOTFILES/Brewfile.local" ]] && cat "$DOTFILES/Brewfile.local" >> "$BREWFILE_TMP"
-    brew bundle --file="$BREWFILE_TMP"
-    brew bundle cleanup --force --file="$BREWFILE_TMP"
+  if [[ ! -f "$BREW_PATH" ]]; then
+    printf "Installing Homebrew... 🍺\n"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
-
-  brew update
+  eval "$($BREW_PATH shellenv)"
 fi
+
+FULL_INSTALL="$FULL_INSTALL" "$DOTFILES/install-packages.sh"
 
 # setup GPG
 

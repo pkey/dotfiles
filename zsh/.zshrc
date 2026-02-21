@@ -40,11 +40,11 @@ export SAVEHIST=10000
 if command -v fnm >/dev/null 2>&1; then
   eval "$(fnm env --use-on-cd)"
 fi
-# Google Cloud SDK (installed via Homebrew)
-if [ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/path.zsh.inc" ]; then
+# Google Cloud SDK (installed via Homebrew, macOS only)
+if [[ -n "$HOMEBREW_PREFIX" ]] && [[ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/path.zsh.inc" ]]; then
   source "$HOMEBREW_PREFIX/share/google-cloud-sdk/path.zsh.inc"
 fi
-if [ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc" ]; then
+if [[ -n "$HOMEBREW_PREFIX" ]] && [[ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc" ]]; then
   source "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 fi
 
