@@ -28,6 +28,7 @@ common:
   - neovim
   - tmux
   - jq
+  - yq
   - name: fnm
     apt: false
     script: curl -fsSL https://fnm.vercel.app/install | bash --skip-shell
@@ -37,6 +38,7 @@ common:
     brew: gcc
   - curl
   - git-lfs
+  - shellcheck
 
 full:
   - name: gh

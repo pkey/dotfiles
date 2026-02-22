@@ -50,84 +50,9 @@ get_field() {
   echo "$1" | yq -r ".$2 // \"\""
 }
 
-install_macos() {
-  local sections=("common")
-  [[ "$FULL_INSTALL" == true ]] && sections+=("full")
-
-  for section in "${sections[@]}"; do
-    local count
-    count=$(yq -r ".${section} | length // 0" "$PACKAGES_FILE")
-    for ((i = 0; i < count; i++)); do
-      local is_string
-      is_string=$(yq -r ".${section}[$i] | type" "$PACKAGES_FILE")
-      if [[ "$is_string" == "!!str" ]]; then
-        local pkg
-        pkg=$(yq -r ".${section}[$i]" "$PACKAGES_FILE")
-        brew install "$pkg" 2>/dev/null || true
-      else
-        local name brew_name
-        name=$(yq -r ".${section}[$i].name" "$PACKAGES_FILE")
-        brew_name=$(yq -r ".${section}[$i].brew // \"\"" "$PACKAGES_FILE")
-        brew install "${brew_name:-$name}" 2>/dev/null || true
-      fi
-    done
-  done
-
-  # macOS-only packages
-  local macos_count
-  macos_count=$(yq -r '.macos_only | length // 0' "$PACKAGES_FILE")
-  for ((i = 0; i < macos_count; i++)); do
-    local pkg
-    pkg=$(yq -r ".macos_only[$i]" "$PACKAGES_FILE")
-    brew install "$pkg" 2>/dev/null || true
-  done
-
-  # Casks (full install only)
-  if [[ "$FULL_INSTALL" == true ]]; then
-    local cask_count
-    cask_count=$(yq -r '.macos_casks | length // 0' "$PACKAGES_FILE")
-    for ((i = 0; i < cask_count; i++)); do
-      local cask
-      cask=$(yq -r ".macos_casks[$i]" "$PACKAGES_FILE")
-      brew install --cask "$cask" 2>/dev/null || true
-    done
-  fi
-
-  # Local packages
-  if [[ -f "$PACKAGES_LOCAL" ]]; then
-    install_macos_local
-  fi
-}
-
-install_macos_local() {
-  for section in common full macos_only; do
-    local count
-    count=$(yq -r ".${section} | length // 0" "$PACKAGES_LOCAL")
-    [[ "$section" == "full" && "$FULL_INSTALL" != true ]] && continue
-    for ((i = 0; i < count; i++)); do
-      local is_string
-      is_string=$(yq -r ".${section}[$i] | type" "$PACKAGES_LOCAL")
-      if [[ "$is_string" == "!!str" ]]; then
-        brew install "$(yq -r ".${section}[$i]" "$PACKAGES_LOCAL")" 2>/dev/null || true
-      else
-        local name brew_name
-        name=$(yq -r ".${section}[$i].name" "$PACKAGES_LOCAL")
-        brew_name=$(yq -r ".${section}[$i].brew // \"\"" "$PACKAGES_LOCAL")
-        brew install "${brew_name:-$name}" 2>/dev/null || true
-      fi
-    done
-  done
-  local cask_count
-  cask_count=$(yq -r '.macos_casks | length // 0' "$PACKAGES_LOCAL")
-  if [[ "$FULL_INSTALL" == true ]]; then
-    for ((i = 0; i < cask_count; i++)); do
-      brew install --cask "$(yq -r ".macos_casks[$i]" "$PACKAGES_LOCAL")" 2>/dev/null || true
-    done
-  fi
-}
-
-collect_expected_formulas() {
-  local file="$1"
+generate_brewfile() {
+  local brewfile="$1"
+  local file="$2"
   [[ -f "$file" ]] || return
 
   local sections=("common" "macos_only")
@@ -140,76 +65,46 @@ collect_expected_formulas() {
       local is_string
       is_string=$(yq -r ".${section}[$i] | type" "$file")
       if [[ "$is_string" == "!!str" ]]; then
-        yq -r ".${section}[$i]" "$file"
+        echo "brew \"$(yq -r ".${section}[$i]" "$file")\"" >> "$brewfile"
       else
         local name brew_name
         name=$(yq -r ".${section}[$i].name" "$file")
         brew_name=$(yq -r ".${section}[$i].brew // \"\"" "$file")
-        echo "${brew_name:-$name}"
+        echo "brew \"${brew_name:-$name}\"" >> "$brewfile"
       fi
     done
   done
-}
 
-collect_expected_casks() {
-  local file="$1"
-  [[ -f "$file" ]] || return
-  [[ "$FULL_INSTALL" == true ]] || return
-
-  local count
-  count=$(yq -r '.macos_casks | length // 0' "$file")
-  for ((i = 0; i < count; i++)); do
-    yq -r ".macos_casks[$i]" "$file"
-  done
-}
-
-cleanup_macos() {
-  echo "Cleaning up unlisted brew packages..."
-
-  local expected_formulas=()
-  while IFS= read -r pkg; do
-    [[ -n "$pkg" ]] && expected_formulas+=("$pkg")
-  done < <(collect_expected_formulas "$PACKAGES_FILE"; collect_expected_formulas "$PACKAGES_LOCAL")
-
-  local expected_casks=()
-  while IFS= read -r pkg; do
-    [[ -n "$pkg" ]] && expected_casks+=("$pkg")
-  done < <(collect_expected_casks "$PACKAGES_FILE"; collect_expected_casks "$PACKAGES_LOCAL")
-
-  # Remove unexpected formulas
-  while IFS= read -r installed; do
-    local found=false
-    for expected in "${expected_formulas[@]}"; do
-      if [[ "$installed" == "$expected" ]]; then
-        found=true
-        break
-      fi
-    done
-    if [[ "$found" == false ]]; then
-      echo "Removing formula: $installed"
-      brew uninstall "$installed" 2>/dev/null || true
-    fi
-  done < <(brew list --formula -1)
-
-  # Remove unexpected casks (only when FULL_INSTALL)
   if [[ "$FULL_INSTALL" == true ]]; then
-    while IFS= read -r installed; do
-      local found=false
-      for expected in "${expected_casks[@]}"; do
-        if [[ "$installed" == "$expected" ]]; then
-          found=true
-          break
-        fi
-      done
-      if [[ "$found" == false ]]; then
-        echo "Removing cask: $installed"
-        brew uninstall --cask "$installed" 2>/dev/null || true
-      fi
-    done < <(brew list --cask -1)
+    local cask_count
+    cask_count=$(yq -r '.macos_casks | length // 0' "$file")
+    for ((i = 0; i < cask_count; i++)); do
+      echo "cask \"$(yq -r ".macos_casks[$i]" "$file")\"" >> "$brewfile"
+    done
   fi
+}
 
-  brew autoremove 2>/dev/null || true
-  echo "Cleanup complete"
+run_macos() {
+  local brewfile
+  brewfile=$(mktemp /tmp/Brewfile.XXXXXX)
+  # shellcheck disable=SC2064
+  trap "rm -f '$brewfile'" EXIT
+
+  generate_brewfile "$brewfile" "$PACKAGES_FILE"
+  [[ -f "$PACKAGES_LOCAL" ]] && generate_brewfile "$brewfile" "$PACKAGES_LOCAL"
+
+  echo "Generated Brewfile:"
+  cat "$brewfile"
+  echo ""
+
+  brew bundle --file="$brewfile"
+
+  if [[ "$SKIP_CLEANUP" != true ]]; then
+    echo "Cleaning up unlisted brew packages..."
+    brew bundle cleanup --force --file="$brewfile"
+    brew autoremove 2>/dev/null || true
+    echo "Cleanup complete"
+  fi
 }
 
 install_linux() {
@@ -309,8 +204,7 @@ ensure_yq
 
 echo "Installing packages from $PACKAGES_FILE..."
 if [[ "$OS" == "Darwin" ]]; then
-  install_macos
-  [[ "$SKIP_CLEANUP" != true ]] && cleanup_macos
+  run_macos
 elif [[ "$OS" == "Linux" ]]; then
   install_linux
 else
