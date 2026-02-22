@@ -29,9 +29,10 @@ common:
   - tmux
   - jq
   - yq
+  - unzip  # required by fnm installer
   - name: fnm
     apt: false
-    script: curl -fsSL https://fnm.vercel.app/install | bash --skip-shell
+    script: curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
   - pipx
   - gnupg
   - name: build-essential

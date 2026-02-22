@@ -12,10 +12,16 @@ FULL_INSTALL="${FULL_INSTALL:-false}"
 OS="$(uname -s)"
 
 ensure_yq() {
+  # Require Mike Farah's Go-based yq (not the Python jq wrapper).
+  # Detect it by checking that type output uses YAML tags (e.g. "!!str").
   if command -v yq >/dev/null 2>&1; then
-    return
+    local yq_type
+    yq_type=$(printf 'foo: bar\n' | yq -r '.foo | type' 2>/dev/null)
+    if [[ "$yq_type" == "!!str" ]]; then
+      return
+    fi
   fi
-  echo "Downloading yq..."
+  echo "Downloading yq (Go version)..."
   local arch
   arch="$(uname -m)"
   case "$arch" in
