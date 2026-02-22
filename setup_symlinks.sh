@@ -40,7 +40,27 @@ ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
 
 # Zsh
 ln -sf "$DOTFILES/.zshenv" "$HOME/.zshenv"
-ln -sf "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
+# .zshrc is a generated stub (not a symlink) so installers that append to it
+# don't pollute the tracked dotfiles repo.
+if [[ -L "$HOME/.zshrc" ]] || [[ ! -f "$HOME/.zshrc" ]]; then
+  rm -f "$HOME/.zshrc"
+  cat > "$HOME/.zshrc" <<'STUB'
+# Dotfiles-managed zsh config — do not edit above this line
+source "$HOME/dotfiles/zsh/.zshrc"
+
+# Lines below are auto-added by installers and not tracked in dotfiles
+STUB
+elif ! grep -q 'source.*dotfiles/zsh/.zshrc' "$HOME/.zshrc"; then
+  tmpfile=$(mktemp)
+  cat > "$tmpfile" <<'STUB'
+# Dotfiles-managed zsh config — do not edit above this line
+source "$HOME/dotfiles/zsh/.zshrc"
+
+# Lines below are auto-added by installers and not tracked in dotfiles
+STUB
+  cat "$HOME/.zshrc" >> "$tmpfile"
+  mv "$tmpfile" "$HOME/.zshrc"
+fi
 ln -sf "$DOTFILES/zsh/.zprofile" "$HOME/.zprofile"
 
 # AWS CLI
