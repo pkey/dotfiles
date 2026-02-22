@@ -4,6 +4,11 @@
 
 set -e
 
+_BOOTSTRAP_LOG="/tmp/cfix_bootstrap.log"
+: > "$_BOOTSTRAP_LOG"
+exec 3>&1 4>&2
+exec > >(tee -a "$_BOOTSTRAP_LOG") 2>&1
+
 _on_bootstrap_error() {
   local exit_code=$?
   local file="/tmp/cfix_last_error"
@@ -14,6 +19,9 @@ _on_bootstrap_error() {
     echo ""
     echo "--- Script context ---"
     sed -n "$((BASH_LINENO[0]-5)),$((BASH_LINENO[0]+5))p" "${BASH_SOURCE[1]}" 2>/dev/null || true
+    echo ""
+    echo "--- Last 30 lines of output ---"
+    tail -30 "$_BOOTSTRAP_LOG" 2>/dev/null || true
   } > "$file"
 }
 trap _on_bootstrap_error ERR
@@ -425,6 +433,7 @@ fi
 if [[ "$FULL_INSTALL" != true ]]; then
   printf "Minimal bootstrap completed 🎉\n"
   printf "Run with --full flag for complete installation\n"
+  exec 1>&3 2>&4 3>&- 4>&-
   exec zsh
 fi
 
@@ -508,7 +517,8 @@ pipx upgrade-all
 
 printf "Bootstrap completed 🎉\n"
 
-# Source .zshrc if it exists
+# Start a fresh zsh shell with restored file descriptors
 if [[ -f "$HOME/.zshrc" ]]; then
+    exec 1>&3 2>&4 3>&- 4>&-
     exec zsh
 fi
