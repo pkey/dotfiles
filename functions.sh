@@ -134,7 +134,7 @@ cfix() {
     echo "No recent failure captured."
     return 1
   fi
-  claude -p "The following command failed. Diagnose and fix the issue:" < "$f"
+  claude "The following command failed. Diagnose and fix the issue:\n\n$(cat "$f")"
 }
 
 #--Secrets (macOS Keychain)
