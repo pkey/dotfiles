@@ -23,7 +23,7 @@ common:
     script: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
   - ripgrep
   - name: bat
-    apt: batcat
+    apt: bat
     post_apt: ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"
   - neovim
   - tmux
