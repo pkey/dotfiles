@@ -58,7 +58,7 @@ full:
   - name: docker
     brew: false
     apt: false
-    script: command -v docker >/dev/null || (curl -fsSL https://get.docker.com -o /tmp/get-docker.sh && sudo sh /tmp/get-docker.sh && rm /tmp/get-docker.sh)
+    script: command -v docker >/dev/null || (curl -fsSL https://get.docker.com -o /tmp/get-docker.sh && sudo sh /tmp/get-docker.sh && rm /tmp/get-docker.sh && sudo usermod -aG docker "$USER")
 
 macos_only:
   - pinentry-mac
