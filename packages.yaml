@@ -67,7 +67,6 @@ macos_casks:
   - 1password-cli
   - cursor
   - ghostty
-  - docker-desktop
   - gcloud-cli
   - codex
   - orbstack
