@@ -55,6 +55,10 @@ full:
   - name: glab
     apt_setup: |
       curl -fsSL https://gitlab.com/gitlab-org/cli/-/raw/main/scripts/install.sh | sudo bash
+  - name: docker
+    brew: false
+    apt: false
+    script: curl -fsSL https://get.docker.com -o /tmp/get-docker.sh && sudo sh /tmp/get-docker.sh && rm /tmp/get-docker.sh
 
 macos_only:
   - pinentry-mac
