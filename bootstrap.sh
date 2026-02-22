@@ -238,7 +238,8 @@ if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
     echo "Switched dotfiles remote to SSH: $ssh_url"
   fi
 else
-  echo "GPG key $SIGNING_KEY not found. Skipping git signing configuration."
+  git config --file ~/.gitconfig-user commit.gpgsign false
+  echo "GPG key $SIGNING_KEY not found. Signing disabled."
 fi
 
 
