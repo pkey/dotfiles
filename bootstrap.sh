@@ -415,12 +415,14 @@ fi
 # Install Node.js LTS via fnm
 if command -v fnm >/dev/null 2>&1; then
   eval "$(fnm env)"
-  if fnm list | grep -qv system; then
+  FNM_VERSIONS=$(fnm list)
+  if echo "$FNM_VERSIONS" | grep -qv system; then
     echo "Node.js already installed via fnm ✅"
   else
     echo "Installing Node.js LTS via fnm..."
     fnm install --lts
-    LTS_NODE=$(fnm list | grep -v system | head -1 | awk '{print $2}')
+    FNM_VERSIONS=$(fnm list)
+    LTS_NODE=$(echo "$FNM_VERSIONS" | grep -v system | head -1 | awk '{print $2}')
     if [[ -n "$LTS_NODE" ]]; then
       fnm default "$LTS_NODE"
       eval "$(fnm env)"
@@ -460,18 +462,14 @@ if command -v fnm >/dev/null 2>&1; then
   fi
   corepack enable
 
-  # Update pnpm if not latest
-  CURRENT_PNPM=$(pnpm --version 2>/dev/null)
-  LATEST_PNPM=$(npm view pnpm version 2>/dev/null)
-  if [[ "$CURRENT_PNPM" != "$LATEST_PNPM" ]]; then
-    echo "Updating pnpm ($CURRENT_PNPM -> $LATEST_PNPM)..."
-    corepack prepare pnpm@latest --activate
-  else
-    echo "pnpm $CURRENT_PNPM ✅"
-  fi
+  # Install/update pnpm via corepack (avoid running pnpm --version first,
+  # as corepack prompts interactively to download it, hanging the script)
+  echo "Preparing pnpm via corepack..."
+  corepack prepare pnpm@latest --activate
+  echo "pnpm $(pnpm --version 2>/dev/null) ✅"
 
   # Pre-cache Puppeteer browser for tools like mermaid-cli (npx mmdc)
-  npx --yes puppeteer browsers install chrome-headless-shell
+  npx --yes @puppeteer/browsers install chrome-headless-shell@stable --path "$HOME/.cache/puppeteer"
 
   echo "Claude Code already installed ✅"
 fi

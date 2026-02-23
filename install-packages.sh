@@ -61,6 +61,13 @@ generate_brewfile() {
   local file="$2"
   [[ -f "$file" ]] || return
 
+  # Emit taps
+  local tap_count
+  tap_count=$(yq -r '.macos_taps | length // 0' "$file")
+  for ((i = 0; i < tap_count; i++)); do
+    echo "tap \"$(yq -r ".macos_taps[$i]" "$file")\"" >> "$brewfile"
+  done
+
   local sections=("common" "macos_only")
   [[ "$FULL_INSTALL" == true ]] && sections+=("full")
 

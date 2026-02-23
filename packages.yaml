@@ -38,6 +38,7 @@ common:
   - name: build-essential
     brew: gcc
   - curl
+  - git
   - git-lfs
   - shellcheck
 
@@ -55,6 +56,14 @@ full:
   - name: glab
     apt_setup: |
       curl -fsSL https://gitlab.com/gitlab-org/cli/-/raw/main/scripts/install.sh | sudo bash
+  - go
+  - gitleaks
+  - convco
+  - circleci
+  - kubernetes-cli
+  - kubectx
+  - teleport
+  - tilt
   - name: docker
     brew: false
     apt: false
@@ -62,6 +71,9 @@ full:
 
 macos_only:
   - pinentry-mac
+
+macos_taps:
+  - 1password/tap
 
 macos_casks:
   - 1password-cli
