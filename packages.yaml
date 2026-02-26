@@ -81,4 +81,4 @@ macos_casks:
   - ghostty
   - gcloud-cli
   - codex
-  - orbstack
+  - docker-desktop

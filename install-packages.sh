@@ -106,6 +106,19 @@ run_macos() {
   generate_brewfile "$brewfile" "$PACKAGES_FILE"
   [[ -f "$PACKAGES_LOCAL" ]] && generate_brewfile "$brewfile" "$PACKAGES_LOCAL"
 
+  # Remove casks listed in packages.local.yaml exclude_casks
+  if [[ -f "$PACKAGES_LOCAL" ]]; then
+    local exclude_count
+    exclude_count=$(yq -r '.exclude_casks | length // 0' "$PACKAGES_LOCAL")
+    for ((i = 0; i < exclude_count; i++)); do
+      local cask_name tmpfile
+      cask_name=$(yq -r ".exclude_casks[$i]" "$PACKAGES_LOCAL")
+      tmpfile=$(mktemp)
+      grep -v "cask \"$cask_name\"" "$brewfile" > "$tmpfile"
+      mv "$tmpfile" "$brewfile"
+    done
+  fi
+
   echo "Generated Brewfile:"
   cat "$brewfile"
   echo ""
