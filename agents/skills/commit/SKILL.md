@@ -8,3 +8,4 @@ disable-model-invocation: true
 
 - use conventional commits
 - split commits based on specific deliverables - sometimes a few changes might colive together
+- use feat,fix,etc. directly without parentheses
