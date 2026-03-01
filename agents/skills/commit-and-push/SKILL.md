@@ -6,4 +6,6 @@ disable-model-invocation: true
 
 # Commit And Push
 
-Push and commit
+Commit and push.
+Use /commit skill to formulate the commits.
+This might be invoked from root repo without .git. Check the child repos that might have the .git and the changes to be commited.

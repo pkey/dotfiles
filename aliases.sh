@@ -54,7 +54,8 @@ alias 'gc!'='git commit -v --amend'                                          # A
 alias gc='git commit'                                                        # Commit staged changes
 alias gca='gaa && gc'                                                        # Stage all and commit
 alias gai='aicommit'                                                         # AI-generated commit msg
-alias gaip='gaa && claude "/commit-and-push"'                                # AI commit and push
+alias gaip='gaa && $CC_AGENT "/commit-and-push"'                              # AI commit and push
+alias gaic='gaa && $CC_AGENT "/commit"'                                      # AI commit (no push)
 alias gc-='git checkout -'                                                   # Checkout previous branch
 alias 'gca!'='git commit -v -a --amend'                                      # Amend with all changes
 alias grw='gaa && gc! --no-edit && gp!'                                      # Rewrite: stage, amend, push
@@ -240,8 +241,8 @@ bzltest() {                                                                  # F
 alias focus='sudo $HOME/dotfiles/productivity/focus block'                   # Block distracting sites
 alias unfocus='sudo $HOME/dotfiles/productivity/focus unblock'               # Unblock distracting sites
 
-# Claude
-alias cc='claude'                                                            # Claude CLI shortcut
+# Code Agent
+alias cc='$CC_AGENT'                                                         # Code agent CLI shortcut
 alias eclaude='vim $DOTFILES/claude/CLAUDE.md'                               # Edit Claude config
 
 # Node
