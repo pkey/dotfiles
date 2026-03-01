@@ -17,8 +17,15 @@ DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 ensure_dir "$DOTFILES/.git/hooks"
 ln -sf "$DOTFILES/git/hooks/post-merge-bootstrap" "$DOTFILES/.git/hooks/post-merge"
 chmod +x "$DOTFILES/.git/hooks/post-merge"
-# Config
-ln -sf "$DOTFILES/git/.gitconfig" "$HOME/.gitconfig"
+# Config — real file (not a symlink) so `git config --global` writes stay local.
+if [[ -L "$HOME/.gitconfig" ]] || [[ ! -f "$HOME/.gitconfig" ]]; then
+  rm -f "$HOME/.gitconfig"
+  cat > "$HOME/.gitconfig" <<STUB
+[include]
+	path = $DOTFILES/git/.gitconfig
+	path = ~/.gitconfig-user
+STUB
+fi
 
 # Vim
 ln -sf "$DOTFILES/vim/.vimrc" "$HOME/.vimrc"
