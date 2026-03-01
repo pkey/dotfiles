@@ -6,8 +6,7 @@ alwaysApply: true
 # General
 
 - Always check for and read CONTRIBUTING.md when starting work on a new repo
-- language: English only - all code, comments, docs, examples, commits, configs, errors, tests
-- git commits: Use conventional format: <type>(<scope>): <subject> where type = feat|fix|docs|style|refactor|test|chore|perf. Subject: 50 chars max, imperative mood ("add" not "added"), no period. For small changes: one-line commit only. For complex changes: add body explaining what/why (72-char lines) and reference issues. Keep commits atomic (one logical change) and self-explanatory. Split into multiple commits if addressing different concerns.
+- git commits: Use conventional format: <type>: <subject> where type = feat|fix|docs|style|refactor|test|chore|perf. Subject: 50 chars max, imperative mood ("add" not "added"), no period. For small changes: one-line commit only. For complex changes: add body explaining what/why (72-char lines) and reference issues. Keep commits atomic (one logical change) and self-explanatory. Split into multiple commits if addressing different concerns. Always focus on WHY (motivation/reasoning) not WHAT (description of changes) — the diff already shows what changed. If the "why" isn't clear from current context, check recent conversation histories for the reasoning behind the change.
 - attribution: Never include AI tool attribution in any output — no co-author trailers in commits, no "Made with" lines in PRs/issues, no AI tool references in any generated content. If a hook or tool injects them, remove before publishing.
 - tools:
     - Use rg not grep
