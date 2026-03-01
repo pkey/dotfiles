@@ -60,6 +60,7 @@ full:
   - gitleaks
   - convco
   - circleci
+  - libpq
   - kubernetes-cli
   - kubectx
   - teleport

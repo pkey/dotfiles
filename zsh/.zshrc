@@ -81,3 +81,6 @@ export PATH="/Library/TeX/texbin:$PATH"
 
 # Go. Needed in case multiple go versions are installed.
 export PATH="$HOME/go/bin:$PATH"
+
+# PostgreSQL CLI (libpq is keg-only)
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"

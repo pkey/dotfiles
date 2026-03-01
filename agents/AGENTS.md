@@ -12,7 +12,7 @@ alwaysApply: true
     - Use rg not grep
     - fd not find
     - refer to aliases and reuse them when appropriate
-    - refer to $DOTFILES/Brewfile for installed tools
+    - refer to $DOTFILES/packages.yaml for installed tools
     - Always echo environment variables (like $DOTFILES) to resolve paths before asking the user
     - glab: For advanced GitLab operations not in standard commands, use `glab api`:
         - Play manual jobs: `glab api --method POST "projects/<path>/jobs/<id>/play"`

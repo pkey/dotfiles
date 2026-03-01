@@ -89,7 +89,7 @@ Entry format — see `packages.yaml` header comment and `README.md` for full ref
 4. **Linux**: collects apt packages, runs `apt_setup` commands, batch `apt-get install`, then `post_apt` and `script` entries
 5. Reads `packages.local.yaml` (gitignored) for machine-specific additions
 
-Legacy `Brewfile` and `Brewfile.minimal` are kept for reference but no longer used by bootstrap.
+`Brewfile.local` (gitignored) can hold machine-specific packages — `install-packages.sh` reads it after `packages.yaml`.
 
 ### Development Tools Setup
 
