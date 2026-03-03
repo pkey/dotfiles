@@ -19,9 +19,6 @@ fpath+="$DOTFILES/zsh/plugins/pure"
 autoload -U promptinit; promptinit
 prompt pure
 
-# Functions
-source "$DOTFILES/functions.sh"
-
 #Set up Aliases:
 unalias -a
 source "$DOTFILES/aliases.sh"

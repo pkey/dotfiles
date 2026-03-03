@@ -326,7 +326,7 @@ sync_pipx_packages() {
 }
 
 install_sudoers() {
-  local SRC="$DOTFILES/sudoers"
+  local SRC="$DOTFILES/system/sudoers"
   local DEST="/etc/sudoers.d/dotfiles"
 
   [[ ! -f "$SRC" ]] && return 0
@@ -349,7 +349,7 @@ install_sudoers() {
 }
 
 install_crontab() {
-  local SRC="$DOTFILES/crontab"
+  local SRC="$DOTFILES/system/crontab"
 
   [[ ! -f "$SRC" ]] && return 0
 

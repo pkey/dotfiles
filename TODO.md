@@ -16,3 +16,5 @@ specific stuff.
 - [ ] Create a shared repo (e.g. snyk-dotfiles) for Snyk-specific machine setup: AWS SSO profiles, corp cert bundle, and other org-specific quirks that can be shared with teammates.
 See the snyk folder and .localrc for ideas what to migrage.
 - [x] Split installation per distro. packages.yaml for macos + Ubuntu
+- [ ] Evals for skills
+- [ ] Remove packages.yml and use Brewfile + other distro package managers

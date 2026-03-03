@@ -46,7 +46,7 @@ ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"
 ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
 
 # Zsh
-ln -sf "$DOTFILES/.zshenv" "$HOME/.zshenv"
+ln -sf "$DOTFILES/zsh/.zshenv" "$HOME/.zshenv"
 # .zshrc is a generated stub (not a symlink) so installers that append to it
 # don't pollute the tracked dotfiles repo.
 if [[ -L "$HOME/.zshrc" ]] || [[ ! -f "$HOME/.zshrc" ]]; then

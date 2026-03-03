@@ -53,7 +53,6 @@ alias gb='git branch'                                                        # L
 alias 'gc!'='git commit -v --amend'                                          # Amend last commit
 alias gc='git commit'                                                        # Commit staged changes
 alias gca='gaa && gc'                                                        # Stage all and commit
-alias gai='aicommit'                                                         # AI-generated commit msg
 alias gaip='gaa && $CC_AGENT "/commit-and-push"'                              # AI commit and push
 alias gaic='gaa && $CC_AGENT "/commit"'                                      # AI commit (no push)
 alias gc-='git checkout -'                                                   # Checkout previous branch
@@ -62,12 +61,12 @@ alias grw='gaa && gc! --no-edit && gp!'                                      # R
 alias gcb='git checkout -b'                                                  # Create and checkout branch
 alias gci='git checkout project/integration'                                 # Checkout integration
 alias gco='git checkout'                                                     # Checkout branch/file
-alias ggpush='git push origin $(git_current_branch)'                         # Push to origin
+alias ggpush='git push origin $(git branch --show-current)'                   # Push to origin
 alias 'gp!'='ggpush --force-with-lease'                                      # Force push safely
-alias ggsup='git branch --set-upstream-to=origin/$(git_current_branch)'      # Set upstream
+alias ggsup='git branch --set-upstream-to=origin/$(git branch --show-current)' # Set upstream
 alias gl='git pull'                                                          # Pull from remote
 alias gp='git push'                                                          # Push to remote
-alias gpsup='git push --set-upstream origin $(git_current_branch)'           # Push and set upstream
+alias gpsup='git push --set-upstream origin $(git branch --show-current)'     # Push and set upstream
 alias grb='git rebase'                                                       # Rebase branch
 alias grba='git rebase --abort'                                              # Abort rebase
 alias grbc='git rebase --continue'                                           # Continue rebase
@@ -77,72 +76,12 @@ alias gst='git status'                                                       # S
 alias glr='git pull --rebase'                                                # Pull with rebase
 alias glrm='git pull --rebase origin master'                                 # Pull rebase from master
 alias grs='git reset --staged'                                               # Unstage files
-alias gro='git reset --hard origin/$(git_current_branch)'                    # Reset to origin
+alias gro='git reset --hard origin/$(git branch --show-current)'              # Reset to origin
 alias gf='git fetch origin'                                                  # Fetch from origin
 alias grfo='gf && grb origin/$(git symbolic-ref refs/remotes/origin/HEAD | sed "s@refs/remotes/origin/@@")'  # Fetch and rebase default
 
 # Git Worktree
-gwta() {                                                                     # Create worktree with new branch
-  local branch="$1"
-  local base="${2:-HEAD}"
-  local dir_name="${branch//\//-}"
-  local worktree_path="/tmp/$(basename "$(git rev-parse --show-toplevel)")-$dir_name"
-  git worktree add -b "$branch" "$worktree_path" "$base" && cd "$worktree_path"
-}
-
-gwtc() {                                                                     # Checkout branch in worktree
-  local branch="$1"
-  local dir_name="${branch//\//-}"
-  local worktree_path="/tmp/$(basename "$(git rev-parse --show-toplevel)")-$dir_name"
-  git worktree add "$worktree_path" "$branch" && cd "$worktree_path"
-}
-
-gwtl() {                                                                     # Fuzzy select worktree
-  local selected
-  selected=$(git worktree list | fzf --header="Select worktree" | awk '{print $1}')
-  [[ -n "$selected" ]] && cd "$selected"
-}
-
-gwtd() {                                                                     # Fuzzy remove worktree + branch
-  local main_wt selected
-  main_wt=$(git worktree list | head -1 | awk '{print $1}')
-  selected=$(git worktree list | fzf --header="Select worktree to remove" --multi)
-  [[ -z "$selected" ]] && return
-  local lines=("${(@f)selected}")
-  for line in "${lines[@]}"; do
-    local wt_path="${line%% *}"
-    local branch=""
-    if [[ "$line" == *"["*"]"* ]]; then
-      branch="${line##*\[}"
-      branch="${branch%%\]*}"
-    fi
-    if git worktree remove "$wt_path"; then
-      echo "Removed worktree: $wt_path"
-      if [[ -n "$branch" && "$branch" != "detached HEAD" ]]; then
-        if git -C "$main_wt" branch -D "$branch" 2>/dev/null; then
-          echo "Deleted branch: $branch"
-        else
-          echo "Note: branch '$branch' not deleted (may not exist or is checked out elsewhere)"
-        fi
-      fi
-    else
-      echo "Failed to remove worktree: $wt_path" >&2
-    fi
-  done
-  cd ..
-}
-
 alias gwtls='git worktree list'                                              # List all worktrees
-
-gwtla() {                                                                    # Fuzzy worktree all repos
-  local search_dir="${1:-$HOME/repos}"
-  local selected
-  selected=$(fd -H -t d '^\.git$' "$search_dir" -x git -C {//} worktree list 2>/dev/null | \
-    grep -v "^$" | \
-    fzf --header="All worktrees in $search_dir" | \
-    awk '{print $1}')
-  [[ -n "$selected" ]] && cd "$selected"
-}
 
 # Yarn
 alias ybw='yarn build --watch'                                               # Build with watch mode
@@ -211,7 +150,6 @@ alias muxw5='tmux select-window -t :5'                                       # G
 # Workflow
 alias test-update='jest --only-changed -u'                                   # Update test snapshots
 alias jest='npx jest'                                                        # Run jest via npx
-alias lookIWorked='$(findUnpushedCommits)'                                   # Find unpushed commits
 alias dateUpdate='GIT_COMMITTER_DATE="$(date)" git commit --amend --no-edit --date "$(date)"'  # Update commit date
 
 trypush() {                                                                  # Test format amend push
@@ -238,8 +176,8 @@ bzltest() {                                                                  # F
 }
 
 # Focus
-alias focus='sudo $HOME/dotfiles/productivity/focus block'                   # Block distracting sites
-alias unfocus='sudo $HOME/dotfiles/productivity/focus unblock'               # Unblock distracting sites
+alias focus='sudo focus block'                                               # Block distracting sites
+alias unfocus='sudo focus unblock'                                           # Unblock distracting sites
 
 # Code Agent
 alias cc='$CC_AGENT'                                                         # Code agent CLI shortcut

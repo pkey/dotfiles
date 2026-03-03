@@ -1,6 +1,8 @@
 .zcompdump*
 *.zwc
 .claude
+.DS_Store
+__pycache__/
 Brewfile.local
 packages.local.yaml
 snyk

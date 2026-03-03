@@ -57,22 +57,26 @@ git submodule update --init --recursive
 
 ### Configuration Organization
 
-- **zsh/** - Shell configuration with antigen plugin manager and pure prompt
+- **zsh/** - Shell configuration (.zshenv, .zshrc, .zprofile) with antigen plugin manager and pure prompt
 - **~/.localrc** - Local/private overrides (machine-specific settings, secrets via `secret` command)
 - **git/** - Git configuration with GPG signing enabled and global gitignore
   - `hooks/post-merge-bootstrap` - Auto-runs bootstrap on git pull/merge
 - **vim/** - Minimal vim configuration
 - **tmux/** - Tmux configuration with TPM plugin manager and resurrect plugin
-- **productivity/** - Utility scripts (e.g., `toggle-fb` for blocking distracting websites)
+- **tools/** - Shell functions auto-sourced by .zshrc (go version management, secrets, AI commit, git worktrees, scaffolding, task workflow)
+- **bin/** - Executable scripts symlinked to `~/.local/bin` (focus, snyk-preview-update, docker-compose, sync-agent-permissions)
+- **system/** - System-level config (crontab, sudoers) installed by bootstrap
 - **steps/** - Setup scripts (e.g., `steps/macos` for macOS system defaults)
 
 ### Key Configuration Files
 
-- `aliases.sh` (159 lines) - Extensive git, tmux, kubectl, navigation, and development aliases
-- `functions.sh` (38 lines) - Custom shell functions:
-  - `byebranch()` - Delete local and remote branch
-  - `merge()` - Merge GitHub PR via API (requires GITHUB_TOKEN)
-  - `findUnpushedCommits()` - Find unpushed commits in subdirectories
+- `aliases.sh` - Git, tmux, kubectl, navigation, and development aliases (pure one-liners)
+- `tools/*.sh` - Shell functions auto-sourced by .zshrc:
+  - `tools/go.sh` - Go version management (auto-switches based on go.mod)
+  - `tools/secrets.sh` - macOS Keychain secret management (`secret` command)
+  - `tools/git.sh` - Git worktree helpers (gwta, gwtc, gwtl, gwtd, gwtla)
+  - `tools/task.sh` - Task/worktree workflow management
+  - `tools/scaffold.sh` - Project scaffolding
 
 ### Multi-OS Package Management
 
