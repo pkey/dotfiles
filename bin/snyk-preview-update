@@ -1,10 +1,43 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-INSTALL_DIR="$HOME/.local/bin"
+# Install or update Snyk CLI preview build.
+# bash <(curl -sfL https://gist.githubusercontent.com/pkey/9f68e814f6871c59a63b19b5bdbb4229/raw/snyk-preview-update)
+
+INSTALL_DIR="${SNYK_PREVIEW_DIR:-$HOME/.local/bin}"
 BINARY_NAME="snyk-preview"
-ASSET="snyk-macos-arm64"
 BASE_URL="https://downloads.snyk.io/cli/preview"
+
+detect_asset() {
+  local os arch label_os label_arch
+  os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  arch=$(uname -m)
+  label_arch="$arch"
+
+  case "$os" in
+    darwin) label_os="macOS"; os="macos" ;;
+    linux)
+      if [ -f /etc/alpine-release ]; then
+        label_os="Alpine Linux"; os="alpine"
+      else
+        label_os="Linux"; os="linux"
+      fi
+      ;;
+    mingw*|msys*|cygwin*) echo "Detected OS: Windows"; printf "snyk-win.exe"; return ;;
+    *) echo "Unsupported OS: $os" >&2; exit 1 ;;
+  esac
+
+  case "$arch" in
+    x86_64|amd64) arch="" ;;
+    arm64|aarch64) arch="-arm64" ;;
+    *) echo "Unsupported architecture: $arch" >&2; exit 1 ;;
+  esac
+
+  echo "Detected OS: $label_os ($label_arch)" >&2
+  printf "snyk-%s%s" "$os" "$arch"
+}
+
+ASSET=$(detect_asset)
 
 release_json=$(curl -sfL "$BASE_URL/release.json")
 expected_sha=$(echo "$release_json" | python3 -c "
@@ -15,9 +48,11 @@ print(data['assets']['$ASSET']['sha256'].split()[0])
 
 tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
+echo "Downloading $BASE_URL/$ASSET ..."
 curl -sfL "$BASE_URL/$ASSET" -o "$tmp"
 
-actual_sha=$(shasum -a 256 "$tmp" | awk '{print $1}')
+actual_sha=$(shasum -a 256 "$tmp" 2>/dev/null || sha256sum "$tmp" | awk '{print $1}')
+actual_sha=$(echo "$actual_sha" | awk '{print $1}')
 if [[ "$actual_sha" != "$expected_sha" ]]; then
   echo "SHA256 mismatch: expected=$expected_sha actual=$actual_sha" >&2
   exit 1
@@ -28,4 +63,27 @@ chmod +x "$tmp"
 mv "$tmp" "$INSTALL_DIR/$BINARY_NAME"
 trap - EXIT
 
-echo "Installed $BINARY_NAME $("$INSTALL_DIR/$BINARY_NAME" --version 2>/dev/null || echo 'unknown')"
+version=$("$INSTALL_DIR/$BINARY_NAME" --version 2>/dev/null || echo "unknown")
+echo "Installed $BINARY_NAME $version to $INSTALL_DIR/$BINARY_NAME"
+
+if ! echo "$PATH" | tr ':' '\n' | grep -qx "$INSTALL_DIR"; then
+  PATH_LINE="export PATH=\"$INSTALL_DIR:\$PATH\""
+  RC_FILE=""
+  case "$SHELL" in
+    */zsh)  RC_FILE="$HOME/.zshrc" ;;
+    */bash) RC_FILE="$HOME/.bashrc" ;;
+  esac
+
+  if [ -n "$RC_FILE" ] && ! grep -qF "$INSTALL_DIR" "$RC_FILE"; then
+    echo "" >> "$RC_FILE"
+    echo "$PATH_LINE" >> "$RC_FILE"
+    echo "Added $INSTALL_DIR to PATH in $RC_FILE"
+    echo "Restart your shell or run: source $RC_FILE"
+  else
+    echo "Note: $INSTALL_DIR is not in your PATH. Add it with:"
+    echo "  $PATH_LINE"
+  fi
+fi
+
+echo ""
+echo "Run it with: $BINARY_NAME --help"

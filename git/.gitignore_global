@@ -30,6 +30,7 @@ __pycache__/
 
 # Local agent context (not committed)
 AGENTS.local.md
+AGENTS.task.md
 
 # Claude Code worktrees
 .claude/worktrees/
