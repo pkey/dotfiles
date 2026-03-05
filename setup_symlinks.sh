@@ -9,6 +9,40 @@ ensure_dir() {
   mkdir -p "$path"
 }
 
+# One-way sync: populate target dir with symlinks from source dirs,
+# then remove anything not managed by us (direct additions are discarded).
+sync_skills() {
+  local target_dir="$1"
+  shift
+  local source_dirs=("$@")
+
+  [[ -L "$target_dir" ]] && rm "$target_dir"
+  ensure_dir "$target_dir"
+
+  local -a managed_names=()
+  for src in "${source_dirs[@]}"; do
+    for skill_dir in "$src"/*/; do
+      [[ -d "$skill_dir" ]] || continue
+      local name
+      name=$(basename "$skill_dir")
+      [[ -d "$target_dir/$name" && ! -L "$target_dir/$name" ]] && rm -rf "${target_dir:?}/${name:?}"
+      ln -sfn "$skill_dir" "$target_dir/$name"
+      managed_names+=("$name")
+    done
+  done
+
+  for entry in "$target_dir"/*/; do
+    [[ -e "$entry" ]] || continue
+    local entry_name
+    entry_name=$(basename "$entry")
+    local found=false
+    for m in "${managed_names[@]}"; do
+      [[ "$m" == "$entry_name" ]] && { found=true; break; }
+    done
+    $found || rm -rf "$entry"
+  done
+}
+
 DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 
 # Git config & hooks
@@ -81,7 +115,7 @@ ln -sf "$DOTFILES/agents/AGENTS.md" "$HOME/.AGENTS.md"
 ensure_dir "$HOME/.claude"
 ln -sf "$HOME/.AGENTS.md" "$HOME/.claude/CLAUDE.md"
 ln -sf "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
-ln -sfn "$DOTFILES/agents/skills" "$HOME/.claude/skills"
+sync_skills "$HOME/.claude/skills" "$DOTFILES/agents/skills"
 
 # Local bin
 ensure_dir "$HOME/.local/bin"
@@ -91,15 +125,7 @@ done
 
 # Cursor
 ensure_dir "$HOME/.cursor"
-# Compose ~/.cursor/skills from shared (agents/skills) + cursor-only (cursor/skills)
-[[ -L "$HOME/.cursor/skills" ]] && rm "$HOME/.cursor/skills"
-ensure_dir "$HOME/.cursor/skills"
-for skill_dir in "$DOTFILES/agents/skills"/*/; do
-  [[ -d "$skill_dir" ]] && ln -sfn "$skill_dir" "$HOME/.cursor/skills/$(basename "$skill_dir")"
-done
-for skill_dir in "$DOTFILES/cursor/skills"/*/; do
-  [[ -d "$skill_dir" ]] && ln -sfn "$skill_dir" "$HOME/.cursor/skills/$(basename "$skill_dir")"
-done
+sync_skills "$HOME/.cursor/skills" "$DOTFILES/agents/skills" "$DOTFILES/cursor/skills"
 # TODO: Remove commands symlinks once Cursor CLI supports skills
 ensure_dir "$HOME/.cursor/commands"
 for skill in "$HOME/.cursor/skills"/*/SKILL.md; do
