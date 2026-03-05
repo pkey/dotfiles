@@ -32,6 +32,18 @@ For each finding, propose one of these artifact types:
 | Agent rule | `$DOTFILES/agents/AGENTS.md` or project `AGENTS.md` | Context/preference the agent was missing |
 | Package | `$DOTFILES/packages.yaml` | CLI tool that should be installed |
 
+Skills follow this directory structure (all subdirectories are optional):
+
+```
+skills/<name>/
+├── SKILL.md
+├── scripts/       # Executable scripts bundled with the skill
+├── references/    # Supporting documentation
+└── assets/        # Templates, configs, etc.
+```
+
+When a proposal includes both a skill update and a supporting script, the script goes in the skill's `scripts/` directory — not in `$DOTFILES/bin/`.
+
 ## Format
 
 Present each proposal as:

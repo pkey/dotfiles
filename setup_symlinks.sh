@@ -126,12 +126,6 @@ done
 # Cursor
 ensure_dir "$HOME/.cursor"
 sync_skills "$HOME/.cursor/skills" "$DOTFILES/agents/skills" "$DOTFILES/cursor/skills"
-# TODO: Remove commands symlinks once Cursor CLI supports skills
-ensure_dir "$HOME/.cursor/commands"
-for skill in "$HOME/.cursor/skills"/*/SKILL.md; do
-  name=$(basename "$(dirname "$skill")")
-  ln -sf "$skill" "$HOME/.cursor/commands/$name.md"
-done
 ln -sfn "$DOTFILES/cursor/rules" "$HOME/.cursor/rules"
 ensure_dir "$HOME/Library/Application Support/Cursor/User"
 ln -sf "$DOTFILES/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"

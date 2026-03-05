@@ -65,6 +65,8 @@ full:
   - kubectx
   - teleport
   - tilt
+  - name: terraform
+    brew: hashicorp/tap/terraform
   - name: docker
     brew: false
     apt: false
@@ -75,6 +77,7 @@ macos_only:
 
 macos_taps:
   - 1password/tap
+  - hashicorp/tap
 
 macos_casks:
   - 1password-cli
