@@ -91,10 +91,18 @@ done
 
 # Cursor
 ensure_dir "$HOME/.cursor"
-ln -sfn "$DOTFILES/agents/skills" "$HOME/.cursor/skills"
+# Compose ~/.cursor/skills from shared (agents/skills) + cursor-only (cursor/skills)
+[[ -L "$HOME/.cursor/skills" ]] && rm "$HOME/.cursor/skills"
+ensure_dir "$HOME/.cursor/skills"
+for skill_dir in "$DOTFILES/agents/skills"/*/; do
+  [[ -d "$skill_dir" ]] && ln -sfn "$skill_dir" "$HOME/.cursor/skills/$(basename "$skill_dir")"
+done
+for skill_dir in "$DOTFILES/cursor/skills"/*/; do
+  [[ -d "$skill_dir" ]] && ln -sfn "$skill_dir" "$HOME/.cursor/skills/$(basename "$skill_dir")"
+done
 # TODO: Remove commands symlinks once Cursor CLI supports skills
 ensure_dir "$HOME/.cursor/commands"
-for skill in "$DOTFILES/agents/skills"/*/SKILL.md; do
+for skill in "$HOME/.cursor/skills"/*/SKILL.md; do
   name=$(basename "$(dirname "$skill")")
   ln -sf "$skill" "$HOME/.cursor/commands/$name.md"
 done
