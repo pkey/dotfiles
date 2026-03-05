@@ -40,21 +40,6 @@ alwaysApply: true
   - Edits from any worktree update the source
 - When working in `~/tasks/`, remember you're in a worktree - the source repo is in `~/repos/`
 
-# Investigating CI/CD Failures
-
-When asked about CI/CD, MR (GitLab), or PR (GitHub) test failures:
-1. First use the appropriate CLI to get actual failure information:
-   - GitLab: `glab mr view`, `glab ci status`, `glab ci view`, `glab ci trace <job-id>`
-   - GitHub: `gh pr view`, `gh run list`, `gh run view <run-id>`
-   - CircleCI: First `gh api repos/<owner>/<repo>/commits/<sha>/check-runs --jq '.check_runs[] | select(.name=="<workflow>") | .output.summary'` for job summary, then `curl https://circleci.com/api/v1.1/project/github/<org>/<repo>/<build_num>` for step details and output URLs
-2. Identify the specific failing test/job from CI logs
-3. Check if the same test passes on main/master branch
-4. If failure seems intermittent, retry the job first
-5. After triggering a retry, summarize findings and ask user preference before deep code investigation
-6. Do NOT make code changes based on assumptions - verify the exact failing test from logs first
-
-Do NOT start by blindly exploring the codebase - the failure information is in CI/CD, not the source code.
-
 # Local Context
 
 - **Always check for `AGENTS.local.md` in the current project root FIRST** - especially for CI/CD, deployment, or release tasks

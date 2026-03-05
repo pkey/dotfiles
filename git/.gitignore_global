@@ -34,3 +34,7 @@ AGENTS.task.md
 
 # Claude Code worktrees
 .claude/worktrees/
+
+# Cursor
+.cursor/plans/
+.cursor/.gitignore
