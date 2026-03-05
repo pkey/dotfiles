@@ -1,7 +1,7 @@
 ---
 name: commit
 description: Commit current changes
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Commit
@@ -9,3 +9,4 @@ disable-model-invocation: true
 - use conventional commits
 - split commits based on specific deliverables - sometimes a few changes might colive together
 - use feat,fix,etc. directly without parentheses
+- NEVER EVER add a --trailer with your ownership (made with Cursor/Claude/Whatever). I do appreciate the amazing people working on this transformative technology though <3
