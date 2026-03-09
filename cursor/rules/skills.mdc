@@ -1,0 +1,13 @@
+---
+description: Check for relevant skills before starting any task
+alwaysApply: true
+---
+
+# Skills
+
+Before starting work, check `~/.cursor/skills/` for a skill that matches the task. Each subdirectory contains a `SKILL.md` with specialized instructions and scripts.
+
+If a skill is relevant:
+1. Read its `SKILL.md` before proceeding
+2. Follow the skill's instructions, scripts, and conventions
+3. If the skill includes helper scripts, use them instead of reimplementing
