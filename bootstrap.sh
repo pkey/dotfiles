@@ -165,8 +165,8 @@ fi
 
 export DOTFILES="$HOME/dotfiles"
 
-# Setup submodules
-git -C "$DOTFILES" submodule update --init --recursive
+# Setup and update submodules (zsh plugins, etc.)
+git -C "$DOTFILES" submodule update --init --remote --merge
 
 # Install packages via packages.yaml
 if [[ "$OS" == "Darwin" ]]; then

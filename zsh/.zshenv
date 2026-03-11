@@ -17,7 +17,8 @@ fi
 [[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
 # Ghostty shell integration (custom ZDOTDIR breaks auto-injection)
-if [[ "$TERM_PROGRAM" == "ghostty" && -z "$GHOSTTY_RESOURCES_DIR" ]]; then
+# Use $TERM, not $TERM_PROGRAM — the latter leaks to child processes (e.g. Cursor)
+if [[ "$TERM" == "xterm-ghostty" && -z "$GHOSTTY_RESOURCES_DIR" ]]; then
   export GHOSTTY_RESOURCES_DIR="/Applications/Ghostty.app/Contents/Resources/ghostty"
   source "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration"
 fi
