@@ -5,6 +5,7 @@
 # Usage:
 #   stack create <name>     Branch off current and record parent
 #   stack track [parent]    Record parent for current branch (default: auto-detect)
+#   stack track --remote <branch> [parent]  Fetch remote branch locally and track it
 #   stack pr                Push and create/update PR with stack parent as base
 #   stack restack [base]    Rebase all descendants of base (default: current branch)
 #   stack absorb            Fast-forward parent to include current branch
@@ -34,6 +35,7 @@ _stack_usage() {
   echo "Commands:"
   echo "  create <name>     Branch off current and record parent"
   echo "  track [parent]    Record parent for current branch (default: auto-detect)"
+  echo "  track --remote <branch> [parent]  Fetch remote branch and track (default parent: main)"
   echo "  pr                Push and create/update PR with stack parent as base"
   echo "  restack [base]    Rebase all descendants of base (default: current branch)"
   echo "  absorb            Fast-forward parent to include current branch"
@@ -56,6 +58,12 @@ _stack_create() {
 }
 
 _stack_track() {
+  if [[ "${1:-}" == "--remote" ]]; then
+    shift
+    _stack_track_remote "$@"
+    return
+  fi
+
   local branch
   branch=$(git rev-parse --abbrev-ref HEAD)
   local parent="${1:-}"
@@ -91,6 +99,25 @@ _stack_track() {
   else
     echo "🔗 Tracking $branch → $parent"
   fi
+}
+
+# Fetch a remote branch locally (without switching) and set its stack parent
+_stack_track_remote() {
+  local branch="${1:-}"
+  if [[ -z "$branch" ]]; then
+    echo "Usage: stack track --remote <branch> [parent]" >&2
+    return 1
+  fi
+  local parent="${2:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')}"
+  parent="${parent:-main}"
+
+  echo "📡 Fetching $branch from origin..."
+  if ! git fetch origin "$branch":"$branch" &>/dev/null; then
+    echo "Failed to fetch $branch from origin" >&2
+    return 1
+  fi
+  git config "branch.$branch.stack-parent" "$parent"
+  echo "🔗 Tracking $branch → $parent"
 }
 
 _stack_pr() {
