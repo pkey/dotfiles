@@ -80,9 +80,6 @@ alias gro='git reset --hard origin/$(git branch --show-current)'              # 
 alias gf='git fetch origin'                                                  # Fetch from origin
 alias grfo='gf && grb origin/$(git symbolic-ref refs/remotes/origin/HEAD | sed "s@refs/remotes/origin/@@")'  # Fetch and rebase default
 
-# Git Worktree
-alias gwtls='git worktree list'                                              # List all worktrees
-
 # Yarn
 alias ybw='yarn build --watch'                                               # Build with watch mode
 alias yl='yarn lint --fix'                                                   # Lint and fix
