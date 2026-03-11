@@ -239,8 +239,18 @@ _stack_sync_remote() {
   local original_branch
   original_branch=$(git rev-parse --abbrev-ref HEAD)
 
-  echo "📡 Fetching $base..."
-  git fetch origin "$base" &>/dev/null && git checkout "$base" &>/dev/null && git pull --ff-only &>/dev/null
+  echo "📡 Fetching origin..."
+  git fetch origin &>/dev/null
+
+  # Fast-forward local base (worktree-safe)
+  local base_wt
+  base_wt=$(git worktree list --porcelain 2>/dev/null \
+    | awk '/^worktree /{wt=$2} /^branch /{if($2=="refs/heads/'"$base"'")print wt}')
+  if [[ -n "$base_wt" ]]; then
+    git -C "$base_wt" merge --ff-only "origin/$base" &>/dev/null
+  else
+    git fetch origin "$base":"$base" &>/dev/null
+  fi
   local synced=()
 
   local branch parent
@@ -262,6 +272,8 @@ _stack_sync_remote() {
       echo "🗑️  Deleted $merged"
     fi
   done
+
+  _stack_restack "$base"
 
   if [[ "$(git rev-parse --abbrev-ref HEAD)" != "$original_branch" ]]; then
     git checkout "$original_branch" &>/dev/null
