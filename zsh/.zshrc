@@ -5,7 +5,7 @@
 
 export PATH=$PATH:/usr/local/bin
 export EDITOR=vim
-export DOTFILES="${DOTFILES:-$HOME/dotfiles}"
+export DOTFILES=$HOME/dotfiles
 
 export PATH="$HOME/.local/bin:$PATH"
 

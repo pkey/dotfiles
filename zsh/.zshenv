@@ -1,4 +1,4 @@
-export DOTFILES="${DOTFILES:-$HOME/dotfiles}"
+export DOTFILES="$HOME/dotfiles"
 
 export HISTFILE="$HOME/.zsh_history"
 

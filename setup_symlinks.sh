@@ -91,7 +91,7 @@ if [[ -L "$HOME/.zshrc" ]] || [[ ! -f "$HOME/.zshrc" ]]; then
   rm -f "$HOME/.zshrc"
   cat > "$HOME/.zshrc" <<'STUB'
 # Dotfiles-managed zsh config — do not edit above this line
-source "${DOTFILES:-$HOME/dotfiles}/zsh/.zshrc"
+source "$HOME/dotfiles/zsh/.zshrc"
 
 # Lines below are auto-added by installers and not tracked in dotfiles
 STUB
@@ -99,7 +99,7 @@ elif ! grep -q 'source.*dotfiles/zsh/.zshrc' "$HOME/.zshrc"; then
   tmpfile=$(mktemp)
   cat > "$tmpfile" <<'STUB'
 # Dotfiles-managed zsh config — do not edit above this line
-source "${DOTFILES:-$HOME/dotfiles}/zsh/.zshrc"
+source "$HOME/dotfiles/zsh/.zshrc"
 
 # Lines below are auto-added by installers and not tracked in dotfiles
 STUB
