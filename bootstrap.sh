@@ -441,6 +441,12 @@ fi
 
 printf "Continuing with full installation...\n"
 
+# Configure worktrunk shell integration
+if command -v wt >/dev/null 2>&1; then
+  wt config shell install
+  echo "worktrunk shell integration installed ✅"
+fi
+
 # Update npm, corepack, and pnpm
 if command -v fnm >/dev/null 2>&1; then
   eval "$(fnm env)"

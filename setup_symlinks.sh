@@ -68,6 +68,10 @@ ln -sf "$DOTFILES/vim/.vimrc" "$HOME/.vimrc"
 ensure_dir "$HOME/.config/gh"
 ln -sf "$DOTFILES/gh/config.yml" "$HOME/.config/gh/config.yml"
 
+# Worktrunk
+ensure_dir "$HOME/.config/worktrunk"
+ln -sf "$DOTFILES/worktrunk/config.toml" "$HOME/.config/worktrunk/config.toml"
+
 # Ghostty
 ensure_dir "$HOME/.config/ghostty"
 ln -sf "$DOTFILES/ghostty/config" "$HOME/.config/ghostty/config"

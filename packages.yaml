@@ -59,6 +59,8 @@ full:
   - go
   - gitleaks
   - convco
+  - name: worktrunk
+    apt: false
   - circleci
   - libpq
   - kubernetes-cli
