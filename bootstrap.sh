@@ -163,7 +163,7 @@ else
   printf "Running minimal installation...\n"
 fi
 
-export DOTFILES="$HOME/dotfiles"
+export DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 
 # Setup submodules
 git -C "$DOTFILES" submodule update --init --recursive
