@@ -2,7 +2,7 @@
 # Worktrees are created under ~/worktrees/<repo>/<branch>
 #
 # Usage:
-#   wt checkout <branch>              Check out an existing branch in a new worktree
+#   wt checkout [branch]              Check out an existing branch in a new worktree (fzf if omitted)
 #   wt checkout -b <base> <branch>    Create a new branch from base in a new worktree
 #   wt list                           Fuzzy-select a worktree from the current repo and cd into it
 #   wt list --all                     Fuzzy-select a worktree across all repos under ~/worktrees
@@ -23,7 +23,7 @@ _wt_usage() {
   echo "Usage: wt <command> [options]"
   echo ""
   echo "Commands:"
-  echo "  checkout <branch>            Check out existing branch in a new worktree"
+  echo "  checkout [branch]            Check out existing branch in a new worktree (fzf if omitted)"
   echo "  checkout -b <base> <branch>  Create new branch from base in a new worktree"
   echo "  list                         Fuzzy-select worktree from current repo"
   echo "  list --all                   Fuzzy-select worktree across all repos"
@@ -54,10 +54,20 @@ _wt_checkout() {
     mkdir -p "$HOME/worktrees/$repo_name"
     git worktree add -b "$branch" "$worktree_path" "$base" && cd "$worktree_path"
   else
-    local branch="$1"
+    local branch="${1:-}"
     if [[ -z "$branch" ]]; then
-      echo "Usage: wt checkout <branch>" >&2
-      return 1
+      branch=$( (git for-each-ref --format='%(refname:short)' refs/heads/; \
+                 git for-each-ref --format='%(refname:short)' refs/remotes/origin/ | sed 's|^origin/||') \
+                | sort -u | grep -v '^HEAD$' \
+                | fzf --header="Select branch for worktree")
+      [[ -z "$branch" ]] && return
+    fi
+    local existing_wt
+    existing_wt=$(git worktree list --porcelain | awk -v b="refs/heads/$branch" \
+      '$1=="worktree" {wt=$2} $1=="branch" && $2==b {print wt}')
+    if [[ -n "$existing_wt" ]]; then
+      cd "$existing_wt"
+      return
     fi
     local repo_name="$(basename "$(git rev-parse --show-toplevel)")"
     local worktree_path="$(_wt_path "$branch")"
