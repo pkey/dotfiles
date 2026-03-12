@@ -32,8 +32,9 @@ __pycache__/
 AGENTS.local.md
 AGENTS.task.md
 
-# Claude Code worktrees
+# Claude Stuff
 .claude/worktrees/
+.claude
 
 # Cursor
 .cursor/plans/
