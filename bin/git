@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Wrapper to strip --trailer flags injected by Cursor IDE
+set -euo pipefail
+
+real_git=$(PATH="${PATH//$HOME\/.local\/bin:/}" command -v git)
+
+if [[ "${1:-}" == "commit" ]]; then
+    args=("commit")
+    shift
+    skip_next=false
+    for arg in "$@"; do
+        if $skip_next; then skip_next=false; continue; fi
+        if [[ "$arg" == --trailer=* ]]; then continue; fi
+        if [[ "$arg" == "--trailer" ]]; then skip_next=true; continue; fi
+        args+=("$arg")
+    done
+    exec "$real_git" "${args[@]}"
+else
+    exec "$real_git" "$@"
+fi
