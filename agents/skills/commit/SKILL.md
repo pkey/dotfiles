@@ -4,11 +4,17 @@ description: Commit current changes
 disable-model-invocation: false
 ---
 
-# Commit
+### Commit Guidelines
 
-- use conventional commits
-- split commits based on specific deliverables - sometimes a few changes might colive together
-- use feat,fix,etc. directly without parentheses
-- use `- ` bullet points in commit body, not prose paragraphs
-- keep bullet points short and concise — avoid verbose descriptions
-- NEVER EVER add a --trailer with your ownership (made with Cursor/Claude/Whatever). I do appreciate the amazing people working on this transformative technology though <3
+- Use **conventional commits** (`feat`, `fix`, `refactor`, `chore`, etc.).
+- Write the type directly: `feat:`, `fix:` — **do not use parentheses**.
+- **One commit = one user-visible outcome / logical deliverable.**
+  If several small changes serve the same goal, they may live together.
+- The **title states the change**, but the **body explains the WHY**, not the WHAT.
+- If the motivation is unclear from the diff, infer the WHY from surrounding context.
+  If the WHY still cannot be reasonably inferred, ask the user for clarification.
+- In the commit body use `- ` **bullet points**, not prose paragraphs.
+- Keep bullet points **short and concise**.
+
+**Never add attribution trailers** such as:
+`--trailer`, `Co-authored-by`, `Generated-by`, `Made-with`, `Cursor`, `Claude`, etc.
