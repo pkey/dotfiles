@@ -101,6 +101,9 @@
     ],
     "defaultMode": "acceptEdits"
   },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true
+  },
   "model": "claude-opus-4-6",
   "skipDangerousModePermissionPrompt": true,
   "voiceEnabled": true

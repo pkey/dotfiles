@@ -4,10 +4,14 @@ alias ssh='TERM=xterm-256color ssh'                                          # F
 
 # Editor
 alias cur='cursor .'                                                         # Open current dir in Cursor
-alias ca='cursor agent'						   	     # Opens cursor agent
+alias ca='cursor agent --yolo'						   	     # Opens cursor agent
 alias ealias='nvim $DOTFILES/aliases.sh'                                     # Edit aliases file
 alias edot='nvim $DOTFILES'                                                  # Edit dotfiles dir
 alias vim=nvim                                                               # Use neovim as vim
+
+#Claude
+alias claude='claude --dangerously-skip-permissions'
+
 
 viz() {                                                                      # Fuzzy find file and edit
   local file
@@ -23,15 +27,6 @@ alias ...=../..                                                              # U
 alias ....=../../..                                                          # Up three levels
 alias .....=../../../..                                                      # Up four levels
 alias ......=../../../../..                                                  # Up five levels
-alias 1='cd -'                                                               # Go to previous dir
-alias 2='cd -2'                                                              # Go back 2 dirs
-alias 3='cd -3'                                                              # Go back 3 dirs
-alias 4='cd -4'                                                              # Go back 4 dirs
-alias 5='cd -5'                                                              # Go back 5 dirs
-alias 6='cd -6'                                                              # Go back 6 dirs
-alias 7='cd -7'                                                              # Go back 7 dirs
-alias 8='cd -8'                                                              # Go back 8 dirs
-alias 9='cd -9'                                                              # Go back 9 dirs
 alias _=sudo                                                                 # Shortcut for sudo
 alias checkout='git checkout $(git branch | fzf)'                            # Fuzzy checkout branch
 alias l='ls -lah'                                                            # List all with details

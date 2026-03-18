@@ -1,0 +1,6 @@
+{
+  "snyk.securityAtInception.autoConfigureSnykMcpServer": true,
+  "snyk.securityAtInception.executionFrequency": "On Code Generation",
+  "snyk.advanced.cliPath": "/Users/pauliuskutka/Library/Application Support/snyk/vscode-cli/snyk-macos-arm64",
+  "snyk.yesWelcomeNotification": false
+}
