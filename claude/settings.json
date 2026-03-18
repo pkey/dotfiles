@@ -101,10 +101,19 @@
     ],
     "defaultMode": "acceptEdits"
   },
+  "model": "opus[1m]",
   "enabledPlugins": {
-    "gopls-lsp@claude-plugins-official": true
+    "gopls-lsp@claude-plugins-official": true,
+    "worktrunk@worktrunk": true
+  },
+  "extraKnownMarketplaces": {
+    "worktrunk": {
+      "source": {
+        "source": "github",
+        "repo": "max-sixty/worktrunk"
+      }
+    }
   },
   "voiceEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "model": "opus[1m]"
+  "skipDangerousModePermissionPrompt": true
 }
