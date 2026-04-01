@@ -108,6 +108,10 @@ STUB
 fi
 ln -sf "$DOTFILES/zsh/.zprofile" "$HOME/.zprofile"
 
+# uv
+ensure_dir "$HOME/.config/uv"
+ln -sf "$DOTFILES/uv/uv.toml" "$HOME/.config/uv/uv.toml"
+
 # AWS CLI
 ensure_dir "$HOME/.aws/cli"
 ln -sf "$DOTFILES/aws/cli/alias" "$HOME/.aws/cli/alias"
