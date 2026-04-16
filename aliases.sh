@@ -9,10 +9,6 @@ alias ealias='nvim $DOTFILES/aliases.sh'                                     # E
 alias edot='nvim $DOTFILES'                                                  # Edit dotfiles dir
 alias vim=nvim                                                               # Use neovim as vim
 
-#Claude
-alias claude='claude --dangerously-skip-permissions'
-
-
 viz() {                                                                      # Fuzzy find file and edit
   local file
   local search_path="${1:-.}"

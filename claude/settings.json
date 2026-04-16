@@ -99,7 +99,7 @@
       "Bash(glab repo archive:*)",
       "Bash(glab api --method DELETE:*)"
     ],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "auto"
   },
   "model": "opus[1m]",
   "enabledPlugins": {
@@ -114,7 +114,8 @@
       }
     }
   },
-  "voiceEnabled": true,
   "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "voiceEnabled": true,
+  "skipAutoPermissionPrompt": true
 }
