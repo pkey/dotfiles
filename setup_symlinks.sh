@@ -76,6 +76,11 @@ ln -sf "$DOTFILES/worktrunk/config.toml" "$HOME/.config/worktrunk/config.toml"
 ensure_dir "$HOME/.config/ghostty"
 ln -sf "$DOTFILES/ghostty/config" "$HOME/.config/ghostty/config"
 
+# Helix
+ensure_dir "$HOME/.config/helix"
+ln -sf "$DOTFILES/helix/config.toml" "$HOME/.config/helix/config.toml"
+ln -sf "$DOTFILES/helix/languages.toml" "$HOME/.config/helix/languages.toml"
+
 # Neovim
 ensure_dir "$HOME/.config"
 ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"

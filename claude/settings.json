@@ -4,7 +4,7 @@
   },
   "permissions": {
     "allow": [
-  "Bash(git status)",
+      "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git branch:*)",
@@ -99,7 +99,7 @@
       "Bash(glab repo archive:*)",
       "Bash(glab api --method DELETE:*)"
     ],
-    "defaultMode": "auto"
+    "defaultMode": "acceptEdits"
   },
   "model": "opus",
   "enabledPlugins": {
