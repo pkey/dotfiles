@@ -1,3 +1,47 @@
 shell-integration-features = ssh-terminfo,ssh-env
 
 macos-option-as-alt = true
+
+# Tmux-aware shortcuts (Cmd keys send tmux prefix + command)
+keybind = "cmd+t=text:\x02c"
+keybind = "cmd+d=text:\x02%"
+keybind = "cmd+shift+d=text:\x02\""
+keybind = "cmd+w=text:\x02x"
+
+# Ghostty 1.2+ binds cmd+digit_N to goto_tab by default — unbind first, then rebind
+keybind = "cmd+digit_1=unbind"
+keybind = "cmd+digit_2=unbind"
+keybind = "cmd+digit_3=unbind"
+keybind = "cmd+digit_4=unbind"
+keybind = "cmd+digit_5=unbind"
+keybind = "cmd+digit_6=unbind"
+keybind = "cmd+digit_7=unbind"
+keybind = "cmd+digit_8=unbind"
+keybind = "cmd+digit_9=unbind"
+keybind = "cmd+one=text:\x02\x31"
+keybind = "cmd+two=text:\x02\x32"
+keybind = "cmd+three=text:\x02\x33"
+keybind = "cmd+four=text:\x02\x34"
+keybind = "cmd+five=text:\x02\x35"
+keybind = "cmd+six=text:\x02\x36"
+keybind = "cmd+seven=text:\x02\x37"
+keybind = "cmd+eight=text:\x02\x38"
+keybind = "cmd+nine=text:\x02\x39"
+
+# Window (tab) navigation
+keybind = "cmd+[=text:\x02p"
+keybind = "cmd+]=text:\x02n"
+
+# Session navigation
+keybind = "cmd+shift+[=text:\x02("
+keybind = "cmd+shift+]=text:\x02)"
+keybind = "cmd+s=text:\x02s"
+
+# Pane navigation (vim-style: h=left, j=down, k=up, l=right)
+keybind = "cmd+h=text:\x02\x1b[D"
+keybind = "cmd+j=text:\x02\x1b[B"
+keybind = "cmd+k=text:\x02\x1b[A"
+keybind = "cmd+l=text:\x02\x1b[C"
+
+# Rename current tmux window
+keybind = "cmd+shift+r=text:\x02,"
