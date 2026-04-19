@@ -4,7 +4,7 @@
 # Set up env variables
 
 export PATH=$PATH:/usr/local/bin
-export EDITOR=vim
+export EDITOR=hx
 export DOTFILES=$HOME/dotfiles
 
 export PATH="$HOME/.local/bin:$PATH"

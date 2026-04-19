@@ -5,9 +5,10 @@ alias ssh='TERM=xterm-256color ssh'                                          # F
 # Editor
 alias cur='cursor .'                                                         # Open current dir in Cursor
 alias ca='cursor agent --yolo'						   	     # Opens cursor agent
-alias ealias='nvim $DOTFILES/aliases.sh'                                     # Edit aliases file
-alias edot='nvim $DOTFILES'                                                  # Edit dotfiles dir
-alias vim=nvim                                                               # Use neovim as vim
+alias ealias='hx $DOTFILES/aliases.sh'                                       # Edit aliases file
+alias edot='hx $DOTFILES'                                                    # Edit dotfiles dir
+alias vim=hx                                                                 # Muscle-memory: vim → helix
+alias vi=hx                                                                  # Muscle-memory: vi → helix
 
 viz() {                                                                      # Fuzzy find file and edit
   local file

@@ -25,7 +25,6 @@ common:
   - name: bat
     apt: bat
     post_apt: ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"
-  - neovim
   - tmux
   - jq
   - yq

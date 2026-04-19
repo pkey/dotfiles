@@ -61,9 +61,6 @@ if [[ -L "$HOME/.gitconfig" ]] || [[ ! -f "$HOME/.gitconfig" ]]; then
 STUB
 fi
 
-# Vim
-ln -sf "$DOTFILES/vim/.vimrc" "$HOME/.vimrc"
-
 # GitHub CLI
 ensure_dir "$HOME/.config/gh"
 ln -sf "$DOTFILES/gh/config.yml" "$HOME/.config/gh/config.yml"
@@ -80,10 +77,6 @@ ln -sf "$DOTFILES/ghostty/config" "$HOME/.config/ghostty/config"
 ensure_dir "$HOME/.config/helix"
 ln -sf "$DOTFILES/helix/config.toml" "$HOME/.config/helix/config.toml"
 ln -sf "$DOTFILES/helix/languages.toml" "$HOME/.config/helix/languages.toml"
-
-# Neovim
-ensure_dir "$HOME/.config"
-ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"
 
 # Tmux
 ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"

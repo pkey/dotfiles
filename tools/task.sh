@@ -135,7 +135,7 @@ _task_new() {
 
 EOF
 
-  ${EDITOR:-vim} "$agents_file"
+  ${EDITOR:-hx} "$agents_file"
   cd "$task_dir"
 }
 
