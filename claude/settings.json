@@ -4,7 +4,7 @@
   },
   "permissions": {
     "allow": [
-      "Bash(git status)",
+  "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git branch:*)",
@@ -101,7 +101,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
     "worktrunk@worktrunk": true
