@@ -45,3 +45,6 @@ keybind = "cmd+l=text:\x02\x1b[C"
 
 # Rename current tmux window
 keybind = "cmd+shift+r=text:\x02,"
+
+# New tmux session (prompts for name)
+keybind = "cmd+shift+n=text:\x02N"
