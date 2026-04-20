@@ -19,3 +19,4 @@ See the snyk folder and .localrc for ideas what to migrage.
 - [ ] Evals for skills
 - [ ] Remove packages.yml and use Brewfile + other distro package managers
 - [ ] Redo the AGENTS.md and make it super lean
+- [ ] Create a mini skills repository that links to external skills in outside github repos (or local skills)
