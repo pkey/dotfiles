@@ -8,11 +8,7 @@ args = ["server"]
 
 [[language]]
 name = "markdown"
-language-servers = ["marksman", "mdpls", "harper-ls"]
-
-[language-server.mdpls]
-command = "mdpls"
-config = { "markdown.preview.auto" = false }
+language-servers = ["marksman", "harper-ls"]
 
 [language-server.harper-ls]
 command = "harper-ls"

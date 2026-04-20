@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+file="${1:-}"
+
+if [[ -z "$file" ]]; then
+  exit 1
+fi
+
+mtime() {
+  if stat -f '%m' "$1" >/dev/null 2>&1; then
+    stat -f '%m' "$1"
+    return
+  fi
+
+  stat -c '%Y' "$1"
+}
+
+last_mtime=''
+
+while true; do
+  if [[ -f "$file" ]]; then
+    current_mtime="$(mtime "$file")"
+    if [[ "$current_mtime" != "$last_mtime" ]]; then
+      last_mtime="$current_mtime"
+      printf '\033[H\033[2J'
+      glow -w 0 "$file"
+    fi
+  elif [[ "$last_mtime" != 'missing' ]]; then
+    last_mtime='missing'
+    printf '\033[H\033[2J'
+    printf 'Preview file not found: %s\n' "$file"
+  fi
+
+  sleep 0.5
+done

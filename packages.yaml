@@ -63,10 +63,9 @@ full:
     apt: false
   - marksman
   - harper
-  - name: mdpls
-    brew: false
+  - name: glow
     apt: false
-    script: cargo install --git https://github.com/euclio/mdpls
+    script: GOBIN="$HOME/.local/bin" go install github.com/charmbracelet/glow@latest
   - circleci
   - libpq
   - kubernetes-cli

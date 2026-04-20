@@ -2,3 +2,6 @@ theme = "onedark"
 
 [editor]
 line-number = "absolute"
+
+[keys.normal.space.m]
+p = ':sh "$HOME/dotfiles/bin/hx-glow-preview" "%{buffer_name}"'

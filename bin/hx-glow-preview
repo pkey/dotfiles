@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+file="${1:-}"
+
+if [[ -z "$file" ]]; then
+  exit 1
+fi
+
+if [[ ! -f "$file" ]]; then
+  if [[ -n "${TMUX:-}" ]] && command -v tmux >/dev/null 2>&1; then
+    tmux display-message "Preview file not found: $file"
+    exit 1
+  fi
+  printf 'Preview file not found: %s\n' "$file" >&2
+  exit 1
+fi
+
+watch_cmd="$HOME/dotfiles/bin/hx-glow-watch"
+
+if [[ -n "${TMUX:-}" ]] && command -v tmux >/dev/null 2>&1; then
+  printf -v glow_cmd '%q %q' "$watch_cmd" "$file"
+  tmux split-window -h -d -p 40 "$glow_cmd"
+  exit 0
+fi
+
+exec "$watch_cmd" "$file"
