@@ -63,6 +63,8 @@ full:
     apt: false
   - marksman
   - harper
+  - name: helix
+    apt: false
   - name: glow
     apt: false
     script: GOBIN="$HOME/.local/bin" go install github.com/charmbracelet/glow@latest
