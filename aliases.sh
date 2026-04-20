@@ -172,6 +172,7 @@ alias unfocus='sudo focus unblock'                                           # U
 alias cc='$CC_AGENT'                                                         # Code agent CLI shortcut
 alias eclaude='vim $DOTFILES/claude/CLAUDE.md'                               # Edit Claude config
 alias claude='claude --dangerously-skip-permissions'                         # Launch claude with skip permissions by default
+alias codex='codex --dangerously-bypass-approvals-and-sandbox'               # Run codex without sandbox by default
 
 # Node
 alias p='pnpm'                                                               # shortcut to pnpm
