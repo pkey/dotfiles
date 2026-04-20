@@ -20,3 +20,12 @@ See the snyk folder and .localrc for ideas what to migrage.
 - [ ] Remove packages.yml and use Brewfile + other distro package managers
 - [ ] Redo the AGENTS.md and make it super lean
 - [ ] Create a mini skills repository that links to external skills in outside github repos (or local skills)
+
+## Mardown Preview
+
+- [ ] Close markdown preview when hx is closed
+- [ ] Update active markdown view if different markdown file is opened
+
+## Agentic
+
+- [ ] Hook in autonomous agents that goes through these TODOs and creates PRs for them
