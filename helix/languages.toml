@@ -5,3 +5,15 @@ language-servers = ["ty"]
 [language-server.ty]
 command = "ty"
 args = ["server"]
+
+[[language]]
+name = "markdown"
+language-servers = ["marksman", "mdpls", "harper-ls"]
+
+[language-server.mdpls]
+command = "mdpls"
+config = { "markdown.preview.auto" = false }
+
+[language-server.harper-ls]
+command = "harper-ls"
+args = ["--stdio"]

@@ -61,6 +61,12 @@ full:
   - convco
   - name: worktrunk
     apt: false
+  - marksman
+  - harper
+  - name: mdpls
+    brew: false
+    apt: false
+    script: cargo install --git https://github.com/euclio/mdpls
   - circleci
   - libpq
   - kubernetes-cli
