@@ -2,7 +2,15 @@
 # Wrapper to strip --trailer flags injected by Cursor IDE
 set -euo pipefail
 
-real_git=$(PATH="${PATH//$HOME\/.local\/bin:/}" command -v git)
+# Prefer Homebrew's git (newer — e.g. git 2.34.1 on Ubuntu lacks user.signingkey
+# key:: literal support). Fall back to the next git on PATH.
+real_git=""
+for candidate in /opt/homebrew/bin/git /home/linuxbrew/.linuxbrew/bin/git; do
+    if [[ -x "$candidate" ]]; then real_git="$candidate"; break; fi
+done
+if [[ -z "$real_git" ]]; then
+    real_git=$(PATH="${PATH//$HOME\/.local\/bin:/}" command -v git)
+fi
 
 if [[ "${1:-}" == "commit" ]]; then
     args=("commit")
