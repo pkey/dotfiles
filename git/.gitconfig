@@ -1,5 +1,6 @@
-[commit]
-    gpgsign = true
+[user]
+	name = Paulius Kutka
+	email = 13101751+pkey@users.noreply.github.com
 
 [gpg]
 	program = gpg

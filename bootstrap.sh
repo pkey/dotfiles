@@ -232,27 +232,52 @@ if [[ "$OS" == "Linux" ]]; then
   fi
 fi
 
-SIGNING_KEY="EAB2D9EB6CD93324"
-if gpg --list-keys "$SIGNING_KEY" > /dev/null 2>&1; then
-  uid=$(gpg --list-keys --with-colons $SIGNING_KEY | awk -F: '/^uid:/ {print $10; exit}')
-  git_name=$(echo "$uid" | sed -E 's/^(.*) <.*>$/\1/')
-  git_email=$(echo "$uid" | sed -E 's/^.* <(.*)>$/\1/')
+# Identity lives in dotfiles/git/.gitconfig (static). Here we only pick the
+# per-machine signing method: prefer GPG EID, then SSH signing key, else unsigned.
+GPG_SIGNING_KEY="EAB2D9EB6CD93324"
+SSH_SIGNING_PUB="$HOME/.ssh/id_signing.pub"
 
-  git config --file ~/.gitconfig-user user.name "$git_name"
-  git config --file ~/.gitconfig-user user.email "$git_email"
-  git config --file ~/.gitconfig-user user.signingkey $SIGNING_KEY
+# Match one of the registered signing pubkeys in $DOTFILES/ssh/ against the
+# live ssh-agent (local or forwarded). First match wins.
+mkdir -p "$HOME/.ssh"
+if [[ -n "${SSH_AUTH_SOCK:-}" ]] && ssh-add -L >/dev/null 2>&1; then
+  agent_keys=$(ssh-add -L 2>/dev/null | awk '{print $1" "$2}')
+  for pub in "$DOTFILES"/ssh/id_signing_*.pub; do
+    [[ -f "$pub" ]] || continue
+    pub_body=$(awk '{print $1" "$2}' "$pub")
+    if grep -Fxq "$pub_body" <<<"$agent_keys"; then
+      ln -sf "$pub" "$SSH_SIGNING_PUB"
+      echo "SSH signing key matched via agent: $(basename "$pub")"
+      break
+    fi
+  done
+fi
 
-  echo "Git configured: $git_name <$git_email>"
-
-  # Switch dotfiles remote from HTTPS to SSH
-  current_url=$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || true)
-  if [[ "$current_url" == https://github.com/* ]]; then
-    ssh_url="${current_url/https:\/\/github.com\//git@github.com:}"
-    git -C "$DOTFILES" remote set-url origin "$ssh_url"
-    echo "Switched dotfiles remote to SSH: $ssh_url"
-  fi
+: > ~/.gitconfig-user
+if gpg --list-keys "$GPG_SIGNING_KEY" > /dev/null 2>&1; then
+  git config --file ~/.gitconfig-user user.signingkey "$GPG_SIGNING_KEY"
+  git config --file ~/.gitconfig-user gpg.format openpgp
+  git config --file ~/.gitconfig-user commit.gpgsign true
+  echo "Git signing: GPG key $GPG_SIGNING_KEY"
+elif [[ -f "$SSH_SIGNING_PUB" ]]; then
+  # Use literal key:: form — avoids ssh-keygen probing for a local private
+  # key file (which doesn't exist when signing via a forwarded agent).
+  pub_body=$(awk '{print $1" "$2}' "$SSH_SIGNING_PUB")
+  git config --file ~/.gitconfig-user user.signingkey "key::$pub_body"
+  git config --file ~/.gitconfig-user gpg.format ssh
+  git config --file ~/.gitconfig-user commit.gpgsign true
+  echo "Git signing: SSH key $SSH_SIGNING_PUB"
 else
-  echo "GPG key $SIGNING_KEY not found. Skipping git signing configuration."
+  git config --file ~/.gitconfig-user commit.gpgsign false
+  echo "Git signing: disabled (no GPG or SSH signing key available)"
+fi
+
+# Switch dotfiles remote from HTTPS to SSH when we have any signing method
+current_url=$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || true)
+if [[ "$current_url" == https://github.com/* ]]; then
+  ssh_url="${current_url/https:\/\/github.com\//git@github.com:}"
+  git -C "$DOTFILES" remote set-url origin "$ssh_url"
+  echo "Switched dotfiles remote to SSH: $ssh_url"
 fi
 
 
