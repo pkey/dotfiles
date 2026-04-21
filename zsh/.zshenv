@@ -9,9 +9,22 @@ elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# Stabilise SSH agent socket for forwarded agents (tmux / reattached sessions).
+# On each fresh SSH login, $SSH_AUTH_SOCK points at a new /tmp/ssh-XXX/agent.NNN
+# which is invisible to any shell that inherited an older value. We repoint
+# ~/.ssh/agent.sock at the live socket and have every shell use that symlink,
+# so long-lived tmux panes keep working across reconnects.
+if [[ -n "$SSH_AUTH_SOCK" && "$SSH_AUTH_SOCK" != "$HOME/.ssh/agent.sock" && -S "$SSH_AUTH_SOCK" ]]; then
+  ln -sfn "$SSH_AUTH_SOCK" "$HOME/.ssh/agent.sock"
+fi
+[[ -e "$HOME/.ssh/agent.sock" ]] && export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+
 # Fix GPG signing for git commits
 if [[ -t 0 ]]; then
     export GPG_TTY=$(tty)
+    # Point gpg-agent at the current TTY (needed in tmux / forwarded sessions)
+    command -v gpg-connect-agent >/dev/null 2>&1 && \
+        gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 else
     export GPG_TTY=""
 fi
