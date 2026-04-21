@@ -280,65 +280,6 @@ else
   fi
 fi
 
-# Install additional packages
-echo "Installing additional packages..."
-
-# Ensure pipx is installed
-if ! command -v pipx >/dev/null 2>&1; then
-  echo "pipx not found. Installing..."
-  python3 -m pip install --user pipx
-else
-  echo "pipx already installed ✅"
-fi
-
-# Fix broken pipx packages if Python interpreter changed
-if pipx list 2>&1 | grep -q "invalid interpreter"; then
-  echo "Fixing pipx packages with invalid Python interpreter..."
-  pipx reinstall-all
-fi
-
-# Pipx packages to install (add packages here)
-PIPX_PACKAGES=(
-  uv
-)
-
-install_pipx_package() {
-  local package="$1"
-  if pipx list | cat | grep -q "package $package"; then
-    echo "✔ $package already installed. Skipping."
-  else
-    echo "➕ Installing $package via pipx..."
-    pipx install "$package"
-  fi
-}
-
-sync_pipx_packages() {
-  echo "Syncing pipx packages..."
-
-  # Install all defined packages
-  for package in "${PIPX_PACKAGES[@]}"; do
-    install_pipx_package "$package"
-  done
-
-  # Remove packages not in the list
-  local installed
-  installed=$(pipx list --short 2>/dev/null | cut -d' ' -f1)
-
-  for pkg in $installed; do
-    local keep=false
-    for wanted in "${PIPX_PACKAGES[@]}"; do
-      if [[ "$pkg" == "$wanted" ]]; then
-        keep=true
-        break
-      fi
-    done
-    if [[ "$keep" == false ]]; then
-      echo "➖ Removing $pkg (not in PIPX_PACKAGES list)..."
-      pipx uninstall "$pkg"
-    fi
-  done
-}
-
 install_sudoers() {
   local SRC="$DOTFILES/system/sudoers"
   local DEST="/etc/sudoers.d/dotfiles"
@@ -384,8 +325,6 @@ install_crontab() {
   rm -f "$TEMP"
   echo "Crontab installed"
 }
-
-sync_pipx_packages
 
 # tmux
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
@@ -527,11 +466,6 @@ if [[ "$OS" == "Darwin" ]]; then
 fi
 
 echo "Done installing packages"
-
-
-
-# Run upgrade
-pipx upgrade-all
 
 printf "Bootstrap completed 🎉\n"
 
