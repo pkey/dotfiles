@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # OS-aware package installer
-# Reads packages.yaml and dispatches to brew (macOS) or apt (Linux/Ubuntu)
+# Reads packages.yaml and dispatches to brew (macOS/Linux) or apt (Linux fallback)
 
 set -e
 
@@ -56,19 +56,22 @@ get_field() {
   echo "$1" | yq -r ".$2 // \"\""
 }
 
+# generate_brewfile <brewfile> <packages_yaml> [taps_key]
+# taps_key defaults to "macos_taps"; use "linux_taps" on Linux
 generate_brewfile() {
   local brewfile="$1"
   local file="$2"
+  local taps_key="${3:-macos_taps}"
   [[ -f "$file" ]] || return
 
-  # Emit taps
   local tap_count
-  tap_count=$(yq -r '.macos_taps | length // 0' "$file")
+  tap_count=$(yq -r ".${taps_key} | length // 0" "$file")
   for ((i = 0; i < tap_count; i++)); do
-    echo "tap \"$(yq -r ".macos_taps[$i]" "$file")\"" >> "$brewfile"
+    echo "tap \"$(yq -r ".${taps_key}[$i]" "$file")\"" >> "$brewfile"
   done
 
-  local sections=("common" "macos_only")
+  local sections=("common")
+  [[ "$OS" == "Darwin" ]] && sections+=("macos_only")
   [[ "$FULL_INSTALL" == true ]] && sections+=("full")
 
   for section in "${sections[@]}"; do
@@ -83,12 +86,13 @@ generate_brewfile() {
         local name brew_name
         name=$(yq -r ".${section}[$i].name" "$file")
         brew_name=$(yq -r ".${section}[$i].brew // \"\"" "$file")
+        [[ "$brew_name" == "false" ]] && continue
         echo "brew \"${brew_name:-$name}\"" >> "$brewfile"
       fi
     done
   done
 
-  if [[ "$FULL_INSTALL" == true ]]; then
+  if [[ "$FULL_INSTALL" == true && "$OS" == "Darwin" ]]; then
     local cask_count
     cask_count=$(yq -r '.macos_casks | length // 0' "$file")
     for ((i = 0; i < cask_count; i++)); do
@@ -139,6 +143,28 @@ install_linux() {
   local sections=("common")
   [[ "$FULL_INSTALL" == true ]] && sections+=("full")
 
+  # === Brew step ===
+  local HAS_BREW=false
+  command -v brew >/dev/null 2>&1 && HAS_BREW=true
+
+  if [[ "$HAS_BREW" == true ]]; then
+    local brewfile
+    brewfile=$(mktemp /tmp/Brewfile.XXXXXX)
+    # shellcheck disable=SC2064
+    trap "rm -f '$brewfile'" EXIT
+
+    generate_brewfile "$brewfile" "$PACKAGES_FILE" "linux_taps"
+    [[ -f "$PACKAGES_LOCAL" ]] && generate_brewfile "$brewfile" "$PACKAGES_LOCAL" "linux_taps"
+
+    echo "Generated Linux Brewfile:"
+    cat "$brewfile"
+    echo ""
+    HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --file="$brewfile"
+  fi
+
+  # === Apt step ===
+  # When brew is available: only install packages with explicit apt: field
+  # When brew is not available: install everything via apt (original behavior)
   local apt_packages=()
   local setup_commands=()
   local post_commands=()
@@ -151,22 +177,49 @@ install_linux() {
       local is_string
       is_string=$(yq -r ".${section}[$i] | type" "$PACKAGES_FILE")
       if [[ "$is_string" == "!!str" ]]; then
-        apt_packages+=("$(yq -r ".${section}[$i]" "$PACKAGES_FILE")")
+        # Simple string package: brew handles it; apt only if no brew
+        [[ "$HAS_BREW" == false ]] && apt_packages+=("$(yq -r ".${section}[$i]" "$PACKAGES_FILE")")
       else
-        local name apt_name apt_setup post_apt script
+        local name apt_name apt_setup post_apt script brew_name
         name=$(yq -r ".${section}[$i].name" "$PACKAGES_FILE")
         apt_name=$(yq -r ".${section}[$i].apt" "$PACKAGES_FILE")
+        brew_name=$(yq -r ".${section}[$i].brew // \"\"" "$PACKAGES_FILE")
         [[ "$apt_name" == "null" ]] && apt_name=""
         apt_setup=$(yq -r ".${section}[$i].apt_setup // \"\"" "$PACKAGES_FILE")
         post_apt=$(yq -r ".${section}[$i].post_apt // \"\"" "$PACKAGES_FILE")
         script=$(yq -r ".${section}[$i].script // \"\"" "$PACKAGES_FILE")
 
-        [[ -n "$apt_setup" ]] && setup_commands+=("$apt_setup")
+        # brew: false → use apt or script
+        if [[ "$brew_name" == "false" ]]; then
+          if [[ "$apt_name" == "false" ]]; then
+            [[ -n "$script" ]] && script_commands+=("echo \"Installing $name via script...\" && $script")
+          elif [[ -n "$apt_name" ]]; then
+            [[ -n "$apt_setup" ]] && setup_commands+=("$apt_setup")
+            # shellcheck disable=SC2206
+            apt_packages+=($apt_name)
+            [[ -n "$post_apt" ]] && post_commands+=("$post_apt")
+          else
+            apt_packages+=("$name")
+          fi
+          continue
+        fi
 
+        if [[ "$HAS_BREW" == true ]]; then
+          # Package handled by brew; still install via apt if explicitly specified
+          # (e.g. build-essential: needed as brew prerequisite)
+          if [[ -n "$apt_name" && "$apt_name" != "false" ]]; then
+            # shellcheck disable=SC2206
+            apt_packages+=($apt_name)
+            [[ -n "$post_apt" ]] && post_commands+=("$post_apt")
+          fi
+          continue
+        fi
+
+        # No brew: fall back to apt
+        [[ -n "$apt_setup" ]] && setup_commands+=("$apt_setup")
         if [[ "$apt_name" == "false" ]]; then
           [[ -n "$script" ]] && script_commands+=("echo \"Installing $name via script...\" && $script")
         elif [[ -n "$apt_name" ]]; then
-          # apt_name may contain multiple packages (space-separated)
           # shellcheck disable=SC2206
           apt_packages+=($apt_name)
           [[ -n "$post_apt" ]] && post_commands+=("$post_apt")
@@ -188,14 +241,24 @@ install_linux() {
         local is_string
         is_string=$(yq -r ".${section}[$i] | type" "$PACKAGES_LOCAL")
         if [[ "$is_string" == "!!str" ]]; then
-          apt_packages+=("$(yq -r ".${section}[$i]" "$PACKAGES_LOCAL")")
+          [[ "$HAS_BREW" == false ]] && apt_packages+=("$(yq -r ".${section}[$i]" "$PACKAGES_LOCAL")")
         else
-          local name apt_name
+          local name apt_name brew_name
           name=$(yq -r ".${section}[$i].name" "$PACKAGES_LOCAL")
           apt_name=$(yq -r ".${section}[$i].apt" "$PACKAGES_LOCAL")
+          brew_name=$(yq -r ".${section}[$i].brew // \"\"" "$PACKAGES_LOCAL")
           [[ "$apt_name" == "null" ]] && apt_name=""
-          if [[ "$apt_name" != "false" ]]; then
-            apt_packages+=("${apt_name:-$name}")
+          if [[ "$HAS_BREW" == true ]]; then
+            if [[ "$brew_name" == "false" && "$apt_name" != "false" ]]; then
+              apt_packages+=("${apt_name:-$name}")
+            elif [[ -n "$apt_name" && "$apt_name" != "false" ]]; then
+              # shellcheck disable=SC2206
+              apt_packages+=($apt_name)
+            fi
+          else
+            if [[ "$apt_name" != "false" ]]; then
+              apt_packages+=("${apt_name:-$name}")
+            fi
           fi
         fi
       done

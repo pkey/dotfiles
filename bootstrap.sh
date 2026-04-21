@@ -80,7 +80,7 @@ if [[ "$(id -u)" -eq 0 ]]; then
   usermod -aG sudo "$TARGET_USER"
 
   # Enable passwordless sudo for the new user
-  echo "$TARGET_USER ALL=(ALL) NOPASSWD: /usr/bin/apt-get, /usr/bin/apt, /opt/homebrew/bin/brew, /usr/bin/systemctl, /usr/bin/tee, /usr/sbin/chsh" > "/etc/sudoers.d/$TARGET_USER"
+  echo "$TARGET_USER ALL=(ALL) NOPASSWD: /usr/bin/apt-get, /usr/bin/apt, /opt/homebrew/bin/brew, /home/linuxbrew/.linuxbrew/bin/brew, /usr/bin/systemctl, /usr/bin/tee, /usr/sbin/chsh" > "/etc/sudoers.d/$TARGET_USER"
   chmod 0440 "/etc/sudoers.d/$TARGET_USER"
 
   # Copy SSH keys from root
@@ -170,13 +170,27 @@ git -C "$DOTFILES" submodule update --init --remote --merge
 
 # Install packages via packages.yaml
 if [[ "$OS" == "Darwin" ]]; then
-  # macOS: ensure Homebrew is installed
   BREW_PATH="/opt/homebrew/bin/brew"
   if [[ ! -f "$BREW_PATH" ]]; then
     printf "Installing Homebrew... 🍺\n"
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
   eval "$($BREW_PATH shellenv)"
+elif [[ "$OS" == "Linux" ]]; then
+  BREW_PATH=""
+  for _bp in "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.linuxbrew/bin/brew"; do
+    [[ -f "$_bp" ]] && BREW_PATH="$_bp" && break
+  done
+  if [[ -z "$BREW_PATH" ]]; then
+    printf "Installing Linuxbrew... 🍺\n"
+    # Ensure brew prerequisites are available
+    sudo apt-get update -qq && sudo apt-get install -y -qq build-essential curl file git
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    for _bp in "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.linuxbrew/bin/brew"; do
+      [[ -f "$_bp" ]] && BREW_PATH="$_bp" && break
+    done
+  fi
+  [[ -n "$BREW_PATH" ]] && eval "$($BREW_PATH shellenv)"
 fi
 
 FULL_INSTALL="$FULL_INSTALL" "$DOTFILES/install-packages.sh"

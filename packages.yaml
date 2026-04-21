@@ -1,81 +1,78 @@
-# Package definitions for macOS (brew) and Linux (apt).
-# Read by install-packages.sh — see README.md for full format reference.
-#
-# Quick examples:
-#   - tmux                              # same name on both OS
-#   - name: fd                          # different apt name
-#     apt: fd-find
-#   - name: zoxide                      # not in apt, use script
-#     apt: false
-#     script: curl -sS ... | bash
+# Package definitions for macOS and Linux (Homebrew primary, apt fallback).
+# brew: false  → skip brew, use apt/script
+# apt: false   → skip apt, use brew/script
+# Both fields  → install via both (e.g. build-essential needs apt even with brew)
 
 common:
   - zsh
   - name: python
-    apt: python3 python3-pip python3-venv
+    brew: python
+    apt: false
   - wget
   - name: fd
-    apt: fd-find
-    post_apt: ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
-  - fzf
-  - name: zoxide
+    brew: fd
     apt: false
-    script: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+  - fzf
+  - zoxide
   - ripgrep
   - name: bat
-    apt: bat
-    post_apt: ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"
+    brew: bat
+    apt: false
   - tmux
   - jq
   - yq
-  - unzip  # required by fnm installer
+  - unzip
   - name: fnm
+    brew: fnm
     apt: false
-    script: curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
   - pipx
   - gnupg
   - name: build-essential
     brew: gcc
+    apt: build-essential
   - curl
   - git
   - git-lfs
   - shellcheck
-  - uv
+  - name: uv
+    brew: uv
+    apt: false
 
 full:
-  - name: gh
-    apt_setup: |
-      curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list
+  - gh
   - sqlite3
   - nmap
   - direnv
-  - name: pre-commit
+  - pre-commit
+  - name: go
+    brew: go
     apt: false
-    script: pipx install pre-commit
-  - name: glab
-    apt_setup: |
-      curl -fsSL https://gitlab.com/gitlab-org/cli/-/raw/main/scripts/install.sh | sudo bash
-  - go
   - gitleaks
   - convco
-  - name: worktrunk
-    apt: false
   - marksman
   - harper
+  - glow
   - name: helix
+    brew: helix
     apt: false
-  - name: glow
-    apt: false
-    script: GOBIN="$HOME/.local/bin" go install github.com/charmbracelet/glow@latest
   - circleci
-  - libpq
-  - kubernetes-cli
+  - name: libpq
+    brew: libpq
+    apt: false
+  - name: kubernetes-cli
+    brew: kubernetes-cli
+    apt: false
   - kubectx
-  - teleport
-  - tilt
+  - name: teleport
+    brew: false
+    apt: false
+    script: command -v tsh >/dev/null || curl https://cdn.teleport.dev/install.sh | bash -s "18.7.3" "enterprise"
+  - name: tilt
+    brew: tilt-dev/tap/tilt
+    apt: false
   - name: terraform
     brew: hashicorp/tap/terraform
+    apt: false
   - name: docker
     brew: false
     apt: false
@@ -87,6 +84,11 @@ macos_only:
 macos_taps:
   - 1password/tap
   - hashicorp/tap
+  - tilt-dev/tap
+
+linux_taps:
+  - hashicorp/tap
+  - tilt-dev/tap
 
 macos_casks:
   - 1password-cli
