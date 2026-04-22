@@ -133,6 +133,7 @@ run_macos() {
     echo "Cleaning up unlisted brew packages..."
     brew bundle cleanup --force --file="$brewfile"
     brew autoremove 2>/dev/null || true
+    brew cleanup
     echo "Cleanup complete"
   fi
 }
