@@ -3,5 +3,8 @@ theme = "onedark"
 [editor]
 line-number = "absolute"
 
+[editor.soft-wrap]
+enable = true
+
 [keys.normal.space.m]
 p = ':sh "$HOME/dotfiles/bin/hx-glow-preview" "%{buffer_name}"'
