@@ -73,6 +73,9 @@ full:
   - name: terraform
     brew: hashicorp/tap/terraform
     apt: false
+  - name: graphite
+    brew: withgraphite/tap/graphite
+    apt: false
   - name: docker
     brew: false
     apt: false
@@ -85,10 +88,12 @@ macos_taps:
   - 1password/tap
   - hashicorp/tap
   - tilt-dev/tap
+  - withgraphite/tap
 
 linux_taps:
   - hashicorp/tap
   - tilt-dev/tap
+  - withgraphite/tap
 
 macos_casks:
   - 1password-cli
