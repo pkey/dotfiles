@@ -1,6 +1,8 @@
 theme = "onedark"
 
 [editor]
+clipboard-provider = "pasteboard"
+default-yank-register = "+"
 line-number = "absolute"
 
 [editor.soft-wrap]
