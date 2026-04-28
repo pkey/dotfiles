@@ -55,6 +55,9 @@ full:
   - name: helix
     brew: helix
     apt: false
+  - name: ty
+    brew: ty
+    apt: false
   - circleci
   - name: libpq
     brew: libpq

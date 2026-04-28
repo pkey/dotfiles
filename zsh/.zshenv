@@ -3,6 +3,7 @@ export DOTFILES="$HOME/dotfiles"
 export HISTFILE="$HOME/.zsh_history"
 
 # Homebrew
+export HOMEBREW_NO_AUTO_UPDATE=1
 if [[ "$(uname)" == "Darwin" ]]; then
   [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
