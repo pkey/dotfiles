@@ -16,6 +16,13 @@ fi
 # so long-lived tmux panes keep working across reconnects.
 if [[ -n "$SSH_AUTH_SOCK" && "$SSH_AUTH_SOCK" != "$HOME/.ssh/agent.sock" && -S "$SSH_AUTH_SOCK" ]]; then
   ln -sfn "$SSH_AUTH_SOCK" "$HOME/.ssh/agent.sock"
+elif [[ ! -S "$HOME/.ssh/agent.sock" ]]; then
+  # Symlink target died (previous forwarding session ended). Find a live one.
+  for sock in /tmp/ssh-*/agent.*(Nom); do
+    [[ -O "$sock" && -S "$sock" ]] || continue
+    ln -sfn "$sock" "$HOME/.ssh/agent.sock"
+    break
+  done
 fi
 [[ -e "$HOME/.ssh/agent.sock" ]] && export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
 
