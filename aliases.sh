@@ -52,7 +52,19 @@ alias 'gca!'='git commit -v -a --amend'                                      # A
 alias grw='gaa && gc! --no-edit && gp!'                                      # Rewrite: stage, amend, push
 alias gcb='git checkout -b'                                                  # Create and checkout branch
 alias gci='git checkout project/integration'                                 # Checkout integration
-alias gco='git checkout'                                                     # Checkout branch/file
+gco() {                                                                      # Fuzzy checkout branch (or pass-through to git checkout)
+  if [[ $# -gt 0 ]]; then
+    git checkout "$@"
+    return
+  fi
+  local branch
+  branch=$(git for-each-ref --sort=-committerdate \
+            --format='%(refname:short)' refs/heads refs/remotes \
+          | sed 's|^origin/||' | awk '!seen[$0]++' \
+          | fzf --height=40% --reverse \
+                --preview 'git log --oneline --color=always -20 {}') \
+    && git checkout "$branch"
+}
 alias ggpush='git push origin $(git branch --show-current)'                   # Push to origin
 alias 'gp!'='ggpush --force-with-lease'                                      # Force push safely
 alias ggsup='git branch --set-upstream-to=origin/$(git branch --show-current)' # Set upstream
