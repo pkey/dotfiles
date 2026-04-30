@@ -10,3 +10,10 @@ enable = true
 
 [keys.normal.space.m]
 p = ':sh "$HOME/dotfiles/bin/hx-glow-preview" "%{buffer_name}"'
+
+# jump to center
+[keys.normal.g]
+g = ["goto_file_start", "align_view_center"]
+
+[keys.select.g]
+g = ["goto_file_start", "align_view_center"]
