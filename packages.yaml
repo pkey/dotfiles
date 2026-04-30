@@ -61,6 +61,9 @@ full:
   - name: ruff
     brew: ruff
     apt: false
+  - name: yazi
+    brew: yazi
+    apt: false
   - circleci
   - name: libpq
     brew: libpq
