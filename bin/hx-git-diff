@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+file="${1:-}"
+out="/tmp/hx-diff.diff"
+
+if [[ -z "$file" ]]; then
+  printf '# Usage: hx-git-diff <file>\n' > "$out"
+  exit 0
+fi
+
+if [[ "$file" != /* ]]; then
+  file="$(pwd)/$file"
+fi
+
+if [[ "$file" == "$out" ]]; then
+  exit 0
+fi
+
+if [[ ! -f "$file" ]]; then
+  printf '# File not found: %s\n' "$file" > "$out"
+  exit 0
+fi
+
+dir="$(dirname "$file")"
+base="$(basename "$file")"
+
+if diff_out=$(git -C "$dir" diff -U99999 HEAD -- "$base" 2>&1); then
+  if [[ -z "$diff_out" ]]; then
+    printf '# No changes vs HEAD\n# %s\n' "$file" > "$out"
+  else
+    printf '%s\n' "$diff_out" > "$out"
+  fi
+else
+  printf '# git error\n%s\n' "$diff_out" > "$out"
+fi

@@ -8,6 +8,16 @@ line-number = "absolute"
 [editor.soft-wrap]
 enable = true
 
+[keys.normal.space]
+v = [
+    ":write-all",
+    ":buffer-close /tmp/hx-diff.diff",
+    ':sh "$HOME/dotfiles/bin/hx-git-diff" "%{buffer_name}"',
+    ":vsplit /tmp/hx-diff.diff",
+    ":reload",
+]
+V = ":buffer-close /tmp/hx-diff.diff"
+
 [keys.normal.space.m]
 p = ':sh "$HOME/dotfiles/bin/hx-glow-preview" "%{buffer_name}"'
 
