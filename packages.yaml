@@ -58,6 +58,9 @@ full:
   - name: ty
     brew: ty
     apt: false
+  - name: ruff
+    brew: ruff
+    apt: false
   - circleci
   - name: libpq
     brew: libpq
