@@ -5,9 +5,25 @@
 set -e
 
 _BOOTSTRAP_LOG="/tmp/cfix_bootstrap.log"
+_BOOTSTRAP_LOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.bootstrap-logs"
 : > "$_BOOTSTRAP_LOG"
 exec 3>&1 4>&2
 exec > >(tee -a "$_BOOTSTRAP_LOG") 2>&1
+
+_log_has_errors() {
+  grep -qE '(^Error[: ]|^error[: ]| failed!|has failed!|❌)' "$_BOOTSTRAP_LOG" 2>/dev/null
+}
+
+_save_bootstrap_log() {
+  [[ -f "$_BOOTSTRAP_LOG" ]] || return 0
+  mkdir -p "$_BOOTSTRAP_LOG_DIR"
+  local stamp dest
+  stamp=$(date +%Y-%m-%d_%H%M%S)
+  dest="$_BOOTSTRAP_LOG_DIR/$stamp.log"
+  cp "$_BOOTSTRAP_LOG" "$dest" 2>/dev/null || return 0
+  echo "📝 Bootstrap log with errors saved: $dest"
+  echo "   Investigate with: claude /bootstrap-debug"
+}
 
 _on_bootstrap_error() {
   local exit_code=$?
@@ -23,6 +39,7 @@ _on_bootstrap_error() {
     echo "--- Last 30 lines of output ---"
     tail -30 "$_BOOTSTRAP_LOG" 2>/dev/null || true
   } > "$file"
+  _save_bootstrap_log
 }
 trap _on_bootstrap_error ERR
 
@@ -254,19 +271,28 @@ if [[ -n "${SSH_AUTH_SOCK:-}" ]] && ssh-add -L >/dev/null 2>&1; then
 fi
 
 : > ~/.gitconfig-user
-if gpg --list-keys "$GPG_SIGNING_KEY" > /dev/null 2>&1; then
-  git config --file ~/.gitconfig-user user.signingkey "$GPG_SIGNING_KEY"
-  git config --file ~/.gitconfig-user gpg.format openpgp
-  git config --file ~/.gitconfig-user commit.gpgsign true
-  echo "Git signing: GPG key $GPG_SIGNING_KEY"
-elif [[ -f "$SSH_SIGNING_PUB" ]]; then
+if [[ -f "$SSH_SIGNING_PUB" ]]; then
   # Use literal key:: form — avoids ssh-keygen probing for a local private
   # key file (which doesn't exist when signing via a forwarded agent).
   pub_body=$(awk '{print $1" "$2}' "$SSH_SIGNING_PUB")
   git config --file ~/.gitconfig-user user.signingkey "key::$pub_body"
   git config --file ~/.gitconfig-user gpg.format ssh
   git config --file ~/.gitconfig-user commit.gpgsign true
+
+  # Allowed-signers file lets `git verify-commit` / `git log --show-signature`
+  # validate locally. GitHub verifies via the registered signing key
+  # independently, so this is purely for local UX.
+  signing_email=$(git config --file "$DOTFILES/git/.gitconfig" user.email)
+  allowed_signers="$HOME/.config/git/allowed_signers"
+  mkdir -p "$(dirname "$allowed_signers")"
+  echo "$signing_email $pub_body" > "$allowed_signers"
+  git config --file ~/.gitconfig-user gpg.ssh.allowedSignersFile "$allowed_signers"
   echo "Git signing: SSH key $SSH_SIGNING_PUB"
+elif gpg --list-keys "$GPG_SIGNING_KEY" > /dev/null 2>&1; then
+  git config --file ~/.gitconfig-user user.signingkey "$GPG_SIGNING_KEY"
+  git config --file ~/.gitconfig-user gpg.format openpgp
+  git config --file ~/.gitconfig-user commit.gpgsign true
+  echo "Git signing: GPG key $GPG_SIGNING_KEY"
 else
   git config --file ~/.gitconfig-user commit.gpgsign false
   echo "Git signing: disabled (no GPG or SSH signing key available)"
@@ -413,6 +439,7 @@ fi
 if [[ "$FULL_INSTALL" != true ]]; then
   printf "Minimal bootstrap completed 🎉\n"
   printf "Run with --full flag for complete installation\n"
+  _log_has_errors && _save_bootstrap_log
   exec 1>&3 2>&4 3>&- 4>&-
   exec zsh
 fi
@@ -493,6 +520,8 @@ fi
 echo "Done installing packages"
 
 printf "Bootstrap completed 🎉\n"
+
+_log_has_errors && _save_bootstrap_log
 
 # Start a fresh zsh shell with restored file descriptors
 if [[ -f "$HOME/.zshrc" ]]; then

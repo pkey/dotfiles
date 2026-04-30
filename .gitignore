@@ -1,6 +1,6 @@
 .zcompdump*
 *.zwc
-.claude
+.bootstrap-logs/
 .DS_Store
 __pycache__/
 Brewfile.local
